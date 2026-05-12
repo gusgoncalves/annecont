@@ -1,0 +1,15 @@
+# CodeIgniter 4 Application Starter
+
+ALTER TABLE anneco90_db.clientes MODIFY COLUMN whatsapp varchar(15) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL;
+
+ALTER TABLE user_group
+ADD CONSTRAINT fk_user_group_user
+FOREIGN KEY (user_id)
+REFERENCES users(id)
+ON DELETE CASCADE;
+
+ALTER TABLE user_group
+ADD CONSTRAINT fk_user_group_group
+FOREIGN KEY (group_id)
+REFERENCES `groups`(id)
+ON DELETE CASCADE;
