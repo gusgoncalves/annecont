@@ -121,7 +121,7 @@
                     <div class="form-group">
                       <label for="funcionario_observacoes">INFORMAÇÕES</label>
                       <textarea type="text" class="form-control" id="funcionario_observacoes" name="funcionario_observacoes" placeholder="Descreva o informações importantes do Funcionário" autocomplete="off">
-                      
+                        <?= old('funcionario_observacoes') ?>
                       </textarea>
                     </div>
                   </div><!-- col -->

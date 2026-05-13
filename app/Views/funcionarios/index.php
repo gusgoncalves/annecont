@@ -81,14 +81,18 @@
       info: false,
       language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
       columns: [
-        { data: 'cliente' },
-        { data: 'nome', 
-        render: function (data, type, row) {
-            if(parseInt(row.ativo) === 2) {
-              return `${data} <span class="badge bg-danger ms-1">INATIVO</span>`;
+        { data: 'cliente',
+          render: function (data, type, row) {
+              return `<b>${data}</b>`;
             }
-            return data;
-          } 
+        },
+        { data: 'nome', 
+          render: function (data, type, row) {
+              if(parseInt(row.ativo) === 2) {
+                return `${data} <span class="badge bg-danger ms-1">INATIVO</span>`;
+              }
+              return data;
+            } 
         },
         { data: 'ativo' },
         { data: 'whatsapp' },

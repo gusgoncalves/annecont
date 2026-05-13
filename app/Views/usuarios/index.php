@@ -91,56 +91,7 @@
 
 <?= $this->section('scripts') ?>
   <script type="text/javascript">
-    //===============FUNÇÃO PARA EXIBIR TOAST DE SUCESSO OU ERRO APÓS AÇÃO ============
-    function showToast(message, type = 'success') {
-      let bg = 'bg-success';
-      if (type === 'error') {
-        bg = 'bg-danger';
-      }
-      if (type === 'warning') {
-        bg = 'bg-warning';
-      }
-      let toast = $(`
-        <div class="toast ${bg} text-white border-0 mb-3 shadow-lg"
-             role="alert"
-             style="
-                min-width: 400px;
-                padding: 10px;
-                border-radius: 12px;
-                font-size: 1rem;
-             ">
-             
-            <div class="d-flex align-items-center">
-
-                <div class="toast-body"
-                     style="
-                        padding: 15px 20px;
-                        font-weight: 600;
-                        line-height: 1.5;
-                     ">
-                    ${message}
-                </div>
-            </div>
-        </div>
-      `);
-      $("#toast-container").append(toast);
-      let bsToast = new bootstrap.Toast(toast[0], {
-        delay: 6000 // 6 segundos
-      });
-      bsToast.show();
-      toast.on('hidden.bs.toast', function() {
-        $(this).remove();
-      });
-    }
-    //=========================================================
-    <?php if (session()->getFlashdata('success')): ?>
-      showToast("<?= session()->getFlashdata('success') ?>", "success");
-    <?php endif; ?>
-
-    <?php if (session()->getFlashdata('errors')): ?>
-      showToast("<?= session()->getFlashdata('errors') ?>", "error");
-    <?php endif; ?>
-    //=========================================================
+   
       manageTable = $('#userTable').DataTable({
         'responsive': true,
         //lengthChange: true, //mostrar resultados por etapas

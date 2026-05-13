@@ -107,67 +107,44 @@ class Usuarios extends BaseController
     public function update($id)
     {
         $rules = [
-
             'username' => 'required|min_length[3]|is_unique[users.username,id,'.$id.']',
-
             'fname' => 'required|min_length[3]',
-
             'groups' => 'required',
-
             'phone' => 'required',
         ];
         $messages = 
         [
-
             'username' => [
-
                 'required'   => 'O campo usuário é obrigatório',
-
                 'min_length' => 'O campo usuário deve conter no mínimo 3 caracteres',
-
                 'is_unique'  => 'O nome de usuário já existe na base de dados'
             ],
-
             'fname' => [
-
                 'required'   => 'O campo nome é obrigatório',
-
                 'min_length' => 'O campo nome deve conter no mínimo 3 caracteres',
             ],
-
             'groups' => [
-
                 'required' => 'O campo grupo é obrigatório',
             ],
-
             'phone' => [
-
                 'required' => 'O campo telefone é obrigatório',
             ]
         ];
         if (!empty($this->request->getPost('password'))) {
-
             $rules['password'] = 'min_length[5]';
-
             $rules['cpassword'] = 'matches[password]';
-
             $messages['password'] = [
-
                 'min_length' => 'O campo senha deve conter no mínimo 5 caracteres',
             ];
-
             $messages['cpassword'] = [
-
                 'matches' => 'As senhas não conferem'
             ];
         }
         if (!$this->validate($rules, $messages)) {
-
         return redirect()->back()
             ->withInput()
             ->with('errors', implode('<br>', $this->validator->getErrors()));
         }
-
         $data = array(
             'username' => $this->request->getPost('username'),
             'firstname' => $this->request->getPost('fname'),
@@ -176,11 +153,8 @@ class Usuarios extends BaseController
             'gender' => $this->request->getPost('gender'),
         );
         if (!empty($this->request->getPost('password'))) {
-
             $data['password'] = password_hash(
-
                 $this->request->getPost('password'),
-
                 PASSWORD_DEFAULT
             );
         }

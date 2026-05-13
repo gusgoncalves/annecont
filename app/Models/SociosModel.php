@@ -8,12 +8,20 @@ class SociosModel extends Model
 {
     protected $table            = 'socios';
     protected $returnType       = 'array';
-    protected $allowedFields    = [];
-
-    public function SociosPorCliente($id_cliente = null){
-		$sql = "SELECT * FROM socios WHERE id_cliente = $id_cliente";
-		$query = $this->db->query($sql);
-		return $query->getResultArray();
-	}
-
+    protected $allowedFields    = [
+        'id_cliente',
+        'nome',
+        'cpf',
+        'rg',
+        'titulo',
+        'nascimento',
+        'nome_mae',
+        'endereco',
+        'whatsapp',
+        'email',
+        'recibo',
+        'observacoes',
+        'dt_cadastro',
+        'declara_ir'
+    ];
 }

@@ -31,7 +31,18 @@ $routes->group('funcionarios', ['filter' => 'auth:verFuncionario'], function($ro
     $routes->post('store', 'Funcionarios::store');
     $routes->get('edit/(:num)', 'Funcionarios::edit/$1');
     $routes->post('update/(:num)', 'Funcionarios::update/$1');
-    $routes->post('delete/(:num)', 'Funcionarios::delete/$1');
+    $routes->post('delete', 'Funcionarios::delete');
+    $routes->get('transporte/(:num)', 'Funcionarios::transporte/$1');
+    $routes->get('alimentacao/(:num)', 'Funcionarios::alimentacao/$1');
+});
+$routes->group('socios', ['filter' => 'auth:verCliente'], function($routes) {
+    $routes->get('/', 'Socios::index');
+    $routes->get('busca', 'Socios::buscarDadosSocios');
+    $routes->get('create', 'Socios::create');
+    $routes->post('store', 'Socios::store');
+    $routes->get('edit/(:num)', 'Socios::edit/$1');
+    $routes->post('update/(:num)', 'Socios::update/$1');
+    $routes->post('delete', 'Socios::delete');
 });
 $routes->group('usuarios', ['filter' => 'auth:verUser'], function($routes) {
     $routes->get('/', 'Usuarios::index');
