@@ -1,5 +1,7 @@
+<?php /** @var array $clientes */
+ /** @var array $tipos */ ?>
 <!-- ===============================MODAL PARA NOVAS CERTIDÕES ===================== -->
-<?php if (in_array('criarCertidao', $user_permission)): ?>
+<?php if (hasPermission('criarCertidao')): ?>
   <!-- create brand modal -->
   <div class="modal fade" tabindex="-1" role="dialog" id="addModalCertidao">
     <div class="modal-dialog" role="document">
@@ -14,12 +16,15 @@
               <label for="id_cliente">CLIENTE</label>
               <?php if (isset($cliente_data)): ?>
                 <!-- Se já estiver na ficha do cliente, mostra um campo fixo -->
-                <input type="text" class="form-control" value="<?php echo $cliente_data['razao']; ?>" readonly>
-                <input type="hidden" name="id_cliente" value="<?php echo $cliente_data['id']; ?>">
+                <input type="text" class="form-control" value="<?= $cliente_data['razao']; ?>" readonly>
+                <input type="hidden" name="id_cliente" value="<?= $cliente_data['id']; ?>">
               <?php else: ?>
                 <!-- Se estiver na listagem geral, exibe o combo -->
                 <select class="form-control" id="id_cliente" name="id_cliente" required>
-                  <?= $combo_cliente; ?>
+                  <option value="">SELECIONE O CLIENTE</option>
+                      <?php foreach ($clientes as $c): ?>
+                          <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option>
+                      <?php endforeach; ?>
                 </select>
                 <div class="invalid-feedback">Preenchimento Obrigatório!</div>
               <?php endif; ?>
@@ -27,7 +32,10 @@
             <div class="form-group">
               <label for="id_tipo_certidao">CERTIDÃO</label>
               <select class="form-control" id="id_tipo_certidao" name="id_tipo_certidao" required>
-                <?= $combo_certidao; ?>
+                <option value="">SELECIONE O TIPO</option>
+                <?php foreach ($tipos as $t): ?>
+                    <option value="<?= $t['id'] ?>"><?= $t['nome'] ?></option>
+                <?php endforeach; ?>
               </select>
               <div class="invalid-feedback">Preenchimento Obrigatório!</div>
             </div>
@@ -52,7 +60,7 @@
   </div><!-- /.modal -->
 <?php endif; ?>
 <!-- ======================================================================================== -->
-<?php if (in_array('modificarCertidao', $user_permission)): ?>
+<?php if (hasPermission('modificarCertidao')): ?>
   <!-- edit brand modal -->
   <div class="modal fade" tabindex="-1" role="dialog" id="editModalCertidao">
     <div class="modal-dialog" role="document">
@@ -61,7 +69,7 @@
           <h4 class="modal-title text-center">ALTERAR CERTIDÕES</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?= base_url('certidoes/update') ?>" method="post" id="updateFormCertidao">
+        <form role="form" action="<?= base_url('certidoes/edit') ?>" method="post" id="updateFormCertidao">
           <div class="modal-body">
             <div id="messages"></div>
             <div class="form-group">
@@ -70,7 +78,10 @@
               <?php endif; ?>
               <label for="edit_tipo_certidao">CERTIDÃO</label>
               <select class="form-control" id="edit_tipo_certidao" name="edit_tipo_certidao" required>
-                <?= $combo_certidao; ?>
+                 <option value="">SELECIONE O TIPO</option>
+                <?php foreach ($tipos as $t): ?>
+                    <option value="<?= $t['id'] ?>"><?= $t['nome'] ?></option>
+                <?php endforeach; ?>
               </select>
               <div class="invalid-feedback">Preenchimento Obrigatório!</div>
             </div>
@@ -93,7 +104,7 @@
   </div><!-- /.modal -->
 <?php endif; ?>
 <!-- =================================================================================================================== -->
-<?php if (in_array('apagarCertidao', $user_permission)): ?>
+<?php if (hasPermission('apagarCertidao')): ?>
   <!-- remove brand modal -->
   <div class="modal fade" tabindex="-1" role="dialog" id="removeModalCertidao">
     <div class="modal-dialog" role="document">
@@ -102,7 +113,7 @@
           <h4 class="modal-title text-center">APAGAR CERTIDÃO</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?php echo base_url('certidoes/remove') ?>" method="post" id="removeFormCertidao">
+        <form role="form" action="<?php echo base_url('certidoes/delete') ?>" method="post" id="removeFormCertidao">
           <div class="modal-body">
             <input type="hidden" name="certidao_cliente_id" id="certidao_cliente_id"> <!-- Campo oculto para ID do Cliente -->
             <input type="hidden" name="certidao_id" id="certidao_id"> <!-- Campo oculto para ID do Certificado -->
@@ -122,37 +133,6 @@
   var manageTable;
   var base_url = "<?= base_url(); ?>";
 
-  //==============================FUNÇÃO PARA VERIFICAR VALIDAÇÃO DE FORMULÁRIO ==========================
-  $(function() {
-    'use strict'
-    const forms = document.querySelectorAll('.requires-validation')
-    Array.from(forms)
-      .forEach(function(form) {
-        form.addEventListener('submit', function(event) {
-          if (!form.checkValidity()) {
-            event.preventDefault()
-            event.stopPropagation()
-          }
-          form.classList.add('was-validated')
-        }, false)
-      })
-  });
-  //=======================ATIVAR O MENU ===========================
-  $(function() {
-    var url = window.location.href;
-
-    // Ativar o link diretamente acessado no menu
-    $('ul.nav-sidebar a, ul.nav-treeview a').filter(function() {
-        return this.href === url || url.startsWith(this.href);
-      }).addClass('active')
-      .closest('.nav-treeview') // Ativa o submenu se necessário
-      .css({
-        'display': 'block'
-      })
-      .addClass('menu-open')
-      .prev('a') // Ativa o menu principal
-      .addClass('active');
-  });
   //=================== SELECT 2 =====================================
   $('#id_cliente').select2({
     width: '100%',
@@ -166,154 +146,117 @@
     width: '100%',
     dropdownParent: $('#editModalCertidao')
   });
-
-  //=========ENVIA DADOS DE CRIAR FORM==================
-  $('#createModalCertidao').unbind('submit').on('submit', function(e) {
-    e.preventDefault();
-
-    var form = $(this);
-    $.ajax({
-      url: form.attr('action'),
-      type: form.attr('method'),
-      data: form.serialize(),
-      dataType: 'json',
-      success: function(response) {
-        if (response.success) {
-          $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">' +
-            '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>' + response.messages +
-            '</div>');
-
-          // Fechar o modal
-          $("#addModalCertidao").modal('hide');
-
-          // Redirecionar corretamente
-          if (response.redirect) {
-            setTimeout(function() {
-              window.location.href = response.redirect;
-            }, 1000); // Pequeno delay para evitar conflitos
-          } else {
-            location.reload(); // Apenas recarrega se não houver redirecionamento
-          }
-        } else {
-          $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
-            '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>' + response.messages +
-            '</div>');
-        }
-      }
-    });
-  });
-  //===================================FUNÇÃO DE EDITAR ============================================
-  function editCertidao(id) {
-    $.ajax({
-      url: base_url + 'certidoes/EncontraCertidaoPorID/' + id,
-      type: 'post',
-      dataType: 'json',
-      success: function(response) {
-        // Preenche os campos do modal com os dados recebidos
-        $("#edit_tipo_certidao").val(response.id_tipo);
-        $("#edit_certidao_descricao").val(response.descricao);
-        $("#edit_certidao_expira").val(response.dt_expira);
-
-        // Configura o formulário de atualização
-        $("#updateFormCertidao").unbind('submit').bind('submit', function() {
-          var form = $(this);
-          $.ajax({
-            url: form.attr('action') + '/' + id, // Garante que a URL está correta
+ //=========ENVIA DADOS DE CRIAR FORM==================
+    $('#createModalCertidao').unbind('submit').on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            url: form.attr('action'),
             type: form.attr('method'),
             data: form.serialize(),
             dataType: 'json',
             success: function(response) {
-              // Se a operação foi bem-sucedida
-              if (response.success) {
-                $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">' +
-                  '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>' + response.messages +
-                  '</div>');
-                $("#sucesso").fadeTo(2000, 500).slideUp(500, function() {
-                  $("#sucesso").slideUp(500);
-                });
-
-                // Fechar o modal
-                $("#editModalCertidao").modal('hide');
-
-                // Redirecionar para a página do cliente após a edição
-                if (response.redirect) {
-                  setTimeout(function() {
-                    window.location.href = response.redirect; // Redireciona para a URL enviada
-                  }, 1000); // Espera 1 segundo antes de redirecionar
+                if (response.success) {
+                    $("#addModalCertidao").modal('hide');
+                    $('#createFormCertidao')[0].reset();
+                    manageTable.ajax.reload(null, false);
+                    showToast(response.messages, 'success');
+                    // Redirecionar corretamente
+                } else {
+                   showToast(response.messages, 'error');
                 }
-
-                // Resetar o formulário
-                $("#updateFormCertidao .form-group").removeClass('has-error').removeClass('has-success');
+            }
+        });
+    });
+    $('#addModalCertidao').on('hidden.bs.modal', function () {
+        // limpa formulário
+        $('#createFormCertidao')[0].reset();
+        // limpa select2
+        $('#id_cliente').val('').trigger('change');
+        // remove validação bootstrap
+        $('#createFormCertidao').removeClass('was-validated');
+        // reseta visual dos campos
+    });
+  //===================================FUNÇÃO DE EDITAR ============================================
+  function editCertidao(id) 
+  {
+    $.ajax({
+      url: base_url + 'certidoes/getById/' + id,
+      type: 'GET',
+      dataType: 'json',
+      success: function(response) {
+        console.log(response);
+        // pega os dados corretos
+        let data = response.data;
+        let descricao = data.descricao || '';
+        // preenche campos
+        $("#edit_tipo_certidao").val(data.id_tipo_certidao).trigger('change');
+        $("#edit_certidao_descricao").val(data.descricao);
+        $("#edit_certidao_expira").val(data.dt_expira);      
+        // abre modal
+        $("#editModalCertidao").modal('show');
+        // submit update
+        $("#updateFormCertidao")
+        .off('submit')
+        .on('submit', function(e) {
+          e.preventDefault();
+          var form = $(this);
+          $.ajax({
+            url: form.attr('action') + '/' + id,
+            type: form.attr('method'),
+            data: form.serialize(),
+            dataType: 'json',
+            success: function(response) {
+              if (response.success) {
+                  $("#editModalCertidao").modal('hide');
+                  $("#updateFormCertidao")[0].reset();
+                  manageTable.ajax.reload(null, false);
+                  showToast(response.messages, 'success');
               } else {
-                // Exibe a mensagem de erro
-                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">' +
-                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>' + response.messages +
-                  '</div>');
-                $("#erro").fadeTo(2000, 500).slideUp(500, function() {
-                  $("#erro").slideUp(500);
-                });
+                  showToast(response.messages, 'error');
               }
+            },
+            error: function() {
+                showToast('Erro ao atualizar certidao.', 'error');
             }
           });
           return false;
         });
+      },
+      error: function() {
+          showToast('Erro ao buscar certidao.', 'error');
       }
     });
   }
-
-
   //================================FUNÇÃO REMOVER ===========================================================
-  function removeCertidao(id_certidao, id_cliente = null) {
-    $('#certidao_id').val(id_certidao);
-    $('#certidao_cliente_id').val(id_cliente || '');
-  }
-
-  $(document).ready(function() {
-    $('#removeFormCertidao').on('submit', function(e) {
-      e.preventDefault();
-
-      var form = $(this);
-      var url = form.attr('action');
-      var data = form.serialize();
-
-      $.ajax({
-        url: url,
-        type: 'POST',
-        data: data,
-        dataType: 'json',
-        success: function(response) {
-          if (response.success) {
-            $('#removeModalCertidao').modal('hide');
-
-            $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">' +
-              '<strong><span class="glyphicon glyphicon-ok-sign"></span></strong> ' + response.messages +
-              '</div>');
-            $("#sucesso").fadeTo(2000, 500).slideUp(500, function() {
-              $("#sucesso").slideUp(500);
-            });
-
-            // Redireciona após um tempo, se houver URL de redirecionamento
-            if (response.redirect) {
-              setTimeout(function() {
-                window.location.href = response.redirect;
-              }, 1000);
-            } else {
-              // Atualiza a página se não houver redirecionamento
-              setTimeout(function() {
-                location.reload();
-              }, 1000);
-            }
-
-          } else {
-            $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">' +
-              '<strong><span class="glyphicon glyphicon-exclamation-sign"></span></strong> ' + response.messages +
-              '</div>');
-            $("#erro").fadeTo(2000, 500).slideUp(500, function() {
-              $("#erro").slideUp(500);
-            });
-          }
-        }
-      });
-    });
-  });
+  function removeCertidao(id) {
+		$('#removeModalCertidao').modal('show');
+		// remove submits antigos
+		$('#removeFormCertidao').off('submit');
+		// novo submit
+		$('#removeFormCertidao').on('submit', function(e) {
+			e.preventDefault();
+			$.ajax({
+				url: $(this).attr('action'),
+				type: 'POST',
+				data: {
+					id: id
+				},
+				dataType: 'json',
+				success: function(response) {
+					if (response.success) {
+						$('#removeModalCertidao').modal('hide');
+						$('#removeFormCertidao')[0].reset();
+						manageTable.ajax.reload(null, false);
+						showToast(response.messages, 'success');
+					} else {
+						showToast(response.messages, 'error');
+					}
+				},
+				error: function() {
+					showToast('Erro ao remover a certidão.', 'error');
+				}
+			});
+		});
+	}
 </script>

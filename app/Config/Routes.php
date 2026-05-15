@@ -44,6 +44,30 @@ $routes->group('socios', ['filter' => 'auth:verCliente'], function($routes) {
     $routes->post('update/(:num)', 'Socios::update/$1');
     $routes->post('delete', 'Socios::delete');
 });
+$routes->group('certificados', ['filter' => 'auth:verCertificado'], function($routes) {
+    $routes->get('/', 'Certificados::index');
+    $routes->get('busca', 'Certificados::buscarDadosCertificados');
+    $routes->post('create', 'Certificados::create');
+    $routes->get('getById/(:num)', 'Certificados::getById/$1');
+    $routes->post('edit/(:num)', 'Certificados::update/$1');
+    $routes->post('delete', 'Certificados::delete');
+});
+$routes->group('certidoes', ['filter' => 'auth:verCertidao'], function($routes) {
+    $routes->get('/', 'Certidoes::index');
+    $routes->get('busca', 'Certidoes::buscarDadosCertidao');
+    $routes->post('create', 'Certidoes::create');
+    $routes->get('getById/(:num)', 'Certidoes::getById/$1');
+    $routes->post('edit/(:num)', 'Certidoes::update/$1');
+    $routes->post('delete', 'Certidoes::delete');
+});
+$routes->group('obrigacoes', ['filter' => 'auth:verObrigacao'], function($routes) {
+    $routes->get('/', 'Obrigacoes::index');
+    $routes->get('busca', 'Obrigacoes::buscaDadosObrigacao');
+    $routes->post('create', 'Obrigacoes::create');
+    $routes->get('getById/(:num)', 'Obrigacoes::getById/$1');
+    $routes->post('edit/(:num)', 'Obrigacoes::update/$1');
+    $routes->post('delete', 'Obrigacoes::delete');
+});
 $routes->group('usuarios', ['filter' => 'auth:verUser'], function($routes) {
     $routes->get('/', 'Usuarios::index');
     $routes->get('busca', 'Usuarios::buscarDadosFuncionario');
@@ -63,4 +87,12 @@ $routes->group('grupos', ['filter' => 'auth:verGrupo'], function($routes) {
     $routes->post('update', 'Grupos::update');
     $routes->post('delete', 'Grupos::delete');
     $routes->post('delete/(:num)', 'Grupos::delete/$1');
+});
+$routes->group('tipo_certidao', ['filter' => 'auth:verCertidao'], function($routes) {
+    $routes->get('/', 'TiposCertidao::index');
+    $routes->get('busca', 'TiposCertidao::buscarDadosTipoCertidao');
+    $routes->post('create', 'TiposCertidao::create');
+    $routes->get('getById/(:num)', 'TiposCertidao::getById/$1');
+    $routes->post('edit/(:num)', 'TiposCertidao::update/$1');
+    $routes->post('delete', 'TiposCertidao::delete');
 });

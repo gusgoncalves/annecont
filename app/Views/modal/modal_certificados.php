@@ -1,9 +1,10 @@
+<?php /** @var array $clientes */ ?>
 <style>
     .hidden {
       display: none;
     }
   </style>
-<?php if (in_array('criarCertificado', $user_permission)): ?>
+<?php if (hasPermission('criarCertificado')): ?>
     <!-- cria o modal -->
     <div class="modal fade" role="dialog" id="addModalCertificado">
         <div class="modal-dialog" role="document">
@@ -12,18 +13,21 @@
                     <h4 class="modal-title text-center">NOVO CERTIFICADO</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <form role="form" action="<?php echo base_url('certificados/create') ?>" class="requires-validation" method="post" id="createFormCertificado" novalidate>
+                <form role="form" action="<?= site_url('certificados/create') ?>" class="requires-validation" method="post" id="createFormCertificado" novalidate>
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="cliente">CLIENTE</label>
-                            <?php if (isset($cliente_data)): ?>
+                            <?php if (isset($cliente_data)): ?>                                
                                 <!-- Se já estiver na ficha do cliente, mostra um campo fixo -->
-                                <input type="text" class="form-control" value="<?php echo $cliente_data['razao']; ?>" readonly>
-                                <input type="hidden" name="id_cliente" value="<?php echo $cliente_data['id']; ?>">
+                                <input type="text" class="form-control" value="<?=$cliente_data['razao']; ?>" readonly>
+                                <input type="hidden" name="id_cliente" value="<?= $cliente_data['id']; ?>">
                             <?php else: ?>
                                 <!-- Se estiver na listagem geral, exibe o combo -->
                                 <select class="form-control" style="width:100%" id="id_cliente" name="id_cliente" required>
-                                    <?php echo $combo_cliente; ?>
+                                    <option value="">SELECIONE O CLIENTE</option>
+                                    <?php foreach ($clientes as $c): ?>
+                                        <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                                 <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                             <?php endif; ?>
@@ -56,7 +60,7 @@
     </div><!-- /.modal -->
 <?php endif; ?>
 <!-- ============================================================================================================================================================ -->
-<?php if (in_array('modificarCertificado', $user_permission)): ?>
+<?php if (hasPermission('modificarCertificado')): ?>
     <!-- edit brand modal -->
     <div class="modal fade" tabindex="-1" role="dialog" id="editModalCertificado">
         <div class="modal-dialog" role="document">
@@ -65,7 +69,7 @@
                     <h4 class="modal-title text-center">ALTERAR CERTIFICADO</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <form role="form" action="<?php echo base_url('certificados/update') ?>" method="post" id="updateFormCertificado">
+                <form role="form" action="<?=site_url('certificados/edit') ?>" method="post" id="updateFormCertificado">
                     <div class="modal-body">
                         <div id="messages"></div>
                         <div class="form-group">
@@ -78,12 +82,12 @@
                                 <option value="PROCURAÇÃO">PROCURAÇÃO</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="edit_certificado_validade" style="display:none;">VALIDADE</label>
+                        <div class="form-group" id="edit_validade" style="display:none;">
+                            <label for="edit_certificado_validade">VALIDADE</label>
                             <input type="date" class="form-control" id="edit_certificado_validade" name="edit_certificado_validade" autocomplete="off">
                         </div>
-                        <div class="form-group">
-                            <label for="edit_certificado_senha" style="display:none;">SENHA</label>
+                        <div class="form-group" id="edit_senha" style="display:none;">
+                            <label for="edit_certificado_senha" >SENHA</label>
                             <input type="text" class="form-control" id="edit_certificado_senha" name="edit_certificado_senha" placeholder="Digite a senha do Certificado" autocomplete="off">
                         </div>
                     </div>
@@ -97,7 +101,7 @@
     </div><!-- /.modal -->
 <?php endif; ?>
 <!-- ==================================================================================================================================== -->
-<?php if (in_array('apagarCertificado', $user_permission)): ?>
+<?php if (hasPermission('apagarCertificado')): ?>
     <!-- remove brand modal -->
     <div class="modal fade" tabindex="-1" role="dialog" id="removeModalCertificado">
         <div class="modal-dialog" role="document">
@@ -106,7 +110,7 @@
                     <h4 class="modal-title text-center">APAGAR CERTIFICADO</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <form role="form" action="<?php echo base_url('certificados/remove') ?>" method="post" id="removeFormCertificado">
+                <form role="form" action="<?= site_url('certificados/delete') ?>" method="post" id="removeFormCertificado">
                     <div class="modal-body">
                         <input type="hidden" name="id_cliente" id="remove_cliente_id"> <!-- Campo oculto para ID do Cliente -->
                         <input type="hidden" name="id" id="remove_certificado_id"> <!-- Campo oculto para ID do Certificado -->
@@ -124,38 +128,6 @@
 <!-- ========================================================================================================================================= -->
 <script type="text/javascript">
     var base_url = "<?= base_url(); ?>";
-
-    //==============================FUNÇÃO PARA VERIFICAR VALIDAÇÃO DE FORMULÁRIO ==========================
-    $(function() {
-        'use strict'
-        const forms = document.querySelectorAll('.requires-validation')
-        Array.from(forms)
-            .forEach(function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-                    form.classList.add('was-validated')
-                }, false)
-            })
-    });
-    //=======================ATIVAR O MENU ===========================
-    $(function() {
-        var url = window.location.href;
-
-        // Ativar o link diretamente acessado no menu
-        $('ul.nav-sidebar a, ul.nav-treeview a').filter(function() {
-                return this.href === url || url.startsWith(this.href);
-            }).addClass('active')
-            .closest('.nav-treeview') // Ativa o submenu se necessário
-            .css({
-                'display': 'block'
-            })
-            .addClass('menu-open')
-            .prev('a') // Ativa o menu principal
-            .addClass('active');
-    });
     //=================== SELECT 2 =====================================
     $('#id_cliente').select2({
         width: '100%',
@@ -182,8 +154,8 @@
             }
         }else{
             const edit_descricao = document.getElementById('edit_certificado_descricao');
-            const edit_vencimento = document.getElementById('edit_certificado_validade');
-            const edit_senha = document.getElementById('edit_certificado_senha');
+            const edit_vencimento = document.getElementById('edit_validade');
+            const edit_senha = document.getElementById('edit_senha');
 
             if (!edit_descricao || !edit_vencimento || !edit_senha) return; // Garante que os elementos existem
 
@@ -199,21 +171,17 @@
             }
         }  
     }
-
     // Garante que os campos sejam configurados corretamente ao abrir o modal
     document.addEventListener('DOMContentLoaded', function() {
-        toggleInputs(); // Corrige a exibição ao carregar a página
+        toggleInputs('insert'); // Corrige a exibição ao carregar a página
     });
-
     //========================CRIAR FORM MODAL ===============================
     $('#addModalCertificado').on('shown.bs.modal', function () {
         toggleInputs('insert');
     });
-
     //=========ENVIA DADOS DE CRIAR FORM==================
     $('#createFormCertificado').unbind('submit').on('submit', function(e) {
         e.preventDefault();
-
         var form = $(this);
         $.ajax({
             url: form.attr('action'),
@@ -222,142 +190,115 @@
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">' +
-                        '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>' + response.messages +
-                        '</div>');
-
-                    // Fechar o modal
                     $("#addModalCertificado").modal('hide');
-
+                    $('#createFormCertificado')[0].reset();
+                    manageTable.ajax.reload(null, false);
+                    showToast(response.messages, 'success');
                     // Redirecionar corretamente
-                    if (response.redirect) {
-                        setTimeout(function() {
-                            window.location.href = response.redirect;
-                        }, 1000); // Pequeno delay para evitar conflitos
-                    } else {
-                        location.reload(); // Apenas recarrega se não houver redirecionamento
-                    }
                 } else {
-                    $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
-                        '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>' + response.messages +
-                        '</div>');
+                   showToast(response.messages, 'error');
                 }
             }
         });
     });
-
+    $('#addModalCertificado').on('hidden.bs.modal', function () {
+        // limpa formulário
+        $('#createFormCertificado')[0].reset();
+        // limpa select2
+        $('#id_cliente').val('').trigger('change');
+        // remove validação bootstrap
+        $('#createFormCertificado').removeClass('was-validated');
+        // reseta visual dos campos
+        toggleInputs('insert');
+    });
     //===================================FUNÇÃO DE EDITAR ============================================
-    function editCertificado(id) {
+    function editCertificado(id) 
+    {
         $.ajax({
-            url: base_url + 'certificados/EncontraCertificadoPorID/' + id,
-            type: 'post',
+            url: base_url + 'certificados/getById/' + id,
+            type: 'GET',
             dataType: 'json',
             success: function(response) {
-                // Preenche os campos do modal com os dados recebidos
-                $("#edit_certificado_descricao").val(response.descricao);
+                console.log(response);
+                // pega os dados corretos
+                let data = response.data;
+                let descricao = data.descricao || '';
+                // preenche campos
+                $("#edit_certificado_descricao").val(descricao.toUpperCase());
+                $("#edit_certificado_validade").val(data.dt_validade || '');
+                $("#edit_certificado_senha").val(data.senha || '');
+                // atualiza visual dos campos
                 toggleInputs('edit');
-                $("#edit_certificado_validade").val(response.dt_validade);
-                $("#edit_certificado_senha").val(response.senha);
-
-                // Configura o formulário de atualização
-                $("#updateFormCertificado").unbind('submit').bind('submit', function() {
+                // abre modal
+                $("#editModalCertificado").modal('show');
+                // submit update
+                $("#updateFormCertificado")
+                .off('submit')
+                .on('submit', function(e) {
+                    e.preventDefault();
                     var form = $(this);
                     $.ajax({
-                        url: form.attr('action') + '/' + id, // Garante que a URL está correta
+                        url: form.attr('action') + '/' + id,
                         type: form.attr('method'),
                         data: form.serialize(),
                         dataType: 'json',
                         success: function(response) {
-                            // Se a operação foi bem-sucedida
                             if (response.success) {
-                                $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">' +
-                                    '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>' + response.messages +
-                                    '</div>');
-                                $("#sucesso").fadeTo(2000, 500).slideUp(500, function() {
-                                    $("#sucesso").slideUp(500);
-                                });
-
-                                // Fechar o modal
                                 $("#editModalCertificado").modal('hide');
-
-                                // Redirecionar para a página do cliente após a edição
-                                if (response.redirect) {
-                                    setTimeout(function() {
-                                        window.location.href = response.redirect; // Redireciona para a URL enviada
-                                    }, 1000); // Espera 1 segundo antes de redirecionar
-                                }
-
-                                // Resetar o formulário
-                                $("#updateFormCertificado .form-group").removeClass('has-error').removeClass('has-success');
+                                $("#updateFormCertificado")[0].reset();
+                                manageTable.ajax.reload(null, false);
+                                showToast(response.messages, 'success');
                             } else {
-                                // Exibe a mensagem de erro
-                                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">' +
-                                    '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>' + response.messages +
-                                    '</div>');
-                                $("#erro").fadeTo(2000, 500).slideUp(500, function() {
-                                    $("#erro").slideUp(500);
-                                });
+                                showToast(response.messages, 'error');
                             }
+                        },
+                        error: function() {
+                            showToast('Erro ao atualizar certificado.', 'error');
                         }
                     });
                     return false;
                 });
+            },
+            error: function() {
+                showToast('Erro ao buscar certificado.', 'error');
             }
         });
     }
-
-
     //================================FUNÇÃO REMOVER ===========================================================
     function removeCertificado(id_certificado, id_cliente = null) {
         $('#remove_certificado_id').val(id_certificado);
         $('#remove_cliente_id').val(id_cliente || '');
+        $('#removeModalCertificado').modal('show');
     }
-
     $(document).ready(function() {
-        $('#removeFormCertificado').on('submit', function(e) {
-            e.preventDefault();
-
-            var form = $(this);
-            var url = form.attr('action');
-            var data = form.serialize();
-
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: data,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        $('#removeModalCertificado').modal('hide');
-
-                        $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">' +
-                            '<strong><span class="glyphicon glyphicon-ok-sign"></span></strong> ' + response.messages +
-                            '</div>');
-                        $("#sucesso").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#sucesso").slideUp(500);
-                        });
-
-                        // Redireciona após um tempo, se houver URL de redirecionamento
-                        if (response.redirect) {
-                            setTimeout(function() {
-                                window.location.href = response.redirect;
-                            }, 1000);
+        $('#removeFormCertificado')
+            .off('submit')
+            .on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            // fecha modal
+                            $('#removeModalCertificado').modal('hide');
+                            // limpa form
+                            $('#removeFormCertificado')[0].reset();
+                            // atualiza tabela
+                            manageTable.ajax.reload(null, false);
+                            // toast
+                            showToast(response.messages, 'success');
                         } else {
-                            // Atualiza a página se não houver redirecionamento
-                            setTimeout(function() {
-                                location.reload();
-                            }, 1000);
+                            showToast(response.messages, 'error');
                         }
-                    } else {
-                        $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">' +
-                            '<strong><span class="glyphicon glyphicon-exclamation-sign"></span></strong> ' + response.messages +
-                            '</div>');
-                        $("#erro").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#erro").slideUp(500);
-                        });
+                    },
+                    error: function() {
+                        showToast('Erro ao remover certificado.', 'error');
                     }
-                }
+                });
             });
         });
-    });
 </script>

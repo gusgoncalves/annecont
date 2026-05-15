@@ -8,11 +8,14 @@ class CertificadosModel extends Model
 {
     protected $table            = 'certificados';
     protected $returnType       = 'array';
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+      'id_cliente',
+      'descricao',
+      'dt_validade',
+      'login',
+      'senha',
+      'arquivo',
+      'ativo'
+    ];
 
-    public function MostraCertificadosPorCliente($id_cliente)	{
-		$sql = "SELECT * FROM certificados WHERE id_cliente = $id_cliente";
-		$query = $this->db->query($sql);
-		return $query->getResultArray();
-	}
 }
