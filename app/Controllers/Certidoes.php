@@ -79,10 +79,6 @@ class Certidoes extends BaseController
             return redirect()->back()
                 ->withInput()
                 ->with('errors', implode('<br>', $this->validator->getErrors()));
-            // echo '<pre>';
-            // print_r($this->validator->getErrors());
-            // echo '</pre>';
-            // exit;
         }
         $data = [
             'id_cliente' => $this->request->getPost('id_cliente'),

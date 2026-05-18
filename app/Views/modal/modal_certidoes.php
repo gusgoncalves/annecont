@@ -10,7 +10,7 @@
           <h4 class="modal-title text-center">NOVA CERTIDÃO</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?php echo base_url('certidoes/create') ?>" class="requires-validation" method="post" id="createModalCertidao" novalidate>
+        <form role="form" action="<?php echo base_url('certidoes/create') ?>" class="requires-validation" method="post" id="createFormCertidao" novalidate>
           <div class="modal-body">
             <div class="form-group">
               <label for="id_cliente">CLIENTE</label>
@@ -146,37 +146,37 @@
     width: '100%',
     dropdownParent: $('#editModalCertidao')
   });
- //=========ENVIA DADOS DE CRIAR FORM==================
-    $('#createModalCertidao').unbind('submit').on('submit', function(e) {
-        e.preventDefault();
-        var form = $(this);
-        $.ajax({
-            url: form.attr('action'),
-            type: form.attr('method'),
-            data: form.serialize(),
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    $("#addModalCertidao").modal('hide');
-                    $('#createFormCertidao')[0].reset();
-                    manageTable.ajax.reload(null, false);
-                    showToast(response.messages, 'success');
-                    // Redirecionar corretamente
-                } else {
-                   showToast(response.messages, 'error');
-                }
-            }
-        });
-    });
-    $('#addModalCertidao').on('hidden.bs.modal', function () {
-        // limpa formulário
-        $('#createFormCertidao')[0].reset();
-        // limpa select2
-        $('#id_cliente').val('').trigger('change');
-        // remove validação bootstrap
-        $('#createFormCertidao').removeClass('was-validated');
-        // reseta visual dos campos
-    });
+  //=========ENVIA DADOS DE CRIAR FORM==================
+  $('#createFormCertidao').unbind('submit').on('submit', function(e) {
+      e.preventDefault();
+      var form = $(this);
+      $.ajax({
+          url: form.attr('action'),
+          type: form.attr('method'),
+          data: form.serialize(),
+          dataType: 'json',
+          success: function(response) {
+              if (response.success) {
+                  $("#addModalCertidao").modal('hide');
+                  $('#createFormCertidao')[0].reset();
+                  manageTable.ajax.reload(null, false);
+                  showToast(response.messages, 'success');
+                  // Redirecionar corretamente
+              } else {
+                  showToast(response.messages, 'error');
+              }
+          }
+      });
+  });
+  $('#addModalCertidao').on('hidden.bs.modal', function () {
+      // limpa formulário
+      $('#createFormCertidao')[0].reset();
+      // limpa select2
+      $('#id_cliente').val('').trigger('change');
+      // remove validação bootstrap
+      $('#createFormCertidao').removeClass('was-validated');
+      // reseta visual dos campos
+  });
   //===================================FUNÇÃO DE EDITAR ============================================
   function editCertidao(id) 
   {

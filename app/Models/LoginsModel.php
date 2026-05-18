@@ -6,19 +6,8 @@ use CodeIgniter\Model;
 
 class LoginsModel extends Model
 {
-    protected $table            = 'logins';
+    protected $table            = 'login_cliente';
     protected $returnType       = 'array';
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['id_cliente','descricao','usuario','senha'];
 
-    public function MostraLoginsPorCliente($id_cliente){
-		$sql = "SELECT * FROM login_cliente WHERE id_cliente = $id_cliente";
-		$query = $this->db->query($sql);
-		return $query->getResultArray();
-	}
-
-	public function contaTotalLogins()	{
-		$sql = "SELECT * FROM login_cliente WHERE id_cliente = ?";
-		$query = $this->db->query($sql, array(1));
-		return $query->getRowArray();
-	}
 }

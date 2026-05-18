@@ -39,14 +39,14 @@ class Obrigacoes extends BaseController
 		} // /foreach
 		echo json_encode($result);
     }    
-    // ============================== SALVAR FUNCIONÁRIO ==============================
+    // ============================== SALVAR OBRIGAÇÃO ==============================
     public function create()
     {
        $rules = [
-            'descricao' => 'required',
+            'obrigacao_descricao' => 'required',
         ];
         $messages = [
-            'descricao' => [
+            'obrigacao_descricao' => [
                 'required' => 'O campo descrição é obrigatório'
             ]
         ];  
@@ -58,15 +58,11 @@ class Obrigacoes extends BaseController
             return redirect()->back()
                 ->withInput()
                 ->with('errors', implode('<br>', $this->validator->getErrors()));
-            // echo '<pre>';
-            // print_r($this->validator->getErrors());
-            // echo '</pre>';
-            // exit;
         }
         $data = [
-            'descricao' => $this->request->getPost('descricao'),
+            'descricao' => $this->request->getPost('obrigacao_descricao'),
             'valor' => $this->request->getPost('valor'),
-            'ativo' => $this->request->getPost('ativo'),
+            'ativo' => 1,
             'dt_inicio' => $this->request->getPost('dt_inicio'),
             'dt_fim' => $this->request->getPost('dt_fim'),
         ];
@@ -79,16 +75,16 @@ class Obrigacoes extends BaseController
         if ($create) {
             return $this->response->setJSON([
                 'success' => true,
-                'messages' => 'Certidão criada com sucesso'
+                'messages' => 'Obrigação adicionada com sucesso'
             ]);
         } else {
             return $this->response->setJSON([
                 'success' => false,
-                'messages' => 'Erro ao salvar certidão'
+                'messages' => 'Erro ao salvar Obrigação'
             ]);
         }
     }
-    //========================FUNÇÃO PARA PEGAR OS DADOS DO CERTIFICADO POR ID =================
+    //========================FUNÇÃO PARA PEGAR OS DADOS DO OBRIGAÇÃO POR ID =================
     public function getById($id)
     {
         $obrigacoesModel = new ObrigacoesModel();
@@ -101,24 +97,20 @@ class Obrigacoes extends BaseController
         } else {
             return $this->response->setJSON([
                 'success' => false,
-                'messages' => 'Certificado não encontrado'
+                'messages' => 'Obrigação não encontrada'
             ]);
         }
     }
-    // ============================== ATUALIZAR FUNCIONÁRIO ==============================
+    // ============================== ATUALIZAR OBRIGAÇÃO ==============================
     public function update($id = null)
     {
         $rules = [
-            'edit_tipo_certidao' => 'required',
-            'edit_certidao_expira' => 'required',
+            'edit_obrigacao_descricao' => 'required'
         ];
         $messages = [
-            'edit_tipo_certidao' => [
-                'required' => 'O campo tipo de certidão é obrigatório'
+            'edit_obrigacao_descricao' => [
+                'required' => 'O campo descrição é obrigatório'
             ],
-            'edit_certidao_expira' => [
-                'required' => 'O campo data de expiração é obrigatório',
-            ]
         ];
         if (!$this->validate($rules, $messages)) {
 
@@ -128,32 +120,34 @@ class Obrigacoes extends BaseController
             ]);
         }
         $data = [
-            'id_tipo_certidao' => $this->request->getPost('edit_tipo_certidao'),
-            'descricao' => $this->request->getPost('edit_certidao_descricao'),
-            'dt_expira' => $this->request->getPost('edit_certidao_expira'),
+            'descricao' => $this->request->getPost('edit_obrigacao_descricao'),
+            'valor' => $this->request->getPost('edit_valor'),
+            'dt_inicio' => $this->request->getPost('edit_dt_inicio'),
+            'dt_fim' => $this->request->getPost('edit_dt_fim'),
+            'ativo' => $this->request->getPost('edit_obrigacao_ativo'),
         ];
         $obrigacoesModel = new ObrigacoesModel();
         $update = $obrigacoesModel->update($id, $data);
         if ($update) {
             return $this->response->setJSON([
                 'success' => true,
-                'messages' => 'Certidão atualizada com sucesso'
+                'messages' => 'Obrigação atualizada com sucesso'
             ]);
         } else {
             return $this->response->setJSON([
                 'success' => false,
-                'messages' => 'Erro ao atualizar certidão'
+                'messages' => 'Erro ao atualizar obrigação'
             ]);
         }
     }
-    // ============================== DELETAR FUNCIONÁRIO ==============================
+    // ============================== DELETAR OBRIGAÇÃO ==============================
     public function delete()
     {
         $id = $this->request->getPost('id');
         if(!$id) {
             return $this->response->setJSON([
                 'success' => false, 
-                'messages' => 'Certidão não encontrada na base de dados!!'
+                'messages' => 'Obrigaçao não encontrada na base de dados!!'
             ]);
         }
         $obrigacoesModel = new ObrigacoesModel();
@@ -161,7 +155,7 @@ class Obrigacoes extends BaseController
         if ($delete) {
             return $this->response->setJSON([
                 'success' => true, 
-                'messages' => 'Registro da certidão excluído com sucesso'
+                'messages' => 'Registro da obrigação excluído com sucesso'
             ]);
         } else {
             return $this->response->setJSON([

@@ -173,6 +173,12 @@ Tipo de Certidão
 			}
 		});
 	});
+	//===============LIMPA O MODAL ===============================
+	$('#addModal').on('hidden.bs.modal', function () 
+	{
+		$('#createForm')[0].reset();
+		$('#createForm').removeClass('was-validated');
+	});
 	//===================================FUNÇÃO DE EDITAR ============================================
 	function editTipoCertidao(id) {
 		$.ajax({

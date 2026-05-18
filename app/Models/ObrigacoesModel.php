@@ -8,7 +8,7 @@ class ObrigacoesModel extends Model
 {
     protected $table            = 'obrigacoes';
     protected $returnType       = 'array';
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['descricao', 'valor', 'dt_inicio', 'dt_fim', 'ativo'];
 
     public function getObrigacoesPorCliente($id = null){
 		//mostra somente de um cliente especifico

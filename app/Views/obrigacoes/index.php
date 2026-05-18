@@ -50,7 +50,7 @@
             <h4 class="modal-title text-center">NOVA OBRIGAÇÃO</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
-          <form role="form" action="<?php echo base_url('obrigacoes/create') ?>" class="requires-validation" method="post" id="createForm" novalidate>
+          <form role="form" action="<?=site_url('obrigacoes/create') ?>" class="requires-validation" method="post" id="createForm" novalidate>
             <div class="modal-body">
               <div class="row">
                 <div class="col-md-8">
@@ -100,7 +100,7 @@
             <h4 class="modal-title text-center">EDITAR OBRIGAÇÃO</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
-          <form role="form" action="<?php echo base_url('obrigacoes/update') ?>" method="post" id="updateForm">
+          <form role="form" action="<?=site_url('obrigacoes/edit') ?>" method="post" id="updateForm">
             <div class="modal-body">
               <div id="messages"></div>
               <div class="row">
@@ -136,7 +136,7 @@
                 <label for="edit_obrigacao_ativo">ATIVO</label>
                 <select class="form-control" id="edit_obrigacao_ativo" name="edit_obrigacao_ativo">
                   <option value="1">ATIVO</option>
-                  <option value="2">INATIVO</option>
+                  <option value="0">INATIVO</option>
                 </select>
               </div>
             </div>
@@ -158,7 +158,7 @@
             <h4 class="modal-title text-center">REMOVER OBRIGACAO</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
-          <form role="form" action="<?php echo base_url('obrigacoes/remove') ?>" method="post" id="removeForm">
+          <form role="form" action="<?= site_url('obrigacoes/delete') ?>" method="post" id="removeForm">
             <div class="modal-body">
               <p>Tem certeza que deseja remover essa obrigação?</p>
             </div>
@@ -179,172 +179,130 @@
     var base_url = "<?= base_url(); ?>";
     // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
     manageTable = $('#manageTable').DataTable({
-        ajax: base_url + 'obrigacoes/busca/',//MONTA A DATA TABLE
-        responsive: true,
-        autoWidth: false,
-        paging: false,//tira a paginação
-        searching: true, //tira o input de pesquisa
-        ordering: false, //tira a opção de ordenar
-        info: false,
-        language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
-          columns: [
-          { data: 'descricao'},
-          { data: 'valor' },
-          { data: 'dt_inicio' },
-          { data: 'dt_fim' },
-          { data: 'ativo' },
-          { data: 'acoes' },
-        ]
-      });
-    //=========ENVIA DADOS DE CRIAR FORM==================
-    $("#createForm").unbind('submit').on('submit', function() {
+      ajax: base_url + 'obrigacoes/busca/',
+      responsive: true,
+      autoWidth: false,
+      paging: false,//tira a paginação
+      searching: true, //tira o input de pesquisa
+      ordering: false, //tira a opção de ordenar
+      info: false,
+      language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
+        columns: [
+        { data: 'descricao'},
+        { data: 'valor' },
+        { data: 'dt_inicio' },
+        { data: 'dt_fim' },
+        { data: 'ativo' },
+        { data: 'acoes' },
+      ]
+    });
+    //========================================ENVIA DADOS DE CRIAR FORM===================================
+    $('#createForm').unbind('submit').on('submit', function(e) {
+      e.preventDefault();
       var form = $(this);
-      $(".text-danger").remove();
       $.ajax({
         url: form.attr('action'),
         type: form.attr('method'),
-        data: form.serialize(),//converte para linguagem do servidor
+        data: form.serialize(),
         dataType: 'json',
-        success:function(response) {
-          manageTable.ajax.reload(null, false); 
-          if(response.success === true) {
-            $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">'+
-              '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-            '</div>');
-              $("#sucesso").fadeTo(2000, 500).slideUp(500, function(){
-                $("#sucesso").slideUp(500);
-              });
-            // esconde o modal
+        success: function(response) {
+          if (response.success) {
             $("#addModal").modal('hide');
-            //reseta o form
-            $("#createForm")[0].reset();
-            $("#createForm .form-group").removeClass('has-error').removeClass('has-success');
+            $('#createForm')[0].reset();
+            manageTable.ajax.reload(null, false);
+            showToast(response.messages, 'success');
+            // Redirecionar corretamente
           } else {
-            if(response.messages instanceof Object) {
-              $.each(response.messages, function(index, value) {
-                var id = $("#"+index);
-                id.closest('.form-group')
-                .removeClass('has-error')
-                .removeClass('has-success')
-                .addClass(value.length > 0 ? 'has-error' : 'has-success');
-                id.after(value);
-              });
-            } else {
-              $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">'+
-                //'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-              '</div>');
-              $("#erro").fadeTo(2000, 500).slideUp(500, function(){
-                $("#erro").slideUp(500);
-              });
-            }
+            showToast(response.messages, 'error');
           }
         }
-      }); 
-      return false;
+      });
+    });
+    //===============LIMPA O MODAL ===============================
+    $('#addModal').on('hidden.bs.modal', function () 
+    {
+      $('#createForm')[0].reset();
+      $('#createForm').removeClass('was-validated');
     });
     //===================================FUNÇÃO DE EDITAR ============================================
-    function editFunc(id)
-    { 
+    function editObrigacao(id) {
       $.ajax({
-        url: base_url + 'obrigacoes/EncontraObrigacaoPorID/'+id,
-        type: 'post',
+        url: base_url + 'obrigacoes/getById/' + id,
+        type: 'GET',
         dataType: 'json',
-        success:function(response) {
-          $("#edit_obrigacao_descricao").val(response.descricao);
-          $("#edit_dt_inicio").val(response.dt_inicio);
-          $("#edit_dt_fim").val(response.dt_fim);
-          $("#edit_valor").val(response.valor);
-          $("#edit_obrigacao_ativo").val(response.ativo);
-          // envia o form de editar 
-          $("#updateForm").unbind('submit').bind('submit', function() {
-            var form = $(this);
-            // remove the text-danger
-            $(".text-danger").remove();
-            $.ajax({
-              url: form.attr('action') + '/' + id,
-              type: form.attr('method'),
-              data: form.serialize(), // /converte os dados para forma de serviço de servidor
-              dataType: 'json',
-              success:function(response) {
-                manageTable.ajax.reload(null, false); 
-                if(response.success === true) {
-                  $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">'+
-                    //'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                    '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-                  '</div>');
-                  $("#sucesso").fadeTo(2000, 500).slideUp(500, function(){
-                  $("#sucesso").slideUp(500);
-                });
-                  // esconde o modal
-                  $("#editModal").modal('hide');
-                  // reseta o modal 
-                  $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
-                } else {
-                  if(response.messages instanceof Object) {
-                    $.each(response.messages, function(index, value) {
-                      var id = $("#"+index);
-                      id.closest('.form-group')
-                      .removeClass('has-error')
-                      .removeClass('has-success')
-                      .addClass(value.length > 0 ? 'has-error' : 'has-success');
-                      id.after(value);
-                    });
+        success: function(response) {
+          $("#edit_obrigacao_descricao").val(response.data.descricao);
+          $("#edit_valor").val(response.data.valor);
+          $("#edit_dt_inicio").val(response.data.dt_inicio);
+          $("#edit_dt_fim").val(response.data.dt_fim);
+          $("#edit_obrigacao_ativo").val(response.data.ativo);
+          // abre modal
+          $("#editModal").modal('show');
+          // submit update
+          $("#updateForm")
+            .off('submit')
+            .on('submit', function(e) {
+              e.preventDefault();
+              var form = $(this);
+              $.ajax({
+                url: form.attr('action') + '/' + id,
+                type: form.attr('method'),
+                data: form.serialize(),
+                dataType: 'json',
+                success: function(response) {
+                  if (response.success) {
+                    $("#editModal").modal('hide');
+                    $("#updateForm")[0].reset();
+                    manageTable.ajax.reload(null, false);
+                    showToast(response.messages, 'success');
                   } else {
-                    $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">'+
-                      //'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                      '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                    '</div>');
-                    $("#erro").fadeTo(2000, 500).slideUp(500, function(){
-                    $("#erro").slideUp(500);
-                  });
+                    showToast(response.messages, 'error');
                   }
+                },
+                error: function() {
+                  showToast('Erro ao atualizar tipo de certidão.', 'error');
                 }
-              }
-            }); 
-            return false;
-          });
+              });
+              return false;
+            });
+        },
+        error: function() {
+
+          showToast('Erro ao buscar tipo de certidão.', 'error');
         }
       });
     }
     //================================FUNÇÃO REMOVER ===========================================================
-    function removeFunc(id)
-    {
-      if(id) {
-        $("#removeForm").on('submit', function() {
-          var form = $(this);
-          $(".text-danger").remove();
-          $.ajax({
-            url: form.attr('action'),
-            type: form.attr('method'),
-            data: { obrigacao_id:id }, 
-            dataType: 'json',
-            success:function(response) {
-              manageTable.ajax.reload(null, false); 
-              // esconde o modal
-                $("#removeModal").modal('hide');
-              if(response.success === true) {
-                $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">'+
-                  //'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                  '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-                '</div>');
-                  $("#sucesso").fadeTo(2000, 500).slideUp(500, function(){
-                    $("#sucesso").slideUp(500);
-                  });
-              } else {
-                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">'+
-                  //'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                '</div>');
-                $("#erro").fadeTo(2000, 500).slideUp(500, function(){
-                  $("#erro").slideUp(500);
-                }); 
-              }
-            }
-          }); 
-          return false;
-        });
-      }
-    }
+    //================================FUNÇÃO REMOVER ===========================================================
+  function removeObrigacao(id) {
+		$('#removeModal').modal('show');
+		// remove submits antigos
+		$('#removeForm').off('submit');
+		// novo submit
+		$('#removeForm').on('submit', function(e) {
+			e.preventDefault();
+			$.ajax({
+				url: $(this).attr('action'),
+				type: 'POST',
+				data: {
+					id: id
+				},
+				dataType: 'json',
+				success: function(response) {
+					if (response.success) {
+						$('#removeModal').modal('hide');
+						$('#removeForm')[0].reset();
+						manageTable.ajax.reload(null, false);
+						showToast(response.messages, 'success');
+					} else {
+						showToast(response.messages, 'error');
+					}
+				},
+				error: function() {
+					showToast('Erro ao remover a obrigação.', 'error');
+				}
+			});
+		});
+	}
   </script>
 <?= $this->endSection() ?>

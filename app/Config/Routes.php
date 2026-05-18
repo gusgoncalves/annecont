@@ -68,6 +68,14 @@ $routes->group('obrigacoes', ['filter' => 'auth:verObrigacao'], function($routes
     $routes->post('edit/(:num)', 'Obrigacoes::update/$1');
     $routes->post('delete', 'Obrigacoes::delete');
 });
+$routes->group('logins', ['filter' => 'auth:verLogin'], function($routes) {
+    $routes->get('/', 'Logins::index');
+    $routes->get('busca', 'Logins::buscaDadosLogin');
+    $routes->post('create', 'Logins::create');
+    $routes->get('getById/(:num)', 'Logins::getById/$1');
+    $routes->post('edit/(:num)', 'Logins::update/$1');
+    $routes->post('delete', 'Logins::delete');
+});
 $routes->group('usuarios', ['filter' => 'auth:verUser'], function($routes) {
     $routes->get('/', 'Usuarios::index');
     $routes->get('busca', 'Usuarios::buscarDadosFuncionario');
