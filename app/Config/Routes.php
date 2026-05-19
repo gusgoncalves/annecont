@@ -76,6 +76,46 @@ $routes->group('logins', ['filter' => 'auth:verLogin'], function($routes) {
     $routes->post('edit/(:num)', 'Logins::update/$1');
     $routes->post('delete', 'Logins::delete');
 });
+$routes->group('faturamento', ['filter' => 'auth:verFaturamento'], function($routes) {
+    $routes->get('/', 'Faturamentos::index');
+    $routes->get('busca', 'Faturamentos::buscaDadosFaturamento');
+    $routes->post('create', 'Faturamentos::create');
+    $routes->get('getById/(:num)', 'Faturamentos::getById/$1');
+    $routes->post('edit/(:num)', 'Faturamentos::update/$1');
+    $routes->post('delete', 'Faturamentos::delete');
+});
+$routes->group('tipo_certidao', ['filter' => 'auth:verCertidao'], function($routes) {
+    $routes->get('/', 'TiposCertidao::index');
+    $routes->get('busca', 'TiposCertidao::buscarDadosTipoCertidao');
+    $routes->post('create', 'TiposCertidao::create');
+    $routes->get('getById/(:num)', 'TiposCertidao::getById/$1');
+    $routes->post('edit/(:num)', 'TiposCertidao::update/$1');
+    $routes->post('delete', 'TiposCertidao::delete');
+});
+$routes->group('portes', ['filter' => 'auth:verPorte'], function($routes) {
+    $routes->get('/', 'Portes::index');
+    $routes->get('busca', 'Portes::buscaDadosPorte');
+    $routes->post('create', 'Portes::create');
+    $routes->get('getById/(:num)', 'Portes::getById/$1');
+    $routes->post('edit/(:num)', 'Portes::update/$1');
+    $routes->post('delete', 'Portes::delete');
+});
+$routes->group('uf', ['filter' => 'auth:verUF'], function($routes) {
+    $routes->get('/', 'UF::index');
+    $routes->get('busca', 'UF::buscaDadosUf');
+    $routes->post('create', 'UF::create');
+    $routes->get('getById/(:num)', 'UF::getById/$1');
+    $routes->post('edit/(:num)', 'UF::update/$1');
+    $routes->post('delete', 'UF::delete');
+});
+$routes->group('cidades', ['filter' => 'auth:verCidade'], function($routes) {
+    $routes->get('/', 'Cidades::index');
+    $routes->get('busca', 'Cidades::buscaDadosCidade');
+    $routes->post('create', 'Cidades::create');
+    $routes->get('getById/(:num)', 'Cidades::getById/$1');
+    $routes->post('edit/(:num)', 'Cidades::update/$1');
+    $routes->post('delete', 'Cidades::delete');
+});
 $routes->group('usuarios', ['filter' => 'auth:verUser'], function($routes) {
     $routes->get('/', 'Usuarios::index');
     $routes->get('busca', 'Usuarios::buscarDadosFuncionario');
@@ -95,12 +135,4 @@ $routes->group('grupos', ['filter' => 'auth:verGrupo'], function($routes) {
     $routes->post('update', 'Grupos::update');
     $routes->post('delete', 'Grupos::delete');
     $routes->post('delete/(:num)', 'Grupos::delete/$1');
-});
-$routes->group('tipo_certidao', ['filter' => 'auth:verCertidao'], function($routes) {
-    $routes->get('/', 'TiposCertidao::index');
-    $routes->get('busca', 'TiposCertidao::buscarDadosTipoCertidao');
-    $routes->post('create', 'TiposCertidao::create');
-    $routes->get('getById/(:num)', 'TiposCertidao::getById/$1');
-    $routes->post('edit/(:num)', 'TiposCertidao::update/$1');
-    $routes->post('delete', 'TiposCertidao::delete');
 });

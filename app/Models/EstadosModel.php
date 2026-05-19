@@ -8,7 +8,7 @@ class EstadosModel extends Model
 {
     protected $table            = 'uf';
     protected $returnType       = 'array';
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['nome', 'uf'];
 
      public function selectEstados(){
 		return $this->orderBy('nome', 'ASC')->findAll();

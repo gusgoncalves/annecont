@@ -8,12 +8,6 @@ class CidadesModel extends Model
 {
     protected $table            = 'cidades';
     protected $returnType       = 'array';
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['nome_cidade', 'id_uf'];
 
-     public function getCidadesPorEstado($idUf)
-    {
-        return $this->where('id_uf', $idUf)
-                    ->orderBy('nome_cidade', 'ASC')
-                    ->findAll();
-    }
 }

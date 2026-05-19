@@ -76,9 +76,10 @@ class Certidoes extends BaseController
         //  echo '</pre>';
         //  exit;      
         if(!$this->validate($rules, $messages)) {
-            return redirect()->back()
-                ->withInput()
-                ->with('errors', implode('<br>', $this->validator->getErrors()));
+           return $this->response->setJSON([
+                'success' => false,
+                'messages' => implode('<br>', $this->validator->getErrors())
+            ]);
         }
         $data = [
             'id_cliente' => $this->request->getPost('id_cliente'),
@@ -137,7 +138,6 @@ class Certidoes extends BaseController
             ]
         ];
         if (!$this->validate($rules, $messages)) {
-
             return $this->response->setJSON([
                 'success' => false,
                 'messages' => implode('<br>', $this->validator->getErrors())

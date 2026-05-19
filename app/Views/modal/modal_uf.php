@@ -1,56 +1,29 @@
 <?php /** @var array $clientes */
     /** @var array $meses */
 ?>
-<?php if (hasPermission('criarFaturamento')): ?>
+<?php if (hasPermission('criarUF')): ?>
     <!-- create brand modal -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="addModalFaturamento">
+    <div class="modal fade" tabindex="-1" role="dialog" id="addModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
-                    <h4 class="modal-title text-center">NOVO FATURAMENTO</h4>
+                    <h4 class="modal-title text-center">NOVO ESTADO</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <form role="form" action="<?php echo base_url('faturamento/create') ?>" class="requires-validation" method="post" id="createFormFaturamento" novalidate>
+                <form role="form" action="<?= site_url('uf/create') ?>" class="requires-validation" method="post" id="createForm" novalidate>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="id_cliente">CLIENTE</label>
-                            <?php if (isset($cliente_data)): ?>
-                                <!-- Se já estiver na ficha do cliente, mostra um campo fixo -->
-                                <input type="text" class="form-control" value="<?php echo $cliente_data['razao']; ?>" readonly>
-                                <input type="hidden" name="id_cliente" value="<?php echo $cliente_data['id']; ?>">
-                            <?php else: ?>
-                                <!-- Se estiver na listagem geral, exibe o combo -->
-                                <select class="form-control" id="id_cliente" name="id_cliente" required>
-                                    <option value="">SELECIONE O CLIENTE</option>
-                                    <?php foreach ($clientes as $c): ?>
-                                        <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="form-group">
-                            <label for="faturamento_mes">MÊS</label>
-                            <select class="form-control" id="mes" name="mes" required>
-                                <option value="">SELECIONE O MÊS</option>
-                                    <?php foreach ($meses as $m): ?>
-                                        <option value="<?= $m['id'] ?>"><?= $m['nome'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="faturamento_ano">ANO</label>
-                                    <input type="text" class="form-control" id="faturamento_ano" name="faturamento_ano" maxlength="4" pattern="[0-9]{4}" value="<?= date('Y'); ?>" required>
+                                    <label for="nome_uf">ESTADO</label>
+                                    <input type="text" class="form-control" id="nome_uf" name="nome_uf" maxlength="100" required>
                                     <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="faturamento_valor">VALOR</label>
-                                    <input type="number" class="form-control" id="faturamento_valor" name="faturamento_valor" step="0.01" autocomplete="off" required>
+                                    <label for="sigla_uf">SIGLA</label>
+                                    <input type="text" class="form-control" id="sigla_uf" name="sigla_uf" maxlength="2" required>
                                     <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                                 </div>
                             </div>
@@ -66,43 +39,30 @@
     </div><!-- /.modal -->
 <?php endif; ?>
 <!-- ======================================MODIFICAR MODAL DE FATURAMENTO ==================================== -->
-<?php if (hasPermission('modificarFaturamento')): ?>
+<?php if (hasPermission('modificarUF')): ?>
     <!-- edit brand modal -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="editModalFaturamento">
+    <div class="modal fade" tabindex="-1" role="dialog" id="editModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h4 class="modal-title text-center">Alterar Faturamento</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <form role="form" action="<?= site_url('faturamento/edit') ?>" method="post" id="updateFormFaturamento">
+                <form role="form" action="<?= site_url('uf/edit') ?>" method="post" id="updateForm">
                     <div class="modal-body">
                         <div id="messages"></div>
-                        <div class="form-group">
-                            <?php if (isset($cliente_data)) : ?>
-                                <input type="hidden" name="id_cliente" value="<?php echo $cliente_data['id']; ?>">
-                            <?php endif; ?>
-                            <label for="edit_faturamento_mes">MÊS</label>
-                            <select class="form-control" id="edit_faturamento_mes" name="edit_faturamento_mes">
-                                <option value="">SELECIONE O MÊS</option>
-                                    <?php foreach ($meses as $m): ?>
-                                        <option value="<?= $m['id'] ?>"><?= $m['nome'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="edit_faturamento_ano">ANO</label>
-                                    <input type="text" class="form-control" id="edit_faturamento_ano" name="edit_faturamento_ano" maxlength="4" pattern="[0-9]{4}" required>
+                                    <label for="edit_uf">ESTADO</label>
+                                    <input type="text" class="form-control" id="edit_uf" name="edit_uf" maxlength="100" required>
                                     <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="edit_faturamento_valor">VALOR</label>
-                                    <input type="number" class="form-control" id="edit_faturamento_valor" name="edit_faturamento_valor" step="0.01" min="0" autocomplete="off" required>
+                                    <label for="edit_sigla_uf">SIGLA</label>
+                                    <input type="text" class="form-control" id="edit_sigla_uf" name="edit_sigla_uf" maxlength="2" required>
                                     <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                                 </div>
                             </div>
@@ -118,20 +78,19 @@
     </div><!-- /.modal -->
 <?php endif; ?>
 <!-- ============================================================================================ -->
-<?php if (hasPermission('apagarFaturamento')): ?>
+<?php if (hasPermission('apagarUF')): ?>
     <!-- remove brand modal -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="removeModalFaturamento">
+    <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
-                    <h4 class="modal-title text-center">APAGAR FATURAMENTO</h4>
+                    <h4 class="modal-title text-center">APAGAR ESTADO</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <form role="form" action="<?= site_url('faturamento/delete') ?>" method="post" id="removeFormFaturamento">
+                <form role="form" action="<?= site_url('uf/delete') ?>" method="post" id="removeForm">
                     <div class="modal-body">
-                        <input type="hidden" name="faturamento_cliente_id" id="faturamento_cliente_id"> <!-- Campo oculto para ID do Cliente -->
-                        <input type="hidden" name="faturamento_id" id="faturamento_id"> <!-- Campo oculto para ID do Certificado -->
-                        <p>Tem certeza que deseja remover o faturamento?</p>
+                        <input type="hidden" name="uf_id" id="uf_id"> <!-- Campo oculto para ID do Certificado -->
+                        <p>Tem certeza que deseja remover o estado?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">SIM</button>
@@ -144,13 +103,8 @@
 <?php endif; ?>
 <script type="text/javascript">
     var base_url = "<?= base_url(); ?>";
-    //=================== SELECT 2 =====================================
-    $('#id_cliente').select2({
-        width: '100%',
-        dropdownParent: $('#addModalFaturamento')
-    });
     //=========ENVIA DADOS DE CRIAR FORM==================
-    $('#createFormFaturamento').unbind('submit').on('submit', function(e) {
+    $('#createForm').unbind('submit').on('submit', function(e) {
         e.preventDefault();
         var form = $(this);
         $.ajax({
@@ -160,8 +114,8 @@
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    $("#addModalFaturamento").modal('hide');
-                    $('#createFormFaturamento')[0].reset();
+                    $("#addModal").modal('hide');
+                    $('#createForm')[0].reset();
                     manageTable.ajax.reload(null, false);
                     showToast(response.messages, 'success');
                     // Redirecionar corretamente
@@ -171,35 +125,31 @@
             }
         });
     });
-    $('#addModalFaturamento').on('hidden.bs.modal', function () {
+    $('#addModal').on('hidden.bs.modal', function () {
         // limpa formulário
-        $('#createFormFaturamento')[0].reset();
-        // limpa select2
-        $('#id_cliente').val('').trigger('change');
+        $('#createForm')[0].reset();
         // remove validação bootstrap
-        $('#createFormFaturamento').removeClass('was-validated');
+        $('#createForm').removeClass('was-validated');
         // reseta visual dos campos
     });
     //===================================FUNÇÃO DE EDITAR ============================================
-    function editFaturamento(id) 
+    function editUF(id) 
     {
         $.ajax({
-        url: base_url + 'faturamento/getById/' + id,
+        url: base_url + 'uf/getById/' + id,
         type: 'GET',
         dataType: 'json',
         success: function(response) {
             console.log(response);
             // pega os dados corretos
             let data = response.data;
-            let descricao = data.ano || '';
             // preenche campos
-            $("#edit_faturamento_mes").val(data.id_mes);
-            $("#edit_faturamento_ano").val(data.ano);
-            $("#edit_faturamento_valor").val(data.valor);      
+            $("#edit_uf").val(data.nome);
+            $("#edit_sigla_uf").val(data.uf);
             // abre modal
-            $("#editModalFaturamento").modal('show');
+            $("#editModal").modal('show');
             // submit update
-            $("#updateFormFaturamento")
+            $("#updateForm")
             .off('submit')
             .on('submit', function(e) {
             e.preventDefault();
@@ -211,8 +161,8 @@
                 dataType: 'json',
                 success: function(response) {
                 if (response.success) {
-                    $("#editModalFaturamento").modal('hide');
-                    $("#updateFormFaturamento")[0].reset();
+                    $("#editModal").modal('hide');
+                    $("#updateForm")[0].reset();
                     manageTable.ajax.reload(null, false);
                     showToast(response.messages, 'success');
                 } else {
@@ -220,25 +170,25 @@
                 }
                 },
                 error: function() {
-                    showToast('Erro ao atualizar faturamento.', 'error');
+                    showToast('Erro ao atualizar estado.', 'error');
                 }
             });
             return false;
             });
         },
         error: function() {
-            showToast('Erro ao buscar faturamento.', 'error');
+            showToast('Erro ao buscar estado.', 'error');
         }
         });
     }
     //================================FUNÇÃO REMOVER ===========================================================
-    function removeFaturamento(id) 
+    function removeUF(id) 
     {
-        $('#removeModalFaturamento').modal('show');
+        $('#removeModal').modal('show');
         // remove submits antigos
-        $('#removeFormFaturamento').off('submit');
+        $('#removeForm').off('submit');
         // novo submit
-        $('#removeFormFaturamento').on('submit', function(e) {
+        $('#removeForm').on('submit', function(e) {
             e.preventDefault();
             $.ajax({
                 url: $(this).attr('action'),
@@ -249,8 +199,8 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        $('#removeModalFaturamento').modal('hide');
-                        $('#removeFormFaturamento')[0].reset();
+                        $('#removeModal').modal('hide');
+                        $('#removeForm')[0].reset();
                         manageTable.ajax.reload(null, false);
                         showToast(response.messages, 'success');
                     } else {
@@ -258,7 +208,7 @@
                     }
                 },
                 error: function() {
-                    showToast('Erro ao remover o faturamento.', 'error');
+                    showToast('Erro ao remover o estado.', 'error');
                 }
             });
         });

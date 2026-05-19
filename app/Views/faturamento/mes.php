@@ -9,7 +9,7 @@
       <div class="row">
         <div class="col-md-12 col-xs-12">
           <div id="messages"></div>
-          <?php if(in_array('criarFaturamento', $user_permission)): ?>
+          <?php if(hasPermission('criarFaturamento')): ?>
             <button class="btn btn-lg btn-warning mb-2" data-toggle="modal" data-target="#addModal"><i class="fas fa-plus-square"></i> NOVO MÊS</button>
             <br />
           <?php endif; ?>
@@ -23,7 +23,7 @@
                 <thead>
                 <tr>
                   <th>MES</th>
-                  <?php if(in_array('modificarFaturamento', $user_permission) || in_array('apagarFaturamento', $user_permission)): ?>
+                  <?php if(hasAnyPermission(['modificarFaturamento', 'apagarFaturamento'])): ?>
                   <th class="col-2">AÇÕES</th>
                   <?php endif; ?>
                 </tr>
@@ -39,7 +39,7 @@
     </section><!-- /.content -->
   </div><!-- /.content-wrapper -->
 <!-- ======================================MODAL CRIA MÊS ==================================== -->
-<?php if(in_array('criarFaturamento', $user_permission)): ?>
+<?php if(hasPermission('criarFaturamento')): ?>
 <!-- create brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="addModal">
   <div class="modal-dialog" role="document">
@@ -66,7 +66,7 @@
 </div><!-- /.modal -->
 <?php endif; ?>
 <!-- ======================================MODIFICAR MODAL DE FATURAMENTO ==================================== -->
-<?php if(in_array('modificarFaturamento', $user_permission)): ?>
+<?php if(hasAnyPermission(['modificarFaturamento', 'apagarFaturamento'])): ?>
 <!-- edit brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="editModal">
   <div class="modal-dialog" role="document">
@@ -93,7 +93,7 @@
 </div><!-- /.modal -->
 <?php endif; ?>
 <!-- ======================================APAGAR MODAL DE MES ==================================== -->
-<?php if(in_array('apagarFaturamento', $user_permission)): ?>
+<?php if(hasPermission('apagarFaturamento')): ?>
 <!-- remove brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
   <div class="modal-dialog" role="document">
@@ -119,21 +119,6 @@
 <script type="text/javascript">
   var manageTable;
   var base_url = "<?= base_url(); ?>";
-
-  //=======================ATIVAR O MENU ===========================
-$(function () {
-    var url = window.location.href;
-
-    // Ativar o link diretamente acessado no menu
-    $('ul.nav-sidebar a, ul.nav-treeview a').filter(function () {
-        return this.href === url || url.startsWith(this.href);
-    }).addClass('active')
-    .closest('.nav-treeview') // Ativa o submenu se necessário
-    .css({'display': 'block'})
-    .addClass('menu-open')
-    .prev('a') // Ativa o menu principal
-    .addClass('active');
-});
   // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
   manageTable = $('#manageTable').DataTable({
     'ajax': base_url + 'faturamento/recebeDadosMes',
@@ -296,19 +281,4 @@ function removeFunc(id)
     });
   }
 }
-//==============================FUNÇÃO PARA VERIFICAR VALIDAÇÃO DE FORMULÁRIO ==========================
-$(function () {
-  'use strict'
-  const forms = document.querySelectorAll('.requires-validation')
-  Array.from(forms)
-    .forEach(function (form) {
-      form.addEventListener('submit', function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
-        form.classList.add('was-validated')
-      }, false)
-    })
-  });
 </script>

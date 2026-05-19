@@ -46,19 +46,15 @@ class TiposCertidao extends BaseController
                 'required' => 'O campo nome é obrigatório'
             ]
         ];
-        //=================DEIXO COMENTADO PRA REALIZAR TESTES ===========
         //  echo '<pre>';
         //  print_r($this->request->getPost());
         //  echo '</pre>';
         //  exit;      
         if(!$this->validate($rules, $messages)) {
-            return redirect()->back()
-                ->withInput()
-                ->with('errors', implode('<br>', $this->validator->getErrors()));
-            // echo '<pre>';
-            // print_r($this->validator->getErrors());
-            // echo '</pre>';
-            // exit;
+           return $this->response->setJSON([
+                'success' => false,
+                'messages' => implode('<br>', $this->validator->getErrors())
+            ]);
         }
         $data = [
             'nome' => $this->request->getPost('tipo_certidao_nome'),
@@ -107,7 +103,6 @@ class TiposCertidao extends BaseController
             ]
         ];
         if (!$this->validate($rules, $messages)) {
-
             return $this->response->setJSON([
                 'success' => false,
                 'messages' => implode('<br>', $this->validator->getErrors())

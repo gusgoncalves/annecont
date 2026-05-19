@@ -55,9 +55,10 @@ class Obrigacoes extends BaseController
         //  echo '</pre>';
         //  exit;      
         if(!$this->validate($rules, $messages)) {
-            return redirect()->back()
-                ->withInput()
-                ->with('errors', implode('<br>', $this->validator->getErrors()));
+            return $this->response->setJSON([
+                'success' => false,
+                'messages' => implode('<br>', $this->validator->getErrors())
+            ]);
         }
         $data = [
             'descricao' => $this->request->getPost('obrigacao_descricao'),

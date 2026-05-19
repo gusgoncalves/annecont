@@ -13,7 +13,7 @@ class Usuarios extends BaseController
         $usuariosModel = new UsuariosModel();
         return view('usuarios/index',['active_menu' => 'usuarios','user_data'=>$usuariosModel->getUserGrupo()]);
     }
-    //
+
     public function create()
     {        
         $grupoModel = new \App\Models\GruposModel();

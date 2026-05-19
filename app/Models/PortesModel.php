@@ -8,9 +8,6 @@ class PortesModel extends Model
 {
     protected $table            = 'porte';
     protected $returnType       = 'array';
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['descricao'];
 
-    public function selectPortes(){
-		return $this->orderBy('descricao', 'ASC')->findAll();
-	}
 }
