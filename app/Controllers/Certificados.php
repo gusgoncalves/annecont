@@ -16,7 +16,7 @@ class Certificados extends BaseController
         return view('certificados/index',['active_menu' => 'certificados','clientes' => $cliente]);
     }
     // ============================== BUSCAR DADOS DE CERTIFICADOS PARA A DATATABLE ==============================
-    public function buscarDadosCertificados()
+    public function buscaDados()
     {
         $certificadosModel = new CertificadosModel();
         $clienteModel = new ClientesModel();

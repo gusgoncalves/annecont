@@ -15,7 +15,7 @@ class Portes extends BaseController
         return view('portes/index',['active_menu' => 'portes','portes' => $porte]);
     }
     // ============================== BUSCAR DADOS DE PORTES PARA A DATATABLE ==============================
-    public function buscaDadosPorte()
+    public function buscaDados()
     {
         $portesModel = new PortesModel();
     	$result = array('data' => array());

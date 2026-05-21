@@ -13,3 +13,9 @@ ADD CONSTRAINT fk_user_group_group
 FOREIGN KEY (group_id)
 REFERENCES `groups`(id)
 ON DELETE CASCADE;
+
+ALTER TABLE anneco90_db.pagar ADD id_usuario_estornou INT NULL;
+
+
+CREATE INDEX idx_quitado_vencimento
+ON pagar (quitado, dt_vencimento);

@@ -23,7 +23,7 @@ class Faturamentos extends BaseController
         return view('faturamento/index',['active_menu' => 'faturamento','clientes' => $cliente,'meses' => $meses,'faturamentos' => $faturamento]);
     }
     // ============================== BUSCAR DADOS DE FATURAMENTOS PARA A DATATABLE ==============================
-    public function buscaDadosFaturamento()
+    public function buscaDados()
     {
         $faturamentoModel = new FaturamentoModel();
         $clienteModel = new ClientesModel();

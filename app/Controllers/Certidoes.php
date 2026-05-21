@@ -19,7 +19,7 @@ class Certidoes extends BaseController
         return view('certidoes/index',['active_menu' => 'certidoes','clientes' => $cliente,'tipos' => $tipo]);
     }
     // ============================== BUSCAR DADOS DE CERTIFICADOS PARA A DATATABLE ==============================
-    public function buscarDadosCertidao()
+    public function buscaDados()
     {
         $certidoesModel = new CertidoesModel();
         $clienteModel = new ClientesModel();

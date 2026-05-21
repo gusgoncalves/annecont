@@ -18,7 +18,7 @@ class Cidades extends BaseController
         return view('cidades/index',['active_menu' => 'cidades','cidades' =>$cidades, 'estados' => $estados]);
     }
     // ============================== BUSCAR DADOS DE CIDADES PARA A DATATABLE ==============================
-    public function buscaDadosCidade()
+    public function buscaDados()
     {
         $estadosModel = new EstadosModel();
         $cidadesModel = new CidadesModel();

@@ -1,6 +1,6 @@
- <?= $this->extend('layout') ?>
+<?= $this->extend('layout') ?>
 <?= $this->section('title') ?>
-  BANCOS
+  TIPOS DE PAGAMENTO
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -10,45 +10,59 @@
       <div class="col-md-12 col-xs-12">
         <div class="card">
           <div class="card-header bg-primary">
-            <h5 class="text-center">LISTA DE BANCOS </h5>
+            <h5 class="text-center">TIPOS DE PAGAMENTO</h5>
           </div>
-          <!-- /.box-header -->
           <div class="card-body">
-            <?php if(hasPermission('modificarEmpresa')): ?>
-              <button class="btn btn-lg btn-primary mb-2" data-toggle="modal" data-target="#addModal"><i class="fas fa-plus-square"></i> NOVO CAIXA</button>
+            <?php if(hasPermission('criarTipoConta')): ?>
+              <button class="btn btn-lg btn-primary mb-2" data-toggle="modal" data-target="#addModal"><i class="fas fa-plus-square"></i> NOVO TIPO DE CONTA</button>            
             <?php endif; ?>
             <table id="manageTable" class="table table-bordered table-striped table-hover">
               <thead>
-              <tr>
-                <th>DESCRIÇÃO</th>
-                <?php if(hasPermission('modificarEmpresa')): ?>
-                <th class="col-2">AÇÕES</th>
-                <?php endif; ?>
-              </tr>
+                <tr>
+                  <th>NOME</th>
+                  <th>TIPO</th>
+                  <?php if(hasAnyPermission(['modificarTipoConta','apagarTipoConta'])): ?>
+                  <th class="col-2">AÇÕES</th>
+                  <?php endif; ?>
+                </tr>
               </thead>
               <tbody>
-              <!-- AQUI DENTRO VAI O CONTEÚDO DA DATATABLE -->
               </tbody>
             </table>
-          </div><!-- /.box-body -->
-        </div><!-- /.box -->
+          </div><!-- /.card-body -->
+        </div><!-- /.card -->
       </div><!-- col-md-12 -->
     </div><!-- /.row -->
-  </section><!-- /.content -->
-  <?php if(hasPermission('modificarEmpresa')): ?>
+  </section>
+
+  <?php if(hasPermission('criarTipoConta')): ?>
     <div class="modal fade" tabindex="-1" role="dialog" id="addModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header bg-primary">
-            <h4 class="modal-title text-center">NOVO CAIXA</h4>
+            <h4 class="modal-title text-center">TIPO DE PAGAMENTO</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
-          <form role="form" action="<?php echo base_url('bancos/create') ?>" class="requires-validation" method="post" id="createForm" novalidate>
+          <form role="form" action="<?= site_url('tipo_conta/create') ?>" method="post" class="requires-validation" id="createForm" novalidate>
             <div class="modal-body">
               <div class="form-group">
-                <label for="descricao">DECRICAO</label>
-                <input type="text" class="form-control" id="descricao" name="descricao" placeholder="Nome do Caixa" autocomplete="off" required>
+                <label for="nome">NOME</label>
+                <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome do tipo da conta" autocomplete="off" required>
                 <div class="invalid-feedback">Preenchimento Obrigatório!</div>
+              </div>
+              <div class="form-group">
+                <label for="tipo">CATEGORIA</label>&nbsp;&nbsp;&nbsp;
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="tipo" id="pagar" value="0">&nbsp;&nbsp;&nbsp;
+                      PAGAR
+                  </label class="form-check-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="tipo" id="receber" value="1">&nbsp;&nbsp;&nbsp;
+                      RECEBER
+                  </label>
+                  <div class="invalid-feedback">Preenchimento Obrigatório!</div>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -60,23 +74,37 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
   <?php endif; ?>
-  <!-- ======================== CRIANDO MODAL DE EDIÇÃO DE BANCOS ============================-->
-  <?php if(hasPermission('modificarEmpresa')): ?>
+  
+  <?php if(hasPermission('modificarTipoConta')): ?>
     <div class="modal fade" tabindex="-1" role="dialog" id="editModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header bg-primary">
-            <h4 class="modal-title text-center">EDITAR CAIXA</h4>
+            <h4 class="modal-title text-center">EDITAR CATEGORIA</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
-          <form role="form" action="<?php echo base_url('bancos/edit') ?>" method="post" id="updateForm">
+          <form role="form" action="<?= site_url('tipo_conta/edit') ?>" method="post" class="requires-validation" id="updateForm" novalidate>
             <div class="modal-body">
-              <div id="messages"></div>
               <div class="form-group">
-                <label for="edit_descricao">DESCRIÇÃO</label>
-                <input type="text" class="form-control" id="edit_descricao" name="edit_descricao" autocomplete="off">
+                <label for="edit_nome">NOME</label>
+                <input type="text" class="form-control" id="edit_nome" name="edit_nome" placeholder="Nome do tipo da conta" autocomplete="off" required>
+                <div class="invalid-feedback">Preenchimento Obrigatório!</div>
               </div>
-            </div>
+              <div class="form-group">
+                <label for="gender">TIPO DA CATEGORIA</label>&nbsp;&nbsp;&nbsp;
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="edit_tipo" id="edit_pagar" value="0">&nbsp;&nbsp;&nbsp;
+                        PAGAR
+                  </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="edit_tipo" id="edit_receber" value="1">&nbsp;&nbsp;&nbsp;
+                        RECEBER
+                  </label>
+                  <div class="invalid-feedback">Preenchimento Obrigatório!</div>
+                </div>
+              </div><!--div dorm group --> 
+            </div><!--Div modal body -->
             <div class="modal-footer">
               <button type="submit" class="btn btn-success">SALVAR</button>
               <button type="button" class="btn btn-danger" data-dismiss="modal">FECHAR</button>
@@ -86,18 +114,18 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
   <?php endif; ?>
-  <!-- ======================== CRIANDO MODAL DE APAGAR BANCOS ============================-->
-  <?php if(hasPermission('modificarEmpresa')): ?>
+
+  <?php if(hasPermission('apagarTipoConta')): ?>
     <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header bg-danger">
-            <h4 class="modal-title text-center">REMOVER CAIXA</h4>
+            <h4 class="modal-title text-center">REMOVER CATEGORIA</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
-          <form role="form" action="<?php echo base_url('bancos/delete') ?>" method="post" id="removeForm">
+          <form role="form" action="<?= site_url('tipo_conta/delete') ?>" method="post" id="removeForm">
             <div class="modal-body">
-              <p>Tem certeza que deseja remover esse Banco?</p>
+              <p>Tem certeza que deseja remover esta categoria?</p>
             </div>
             <div class="modal-footer">
               <button type="submit" class="btn btn-success">SIM</button>
@@ -113,10 +141,11 @@
 <?= $this->section('scripts') ?>
   <script type="text/javascript">
     var manageTable;
-    var base_url = "<?= base_url(); ?>";  
+    var base_url = "<?= site_url(); ?>";
+
     // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
-    manageTable = $('#manageTable').DataTable({
-      ajax: base_url + 'bancos/busca',
+    manageTable = $("#manageTable").DataTable({
+      ajax: base_url + 'tipo_conta/busca',
       responsive: true,
       autoWidth: false,
       paging: false,//tira a paginação
@@ -126,7 +155,8 @@
       language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
       columns: [
         { data: 'nome' },
-        { data: 'acoes' }
+        { data: 'tipo' },
+        { data: 'acoes' },
       ]
     });
     //=========ENVIA DADOS DE CRIAR FORM==================
@@ -159,10 +189,10 @@
         // reseta visual dos campos
     });
     //===================================FUNÇÃO DE EDITAR ============================================
-    function editBanco(id) 
+    function editTipo(id) 
     {
       $.ajax({
-      url: base_url + 'bancos/getById/' + id,
+      url: base_url + 'tipo_conta/getById/' + id,
       type: 'GET',
       dataType: 'json',
       success: function(response) {
@@ -170,7 +200,8 @@
           // pega os dados corretos
           let data = response.data;
           // preenche campos
-          $("#edit_descricao").val(data.descricao);
+          $("#edit_nome").val(data.nome);
+          $('input[name="edit_tipo"][value="' + data.tipo + '"]').prop('checked', true);
           // abre modal
           $("#editModal").modal('show');
           // submit update
@@ -195,48 +226,48 @@
               }
               },
               error: function() {
-                  showToast('Erro ao atualizar o Banco.', 'error');
+                  showToast('Erro ao atualizar tipo de conta.', 'error');
               }
           });
           return false;
           });
       },
       error: function() {
-          showToast('Erro ao buscar o Banco.', 'error');
+          showToast('Erro ao buscar tipo de conta.', 'error');
       }
       });
     }
     //================================FUNÇÃO REMOVER ===========================================================
-    function removeBanco(id) 
+    function removeTipo(id) 
     {
-      $('#removeModal').modal('show');
-      // remove submits antigos
-      $('#removeForm').off('submit');
-      // novo submit
-      $('#removeForm').on('submit', function(e) {
-          e.preventDefault();
-          $.ajax({
-              url: $(this).attr('action'),
-              type: 'POST',
-              data: {
-                  id: id
-              },
-              dataType: 'json',
-              success: function(response) {
-                  if (response.success) {
-                      $('#removeModal').modal('hide');
-                      $('#removeForm')[0].reset();
-                      manageTable.ajax.reload(null, false);
-                      showToast(response.messages, 'success');
-                  } else {
-                      showToast(response.messages, 'error');
-                  }
-              },
-              error: function() {
-                  showToast('Erro ao remover o Banco.', 'error');
-              }
-          });
-      });
+        $('#removeModal').modal('show');
+        // remove submits antigos
+        $('#removeForm').off('submit');
+        // novo submit
+        $('#removeForm').on('submit', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $('#removeModal').modal('hide');
+                        $('#removeForm')[0].reset();
+                        manageTable.ajax.reload(null, false);
+                        showToast(response.messages, 'success');
+                    } else {
+                        showToast(response.messages, 'error');
+                    }
+                },
+                error: function() {
+                    showToast('Erro ao remover a Tipo de Conta.', 'error');
+                }
+            });
+        });
     }  
   </script>
 <?= $this->endSection() ?>

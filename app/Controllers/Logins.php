@@ -19,7 +19,7 @@ class Logins extends BaseController
         return view('logins/index',['active_menu' => 'logins','clientes' => $cliente,'logins' => $login]);
     }
     // ============================== BUSCAR DADOS DE LOGINS PARA A DATATABLE ==============================
-    public function buscaDadosLogin()
+    public function buscaDados()
     {
         $loginsModel = new LoginsModel();
         $clienteModel = new ClientesModel();

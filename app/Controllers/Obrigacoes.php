@@ -13,7 +13,7 @@ class Obrigacoes extends BaseController
         return view('obrigacoes/index',['active_menu' => 'obrigacoes']);
     }
     // ============================== BUSCAR DADOS DE OBRIGAÇÕES PARA A DATATABLE ==============================
-    public function buscaDadosObrigacao()
+    public function buscaDados()
     {
         $obrigacoesModel = new ObrigacoesModel();
     	$result = array('data' => array());

@@ -15,7 +15,7 @@ class Clientes extends BaseController
     // ==================================================================
     // FUNÇÃO PARA BUSCAR OS DADOS DO CLIENTE PARA EXIBIR NA TABELA
     // ==================================================================
-    public function buscaDadosCliente()
+    public function buscaDados()
     {
         $result = array('data' => array());
         $clientesModel = new ClientesModel();

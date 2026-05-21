@@ -14,7 +14,7 @@ class Funcionarios extends BaseController
         return view('funcionarios/index',['active_menu' => 'funcionarios']);
     }
     // ============================== BUSCAR DADOS DE FUNCIONÁRIOS PARA A DATATABLE ==============================
-    public function buscarDadosFuncionario()
+    public function buscaDados()
     {
         $funcModel = new FuncionariosModel();
         $clienteModel = new ClientesModel();

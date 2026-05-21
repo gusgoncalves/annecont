@@ -14,7 +14,7 @@ class TiposCertidao extends BaseController
         return view('tipo_certidao/index',['active_menu' => 'tipos_certidao','tipos' => $tipo]);
     }
     // ============================== BUSCAR DADOS DE CERTIFICADOS PARA A DATATABLE ==============================
-    public function buscarDadosTipoCertidao()
+    public function buscaDados()
     {
         $tipoCertidaoModel = new TipoCertidaoModel();
     	$result = array('data' => array());

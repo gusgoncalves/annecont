@@ -15,7 +15,7 @@ class UF extends BaseController
         return view('uf/index',['active_menu' => 'uf','estados' => $estado]);
     }
     // ============================== BUSCAR DADOS DE ESTADOS PARA A DATATABLE ==============================
-    public function buscaDadosUF()
+    public function buscaDados()
     {
         $estadosModel = new EstadosModel();
     	$result = array('data' => array());

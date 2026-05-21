@@ -44,8 +44,8 @@
     var manageTable;
     var base_url = "<?= base_url(); ?>";
     
-  // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
-   manageTable = $('#manageTable').DataTable({
+    // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
+    manageTable = $('#manageTable').DataTable({
       ajax: base_url + '/cidades/busca/',//MONTA A DATA TABLE
       responsive: true,
       autoWidth: false,

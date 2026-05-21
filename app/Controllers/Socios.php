@@ -14,7 +14,7 @@ class Socios extends BaseController
         return view('socios/index',['active_menu' => 'socios']);
     }
     // ============================== BUSCAR DADOS DE SÓCIOS PARA A DATATABLE ==============================
-    public function buscarDadosSocios()
+    public function buscaDados()
     {
         $socioModel = new SociosModel();
         $clienteModel = new ClientesModel();
