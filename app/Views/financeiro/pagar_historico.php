@@ -28,13 +28,15 @@ Histórico de contas
                 </button>
               </div>
             </div>
+            <div class="col-md-2 d-flex align-items-end"><label>Últimos 30 dias</label></div>
             <table id="manageTable" class="table table-bordered table-striped table-hover">
               <thead>
                 <tr>
-                  <th>DATA</th>
+                  <th>DATA PAGAMENTO</th>
                   <th>DESCRICAO</th>
                   <th>TIPO</th>
-                  <th>VALOR</th>
+                  <th>BANCO</th>
+                  <th>VALOR TOTAL</th>
                   <th>SITUAÇÃO</th>
                   <?php if (hasAnyPermission(['modificarPagar', 'apagarPagar'])) : ?>
                     <th class="col-2">AÇOES</th>
@@ -49,6 +51,7 @@ Histórico de contas
       </div><!-- div col -->
     </div><!-- div row -->
   </section>
+  <?= $this->include('modal/modal_pagar') ?>
 <?= $this->endSection() ?>
 <?= $this->section('scripts') ?>
   <script type="text/javascript">
@@ -68,59 +71,50 @@ Histórico de contas
 
     // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
     manageTable = $("#manageTable").DataTable({
-      deferLoading: 0,
       processing: true,
       responsive: true,
       autoWidth: false,
       paging: false,
-      searching: false,
+      searching: true,
       ordering: false,
       info: false,
-
       language: {
         url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
       },
-
       ajax: {
         url: base_url + "pagar/busca_historico",
         type: "POST",
-
         data: function(d) {
-
           d.data_inicial = $('#data_inicial').val();
           d.data_final   = $('#data_final').val();
-
         },
-
         dataSrc: 'data'
       },
-
       columns: [
-        { data: 'vencimento' },
+        { data: 'dt_quitado' },
         { data: 'descricao' },
         { data: 'tipo' },
+        { data: 'banco' },
         { data: 'valor' },
         { data: 'situacao' },
         { data: 'acoes' }
+      ],
+      columnDefs: [
+        {
+          targets: 6,
+          width: "1%",
+          className: "text-center text-nowrap"
+        }
       ]
     });
-
     $('#filtrar').on('click', function() {
-
-      manageTable.clear().draw();
-
       let dataInicial = $('#data_inicial').val();
       let dataFinal   = $('#data_final').val();
-
       if (dataInicial == '' || dataFinal == '') {
-
         showToast('Selecione o período.', 'error');
         return;
-
       }
-
       manageTable.ajax.reload();
-
     });
   </script>
 <?= $this->endSection() ?>

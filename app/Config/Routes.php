@@ -102,7 +102,11 @@ $routes->group('receber', ['filter' => 'auth:verReceber'], function($routes) {
     $routes->post('create', 'Receber::create');
     $routes->get('getById/(:num)', 'Receber::getById/$1');
     $routes->post('edit/(:num)', 'Receber::update/$1');
+    $routes->post('quitar', 'Receber::quitarReceber');
+    $routes->post('estornar', 'Receber::estornarReceber/$1');
     $routes->post('delete', 'Receber::delete');
+    $routes->get('historico', 'Receber::historicoReceber');
+    $routes->post('busca_historico', 'Receber::buscaDadosHistorico');
 });
 $routes->group('fluxo_caixa', ['filter' => 'auth:verPagar'], function($routes) {
     $routes->get('/', 'FluxoCaixa::index');

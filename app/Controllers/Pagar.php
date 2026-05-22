@@ -324,99 +324,64 @@ class Pagar extends BaseController
     //=========================HISTÓRICO DE PAGAMENTOS =================================
     public function historicoPagar()
     {
+        $bancosModel = new BancosModel();
+        $bancos = $bancosModel->findAll();
         $tipoConta = new TiposContaModel();
         $tipo = $tipoConta->findAll();
         $pagarModel = new PagarModel();
         $pagar = $pagarModel->findAll();
-        return view('financeiro/historico', ['active_menu' => 'historico', 'pagar' => $pagar, 'tipos' => $tipo]);
+        return view('financeiro/pagar_historico', ['active_menu' => 'historico', 'pagar' => $pagar, 'tipos' => $tipo,'bancos' => $bancos]);
     }
     //=========================CARREGA NA DATATABLE OS DADOS DE CONTAS QUITADAS ==========================
     public function buscaDadosHistorico()
     {
         $tipoContaModel = new TiposContaModel();
         $pagarModel     = new PagarModel();
+        $bancoModel     = new BancosModel();
 
         $dataInicial = $this->request->getPost('data_inicial');
         $dataFinal   = $this->request->getPost('data_final');
 
-        // não carrega nada sem filtro
-        if (empty($dataInicial) || empty($dataFinal)) {
+        $builder = $pagarModel
+            ->where('quitado', 1);
 
-            return $this->response->setJSON([
-                'data' => []
-            ]);
+        // se pesquisou período
+        if (!empty($dataInicial) && !empty($dataFinal)) {
+            $builder->where('DATE(dt_vencimento) >=', $dataInicial);
+            $builder->where('DATE(dt_vencimento) <=', $dataFinal);
+        } else {
+            // padrão: últimos 30 dias
+            $builder->where(
+                'DATE(dt_vencimento) >=',
+                date('Y-m-d', strtotime('-30 days'))
+            );
         }
-
-        $data = $pagarModel
-            ->where('quitado', 1)
-            ->where('DATE(dt_vencimento) >=', $dataInicial)
-            ->where('DATE(dt_vencimento) <=', $dataFinal)
+        $data = $builder
             ->orderBy('dt_vencimento', 'DESC')
             ->findAll();
-
         $result = ['data' => []];
-
         foreach ($data as $value) {
-
-            $tipoData = $tipoContaModel
-                ->where('id', $value['id_tipo'])
-                ->first();
-
+            $tipoData = $tipoContaModel->where('id', $value['id_tipo'])->first();
+            $bancoData = $bancoModel->where('id', $value['id_banco'])->first();
             $buttons = '';
-
             if (hasPermission('modificarPagar')) {
-
-                $buttons .= '
-                <button 
-                    type="button"
-                    style="font-size:0.55em"
-                    class="btn btn-warning"
-                    onclick="estornarFunc('.$value['id'].')"
-                    title="Estornar Quitado">
-                    <i class="fa fa-minus"></i>
-                </button>';
+                $buttons .= ' <button type="button" style="font-size:0.55em" class="btn btn-warning" onclick="estornarFunc('.$value['id'].')" title="Estornar Quitado"><i class="fa fa-minus"></i></button>';
             }
-
-            if (hasPermission('modificarPagar')) {
-
-                $buttons .= '
-                <button 
-                    type="button"
-                    class="btn btn-primary"
-                    style="font-size:0.55em"
-                    onclick="editFunc('.$value['id'].')">
-                    <i class="fas fa-edit"></i>
-                </button>';
-            }
-
+            // if (hasPermission('modificarPagar')) {
+            //     $buttons .= ' <button type="button" class="btn btn-primary" style="font-size:0.55em" onclick="editFunc('.$value['id'].')"><i class="fas fa-edit"></i></button>';
+            // }
+            $valor_total = $value['valor_pagar'] + $value['vl_acrescimo'] - $value['vl_desconto'];
             $result['data'][] = [
-
                 'descricao' => $value['nome'],
-
-                'vencimento' => date(
-                    'd/m/Y',
-                    strtotime($value['dt_vencimento'])
-                ),
-
-                'valor' => number_format(
-                    $value['valor_pagar'],
-                    2,
-                    ',',
-                    '.'
-                ),
-
-                'situacao' => '
-                <span class="badge badge-success">
-                    Pago
-                </span>',
-
+                'dt_quitado' => date('d/m/Y',strtotime($value['dt_quitado'])),
+                //'valor' => number_format($value['valor_pagar'],2,',','.'),
+                'valor' => number_format($valor_total,2,',','.'),
+                'banco' => $bancoData['descricao'],
+                'situacao' => '<span class="badge badge-success">Pago</span>',
                 'tipo' => $tipoData['nome'] ?? '-',
-
                 'acoes' => $buttons
             ];
         }
-
         return $this->response->setJSON($result);
     }
-
 }

@@ -1,43 +1,51 @@
+<?php /** @var array $clientes */
+ /** @var array $bancos */ ?>
 <!-- ===============MODAL DE CRIAÇÃO DE RECEBER======================= -->
-<?php if (in_array('criarReceber', $user_permission)) : ?>
-  <div class="modal fade" tabindex="-1" role="dialog" id="addModalReceber">
+<?php if (hasPermission('criarReceber')) : ?>
+  <div class="modal fade" tabindex="-1" role="dialog" id="addModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header bg-primary">
           <h4 class="modal-title text-center">NOVO CRÉDITO</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?php echo base_url('financeiro/criarReceber') ?>" method="post" id="createFormReceber">
+        <form role="form" action="<?= site_url('receber/create') ?>" method="post" class="requires-validation" id="createForm" novalidate>
           <div class="modal-body">
             <div class="form-group">
               <label for="id_cliente">CLIENTE</label>
                 <?php if (isset($cliente_data)): ?>
                   <!-- Se já estiver na ficha do cliente, mostra um campo fixo -->
-                  <input type="text" class="form-control" value="<?php echo $cliente_data['razao']; ?>" readonly>
-                  <input type="hidden" name="id_cliente" value="<?php echo $cliente_data['id']; ?>">
+                  <input type="text" class="form-control" value="<?= $cliente_data['razao']; ?>" readonly>
+                  <input type="hidden" name="id_cliente" value="<?= $cliente_data['id']; ?>">
                 <?php else: ?>
                   <!-- Se estiver na listagem geral, exibe o combo -->
                   <select class="form-control" id="id_cliente" name="id_cliente" required>
-                      <?php echo $combo_cliente; ?>
+                    <?php foreach ($clientes as $c) : ?>
+                      <option value="">ESCOLHA UM CLIENTE </option>
+                        <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option>
+                      <?php endforeach ?>
+                    <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                   </select>
-                  <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                 <?php endif; ?>
             </div>
             <div class="form-group">
               <label for="nome">IDENTIFICAÇÃO DA CONTA</label>
               <input type="text" class="form-control" id="nome" name="nome" placeholder="Identificação da conta" required>
+              <div class="invalid-feedback">Preenchimento Obrigatório!</div>
             </div>
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="dt_recebimento">DATA RECEBIMENTO</label>
                   <input type="date" class="form-control" id="dt_recebimento" name="dt_recebimento" placeholder="Data da recebimento" value="<?php echo date('Y-m-d') ?>" required>
+                  <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="valor">VALOR DA CONTA</label>
                   <input type="number" min="0.00" step="0.01" class="form-control" id="valor" name="valor" placeholder="Valor" required autocomplete="OFF">
+                  <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                 </div>
               </div>
             </div>
@@ -53,7 +61,7 @@
 <?php endif; ?>
 
 <!-- ================== MODAL DE EDIÇÃO DE RECEBER ======================= -->
-<?php if (in_array('modificarReceber', $user_permission)) : ?>
+<?php if (hasPermission('modificarReceber')) : ?>
   <div class="modal fade" tabindex="-1" role="dialog" id="editModalReceber">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -99,7 +107,7 @@
   </div><!-- /.modal -->
 <?php endif; ?>
 <!-- ================ QUITAR OS DADOS DE UMA CONTA A RECEBER =============================================== -->
-<?php if (in_array('modificarReceber', $user_permission)) : ?>
+<?php if (hasPermission('modificarReceber')) : ?>
   <!-- remove brand modal -->
   <div class="modal fade" tabindex="-1" role="dialog" id="quitarModalReceber">
     <div class="modal-dialog" role="document">
@@ -123,7 +131,10 @@
                 <div class="form-group">
                   <label for="id_banco">CONTA A RECEBER</label>
                   <select class="form-control" id="id_banco" name="id_banco">
-                    <?php echo $combo_bancos ?>
+                    <?php foreach ($bancos as $b) : ?>
+                      <option value="">ESCOLHA UM BANCO </option>
+                        <option value="<?php echo $b['id'] ?>"><?php echo $b['descricao'] ?></option>
+                      <?php endforeach ?>
                   </select>
                 </div>
               </div>
@@ -153,7 +164,7 @@
   </div><!-- /.modal -->
 <?php endif; ?>
 <!-- ================ESTORNAR OS DADOS DE UMA CONTA A RECEBER =============================================== -->
-<?php if (in_array('modificarReceber', $user_permission)) : ?>
+<?php if (hasPermission('modificarReceber')) : ?>
   <!-- remove brand modal -->
   <div class="modal fade" tabindex="-1" role="dialog" id="estornarModalReceber">
     <div class="modal-dialog" role="document">
@@ -179,7 +190,7 @@
   </div><!-- /.modal -->
 <?php endif; ?>
 <!-- ================ APAGAR OS DADOS DE UMA CONTA A RECEBER =============================================== -->
-<?php if (in_array('apagarReceber', $user_permission)) : ?>
+<?php if (hasPermission('apagarReceber')) : ?>
   <div class="modal fade" tabindex="-1" role="dialog" id="removeModalReceber">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -210,49 +221,17 @@
   var base_url = "<?= base_url(); ?>";
 
 
-  //=======================ATIVAR O MENU ===========================
-  $(function() {
-    var url = window.location.href;
-
-    // Ativar o link diretamente acessado no menu
-    $('ul.nav-sidebar a, ul.nav-treeview a').filter(function() {
-        return this.href === url || url.startsWith(this.href);
-      }).addClass('active')
-      .closest('.nav-treeview') // Ativa o submenu se necessário
-      .css({
-          'display': 'block'
-      })
-      .addClass('menu-open')
-      .prev('a') // Ativa o menu principal
-      .addClass('active');
-  });
   //======================================================
   $('#id_cliente').select2({
     width: '100%',
-    dropdownParent: $('#addModalReceber'),
+    dropdownParent: $('#addModal'),
     theme: 'classic'
   });
   $('#id_banco').select2({
     width: '100%',
-    dropdownParent: $('#quitarModalReceber'),
+    dropdownParent: $('#quitarModal'),
     theme: 'classic'
   });
-  //=========================================================
-  $(function() {
-        'use strict'
-        const forms = document.querySelectorAll('.requires-validation')
-        Array.from(forms)
-            .forEach(function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-                    form.classList.add('was-validated')
-                }, false)
-            })
-    });
-
   //=============================FUNÇÃO CRIAR ========================================
   $("#createFormReceber").unbind('submit').on('submit', function() {
         var form = $(this);
