@@ -1,5 +1,3 @@
-# CodeIgniter 4 Application Starter
-
 ALTER TABLE anneco90_db.clientes MODIFY COLUMN whatsapp varchar(15) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL;
 
 ALTER TABLE user_group
@@ -27,3 +25,28 @@ ALTER TABLE movimentacao_conta ADD COLUMN id_receber INT NULL;
 
 ALTER TABLE movimentacao_conta ADD CONSTRAINT fk_mov_pagar FOREIGN KEY (id_pagar) REFERENCES pagar(id) ON DELETE SET NULL;
 ALTER TABLE movimentacao_conta ADD CONSTRAINT fk_mov_receber FOREIGN KEY (id_receber) REFERENCES receber(id) ON DELETE SET NULL;
+
+SELECT COUNT(*)
+FROM movimentacao_conta mc
+JOIN pagar p ON mc.id_conta = p.id
+WHERE mc.tipo = 'D';
+
+SELECT COUNT(*)
+FROM movimentacao_conta mc
+JOIN receber r ON mc.id_conta = r.id
+WHERE mc.tipo = 'C';
+
+#coloca todos os valores do id_conta que forem da tabela pagar
+UPDATE movimentacao_conta mc
+JOIN pagar p ON mc.id_conta = p.id
+SET mc.id_pagar = p.id
+WHERE mc.tipo = 'D';
+
+#coloca todos os valores do id_conta que forem da tabela receber
+UPDATE movimentacao_conta mc
+JOIN receber r ON mc.id_conta = r.id
+SET mc.id_receber = r.id
+WHERE mc.tipo = 'C';
+
+alter table movimentacao_conta drop column id_conta
+	

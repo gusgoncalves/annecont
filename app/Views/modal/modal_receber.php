@@ -260,17 +260,17 @@
     // reseta visual dos campos
   });
   //=============================FUNÇÃO EDITAR ========================================
-  function editFuncReceber(id) {
+  function editFunc(id) {
     $.ajax({
      url: base_url + 'receber/getById/' + id,
       type: 'GET',
       dataType: 'json',
       success: function(response) {
         let data = response.data;
-        $("#editar_nome").val(response.nome);
-        $("#editar_dt_recebimento").val(response.dt_recebimento);
-        $("#editar_valor").val(response.valor);
-        $("#receber_descricao").val(response.observacoes);
+        $("#editar_nome").val(data.nome);
+        $("#editar_dt_recebimento").val(data.dt_recebimento);
+        $("#editar_valor").val(data.valor);
+        $("#receber_descricao").val(data.observacoes);
         // abre modal
         $("#editModal").modal('show');
         // submit update

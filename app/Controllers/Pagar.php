@@ -7,6 +7,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\PagarModel;
 use App\Models\TiposContaModel;
 use App\Models\BancosModel;
+use App\Models\MovimentoModel;
 
 class Pagar extends BaseController
 {
@@ -213,6 +214,7 @@ class Pagar extends BaseController
     public function quitarPagar()
     {
         $pagarModel = new PagarModel();
+        $movimentoModel = new MovimentoModel();
         $id = $this->request->getPost('quitar_id');
         // busca conta
         $conta = $pagarModel->find($id);
@@ -222,11 +224,18 @@ class Pagar extends BaseController
                 'messages' => 'Conta não encontrada.'
             ]);
         }
+        if($conta['quitado'] == 1){
+            return $this->response->setJSON([
+                'success' => false,
+                'messages' => 'Conta já foi quitada.'
+            ]);
+        }
         // recebe dados
         $dtBaixa      = $this->request->getPost('dt_baixa');
         $idBanco      = $this->request->getPost('id_banco');
         $acrescimo    = (float) ($this->request->getPost('vl_acrescimo') ?? 0);
         $desconto     = (float) ($this->request->getPost('vl_desconto') ?? 0);
+        $valorTotal = $conta['valor_pagar']+$acrescimo - $desconto;
        
         //evita negativos
         if($acrescimo < 0){
@@ -246,6 +255,17 @@ class Pagar extends BaseController
         ];
         // atualiza
         if ($pagarModel->update($id, $data)) {
+            $movimentoData = [
+                'tipo'         => 'D',
+                'descricao'    => 'Pagamento - ' . $conta['nome'],
+                'dt_movimento' => date('Y-m-d'),
+                'dt_baixa'     => $dtBaixa,
+                'valor'        => $valorTotal,
+                'id_banco'     => $idBanco,
+                'id_usuario'   => session()->get('id'),
+                'id_pagar'   => $id
+            ];
+            $movimentoModel->insert($movimentoData);
 
             return $this->response->setJSON([
                 'success' => true,
@@ -284,6 +304,7 @@ class Pagar extends BaseController
     //==================FUNÇÃO PARA ESTORNAR UM PAGAMENTO =============================
     public function estornarPagar()
     {
+         $movimentoModel = new MovimentoModel();
         $response = [
             'success' => false,
             'messages' => ''
@@ -298,6 +319,13 @@ class Pagar extends BaseController
         if (!$conta) {
             $response['messages'] = 'Conta não encontrada.';
             return $this->response->setJSON($response);
+        }
+        $dias = (strtotime(date('Y-m-d')) - strtotime($conta['dt_quitado'])) / 86400;
+        if($dias > 7){
+            return $this->response->setJSON([
+                'success' => false,
+                'messages' => 'Prazo para estorno expirado.'
+            ]);
         }
         // verifica se realmente está quitada
         if ($conta['quitado'] != '1') {
@@ -314,6 +342,10 @@ class Pagar extends BaseController
             'id_usuario_estornou' => session()->get('id')
         ];
         if ($pagarModel->update($id, $dados)) {
+             $movimentoModel
+                ->where('id_receber', $id)
+                ->where('tipo','D')
+                ->delete();
             $response['success'] = true;
             $response['messages'] = 'Conta estornada com sucesso!';
         } else {

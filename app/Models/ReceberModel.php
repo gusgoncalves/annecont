@@ -14,7 +14,7 @@ class ReceberModel extends Model
         'valor',
         'id_banco',
         'id_cliente',
-        'obserevacoes',
+        'observacoes',
         'quitado',
         'dt_quitado',
         'dt_estorno',

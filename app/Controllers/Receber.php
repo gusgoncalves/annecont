@@ -7,6 +7,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\ReceberModel;
 use App\Models\ClientesModel;
 use App\Models\BancosModel;
+use App\Models\MovimentoModel;
 
 class Receber extends BaseController
 {
@@ -142,24 +143,20 @@ class Receber extends BaseController
     public function update($id = null)
     {
         $rules = [
-            'id_cliente' => 'required',
-            'nome' => 'required|min_length[3]',
-            'dt_recebimento' => 'required|valid_date[Y-m-d]',
-            'valor' => 'required|decimal|greater_than[0]'
+            'editar_nome' => 'required|min_length[3]',
+            'editar_dt_recebimento' => 'required|valid_date[Y-m-d]',
+            'editar_valor' => 'required|decimal|greater_than[0]'
         ];
         $messages = [
-            'id_cliente' => [
-                'required' => 'O cliente deve ser escolhido'
-            ],
-            'nome' => [
+            'editar_nome' => [
                 'required' => 'A descrição da conta deve ser preenchida',
                 'min_length' => 'A Identificação deve ter no mínimo 3 letras'
             ],
-            'dt_vencimento' => [
+            'editar_dt_recebimento' => [
                 'required' => 'A data de vencimento é necessária',
                 'valid_date' => 'Informe uma data válida'
             ],
-            'valor' => [
+            'editar_valor' => [
                 'required' => 'O valor deve ser preenchido',
                 'decimal'      => 'Informe um valor válido',
                 'greater_than' => 'O valor deve ser maior que zero'
@@ -172,11 +169,10 @@ class Receber extends BaseController
             ]);
         }
         $data = [
-            'nome'          => $this->request->getPost('nome'),
-            'id_cliente'       => $this->request->getPost('id_cliente'),
-            'dt_recebimento' => $this->request->getPost('dt_recebimento'),
-            'valor'   => $this->request->getPost('valor'),
-            'id_usuario'    => session()->get('id')
+            'nome'          => $this->request->getPost('editar_nome'),
+            'dt_recebimento' => $this->request->getPost('editar_dt_recebimento'),
+            'valor'   => $this->request->getPost('editar_valor'),
+            'observacoes' => $this->request->getPost('receber_descricao'),
         ];
         //  echo '<pre>';
         //  print_r($data);
@@ -200,6 +196,7 @@ class Receber extends BaseController
     public function quitarReceber()
     {
         $receberModel = new ReceberModel();
+        $movimentoModel = new MovimentoModel();
         $id = $this->request->getPost('quitar_id');
         // busca conta
         $conta = $receberModel->find($id);
@@ -209,11 +206,18 @@ class Receber extends BaseController
                 'messages' => 'Conta não encontrada.'
             ]);
         }
+        if($conta['quitado'] == 1){
+            return $this->response->setJSON([
+                'success' => false,
+                'messages' => 'Conta já foi quitada.'
+            ]);
+        }
         // recebe dados
         $dtBaixa      = $this->request->getPost('dt_baixa');
         $idBanco      = $this->request->getPost('id_banco');
         $acrescimo    = (float) ($this->request->getPost('vl_acrescimo') ?? 0);
         $desconto     = (float) ($this->request->getPost('vl_desconto') ?? 0);
+        $valorTotal = $conta['valor']+$acrescimo - $desconto;
        
         //evita negativos
         if($acrescimo < 0){
@@ -233,6 +237,18 @@ class Receber extends BaseController
         ];
         // atualiza
         if ($receberModel->update($id, $data)) {
+            $movimentoData = [
+                'tipo'         => 'C',
+                'descricao'    => 'Recebimento - ' . $conta['nome'],
+                'dt_movimento' => date('Y-m-d'),
+                'dt_baixa'     => $dtBaixa,
+                'valor'        => $valorTotal,
+                'id_banco'     => $idBanco,
+                'id_usuario'   => session()->get('id'),
+                'id_receber'   => $id
+            ];
+            $movimentoModel->insert($movimentoData);
+
             return $this->response->setJSON([
                 'success' => true,
                 'messages' => 'Conta quitada com sucesso!'
@@ -270,6 +286,7 @@ class Receber extends BaseController
     //==================FUNÇÃO PARA ESTORNAR UM PAGAMENTO =============================
     public function estornarReceber()
     {
+        $movimentoModel = new MovimentoModel();
         $response = [
             'success' => false,
             'messages' => ''
@@ -284,6 +301,13 @@ class Receber extends BaseController
         if (!$conta) {
             $response['messages'] = 'Conta não encontrada.';
             return $this->response->setJSON($response);
+        }
+        $dias = (strtotime(date('Y-m-d')) - strtotime($conta['dt_quitado'])) / 86400;
+        if($dias > 7){
+            return $this->response->setJSON([
+                'success' => false,
+                'messages' => 'Prazo para estorno expirado.'
+            ]);
         }
         // verifica se realmente está quitada
         if ($conta['quitado'] != '1') {
@@ -304,6 +328,10 @@ class Receber extends BaseController
         // echo '</pre>';
         // exit;
         if ($receberModel->update($id, $dados)) {
+            $movimentoModel
+                ->where('id_receber', $id)
+                ->where('tipo','C')
+                ->delete();
             $response['success'] = true;
             $response['messages'] = 'Conta estornada com sucesso!';
         } else {
