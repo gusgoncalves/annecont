@@ -10,7 +10,7 @@ Histórico de contas
       <div class="col-md-12 col-xs-12">
         <div class="card">
           <div class="card-header bg-primary">
-            <h5 class="text-center">HISTÓRICO DE CONTAS</h5>
+            <h5 class="text-center">HISTÓRICO DE RECEBER</h5>
           </div>
           <div class="card-body">
             <div class="row mb-3">
@@ -33,12 +33,12 @@ Histórico de contas
               <thead>
                 <tr>
                   <th>DATA PAGAMENTO</th>
+                  <th>CLIENTE</th>
                   <th>DESCRICAO</th>
-                  <th>TIPO</th>
                   <th>BANCO</th>
                   <th>VALOR TOTAL</th>
                   <th>SITUAÇÃO</th>
-                  <?php if (hasAnyPermission(['modificarPagar', 'apagarPagar'])) : ?>
+                  <?php if (hasAnyPermission(['modificarReceber', 'apagarReceber'])) : ?>
                     <th class="col-2">AÇOES</th>
                   <?php endif; ?>
                 </tr>
@@ -51,7 +51,7 @@ Histórico de contas
       </div><!-- div col -->
     </div><!-- div row -->
   </section>
-  <?= $this->include('modal/modal_pagar') ?>
+  <?= $this->include('modal/modal_receber') ?>
 <?= $this->endSection() ?>
 <?= $this->section('scripts') ?>
   <script type="text/javascript">
@@ -59,22 +59,17 @@ Histórico de contas
     var base_url = "<?= site_url(); ?>";
 
     //=================== SELECT 2 =====================================
-    $('#tipo').select2({
-      width: '100%',
-      dropdownParent: $('#addModal')
-    });
     $('#id_banco').select2({
       width: '100%',
       dropdownParent: $('#quitarModal'),
       theme: 'classic'
     });
-
     // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
     manageTable = $("#manageTable").DataTable({
       processing: true,
       responsive: true,
       autoWidth: false,
-      paging: false,
+      paging: true,
       searching: true,
       ordering: false,
       info: false,
@@ -82,7 +77,7 @@ Histórico de contas
         url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
       },
       ajax: {
-        url: base_url + "pagar/busca_historico",
+        url: base_url + "receber/busca_historico",
         type: "POST",
         data: function(d) {
           d.data_inicial = $('#data_inicial').val();
@@ -92,8 +87,12 @@ Histórico de contas
       },
       columns: [
         { data: 'dt_quitado' },
+         { data: 'cliente',
+          render: function (data, type, row) {
+              return `<b>${data}</b>`;
+            }
+        },
         { data: 'descricao' },
-        { data: 'tipo' },
         { data: 'banco' },
         { data: 'valor' },
         { data: 'situacao' },

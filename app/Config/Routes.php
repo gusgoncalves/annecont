@@ -96,6 +96,14 @@ $routes->group('pagar', ['filter' => 'auth:verPagar'], function($routes) {
     $routes->get('historico', 'Pagar::historicoPagar');
     $routes->post('busca_historico', 'Pagar::buscaDadosHistorico');
 });
+$routes->group('movimento', ['filter' => 'auth:verPagar'], function($routes) {
+    $routes->get('/', 'Movimento::index');
+    $routes->get('busca', 'Movimento::buscaDados');
+    $routes->post('create', 'Movimento::create');
+    $routes->get('getById/(:num)', 'Movimento::getById/$1');
+    $routes->post('edit/(:num)', 'Movimento::update/$1');
+    $routes->post('delete', 'Movimento::delete');
+});
 $routes->group('receber', ['filter' => 'auth:verReceber'], function($routes) {
     $routes->get('/', 'Receber::index');
     $routes->get('busca', 'Receber::buscaDados');
@@ -107,14 +115,6 @@ $routes->group('receber', ['filter' => 'auth:verReceber'], function($routes) {
     $routes->post('delete', 'Receber::delete');
     $routes->get('historico', 'Receber::historicoReceber');
     $routes->post('busca_historico', 'Receber::buscaDadosHistorico');
-});
-$routes->group('fluxo_caixa', ['filter' => 'auth:verPagar'], function($routes) {
-    $routes->get('/', 'FluxoCaixa::index');
-    $routes->get('busca', 'FluxoCaixa::buscaDados');
-    $routes->post('create', 'FluxoCaixa::create');
-    $routes->get('getById/(:num)', 'FluxoCaixa::getById/$1');
-    $routes->post('edit/(:num)', 'FluxoCaixa::update/$1');
-    $routes->post('delete', 'FluxoCaixa::delete');
 });
 $routes->group('tipo_certidao', ['filter' => 'auth:verCertidao'], function($routes) {
     $routes->get('/', 'TiposCertidao::index');

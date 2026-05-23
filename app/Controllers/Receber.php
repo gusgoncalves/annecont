@@ -53,6 +53,7 @@ class Receber extends BaseController
                 'cliente' => $clienteData['razao'] ?? 'Cliente Inexistente',
                 'valor' => number_format($value['valor'], 2, ',', '.'),
                 'situacao' => $value['quitado'] == 0 ? '<span class="badge badge-warning">Aberto</span>' : '<span class="badge badge-success">Pago</span>',
+                'dt_estorno' => $value['dt_estorno'],
                 'acoes' => $buttons
             );
         } // /foreach
@@ -62,14 +63,14 @@ class Receber extends BaseController
     public function create()
     {
         $rules = [
-            'tipo' => 'required',
+            'id_cliente' => 'required',
             'nome' => 'required|min_length[3]',
-            'dt_vencimento' => 'required|valid_date[Y-m-d]',
+            'dt_recebimento' => 'required|valid_date[Y-m-d]',
             'valor' => 'required|decimal|greater_than[0]'
         ];
         $messages = [
-            'tipo' => [
-                'required' => 'O tipo deve ser escolhido'
+            'id_cliente' => [
+                'required' => 'O cliente deve ser escolhido'
             ],
             'nome' => [
                 'required' => 'A descrição da conta deve ser preenchida',
@@ -95,43 +96,29 @@ class Receber extends BaseController
                 'messages' => implode('<br>', $this->validator->getErrors())
             ]);
         }
+        $data = [
+            'nome'          => $this->request->getPost('nome'),
+            'id_cliente'       => $this->request->getPost('id_cliente'),
+            'dt_recebimento' => $this->request->getPost('dt_recebimento'),
+            'quitado'       => 0,
+            'valor'   => $this->request->getPost('valor'),
+            'id_usuario'    => session()->get('id')
+        ];
+        //  echo '<pre>';
+        //  print_r($data);
+        //  echo '</pre>';
+        //  exit; 
         $receberModel = new ReceberModel();
-        $parcelas       = (int) $this->request->getPost('parcelas');
-        $dataBase       = $this->request->getPost('dt_vencimento');
-        // se não informar parcelas, assume 1
-        if ($parcelas <= 0) {
-            $parcelas = 1;
-        }
-
-        for ($i = 0; $i < $parcelas; $i++) {
-            $vencimento = date('Y-m-d', strtotime("+{$i} month", strtotime($dataBase)));
-            $nomeConta = $this->request->getPost('nome');
-            // adiciona descrição da parcela apenas se tiver mais de 1
-            if ($parcelas > 1) {
-                $nomeConta .= ' - Parcela ' . ($i + 1) . '/' . $parcelas;
-            }
-            $data = [
-                'id_tipo'       => $this->request->getPost('tipo'),
-                'nome'          => $nomeConta,
-                'quitado'       => 0,
-                'dt_vencimento' => $vencimento,
-                'valor_receber'   => $this->request->getPost('valor'),
-                'id_usuario'    => session()->get('id')
-            ];
-            // tenta inserir
-            if (!$receberModel->insert($data)) {
-
-                return $this->response->setJSON([
-                    'success' => false,
-                    'messages' => 'Erro ao salvar a Conta'
-                ]);
-            }
+         $create = $receberModel->insert($data);
+         if($create){
+            return $this->response->setJSON([
+                'success' => true,
+                'messages' => 'Conta criada com sucesso'
+            ]);
         }
         return $this->response->setJSON([
-            'success' => true,
-            'messages' => $parcelas > 1
-                ? 'Parcelas criadas com sucesso'
-                : 'Conta criada com sucesso'
+            'success' => false,
+            'messages' => 'Erro ao salvar a Conta'
         ]);
     }
     //========================FUNÇÃO PARA PEGAR OS DADOS DO BANCO POR ID =================
@@ -147,7 +134,7 @@ class Receber extends BaseController
         } else {
             return $this->response->setJSON([
                 'success' => false,
-                'messages' => 'Banco não encontrado'
+                'messages' => 'Conta não encontrado'
             ]);
         }
     }
@@ -155,24 +142,24 @@ class Receber extends BaseController
     public function update($id = null)
     {
         $rules = [
-            'editar_tipo' => 'required',
-            'editar_nome' => 'required|min_length[3]',
-            'editar_dt_vencimento' => 'required|valid_date[Y-m-d]',
-            'editar_valor' => 'required|decimal|greater_than[0]'
+            'id_cliente' => 'required',
+            'nome' => 'required|min_length[3]',
+            'dt_recebimento' => 'required|valid_date[Y-m-d]',
+            'valor' => 'required|decimal|greater_than[0]'
         ];
         $messages = [
-            'editar_tipo' => [
-                'required' => 'O tipo deve ser escolhido'
+            'id_cliente' => [
+                'required' => 'O cliente deve ser escolhido'
             ],
-            'editar_nome' => [
+            'nome' => [
                 'required' => 'A descrição da conta deve ser preenchida',
                 'min_length' => 'A Identificação deve ter no mínimo 3 letras'
             ],
-            'editar_dt_vencimento' => [
+            'dt_vencimento' => [
                 'required' => 'A data de vencimento é necessária',
                 'valid_date' => 'Informe uma data válida'
             ],
-            'editar_valor' => [
+            'valor' => [
                 'required' => 'O valor deve ser preenchido',
                 'decimal'      => 'Informe um valor válido',
                 'greater_than' => 'O valor deve ser maior que zero'
@@ -185,10 +172,10 @@ class Receber extends BaseController
             ]);
         }
         $data = [
-            'id_tipo'       => $this->request->getPost('editar_tipo'),
-            'nome'          => $this->request->getPost('editar_nome'),
-            'dt_vencimento' => $this->request->getPost('editar_dt_vencimento'),
-            'valor_receber'   => $this->request->getPost('editar_valor'),
+            'nome'          => $this->request->getPost('nome'),
+            'id_cliente'       => $this->request->getPost('id_cliente'),
+            'dt_recebimento' => $this->request->getPost('dt_recebimento'),
+            'valor'   => $this->request->getPost('valor'),
             'id_usuario'    => session()->get('id')
         ];
         //  echo '<pre>';
@@ -246,7 +233,6 @@ class Receber extends BaseController
         ];
         // atualiza
         if ($receberModel->update($id, $data)) {
-
             return $this->response->setJSON([
                 'success' => true,
                 'messages' => 'Conta quitada com sucesso!'
@@ -310,9 +296,13 @@ class Receber extends BaseController
             'id_banco'       => null,
             'vl_acrescimo'   => 0,
             'vl_desconto'    => 0,
-            'data_pagamento' => null,
+            'dt_estorno' => date('Y-m-d'),
             'id_usuario_estornou' => session()->get('id')
         ];
+        // echo '<pre>';
+        // print_r($dados);
+        // echo '</pre>';
+        // exit;
         if ($receberModel->update($id, $dados)) {
             $response['success'] = true;
             $response['messages'] = 'Conta estornada com sucesso!';
@@ -342,43 +332,37 @@ class Receber extends BaseController
         $dataInicial = $this->request->getPost('data_inicial');
         $dataFinal   = $this->request->getPost('data_final');
 
-        $builder = $receberModel
-            ->where('quitado', 1);
+        $builder = $receberModel->where('quitado', 1);
 
         // se pesquisou período
         if (!empty($dataInicial) && !empty($dataFinal)) {
-            $builder->where('DATE(dt_vencimento) >=', $dataInicial);
-            $builder->where('DATE(dt_vencimento) <=', $dataFinal);
+            $builder->where('DATE(dt_recebimento) >=', $dataInicial);
+            $builder->where('DATE(dt_recebimento) <=', $dataFinal);
         } else {
             // padrão: últimos 30 dias
-            $builder->where(
-                'DATE(dt_vencimento) >=',
-                date('Y-m-d', strtotime('-30 days'))
-            );
+            $builder->where('DATE(dt_recebimento) >=',date('Y-m-d', strtotime('-30 days')));
         }
-        $data = $builder
-            ->orderBy('dt_vencimento', 'DESC')
-            ->findAll();
+        $data = $builder->orderBy('dt_recebimento', 'DESC')->findAll();
         $result = ['data' => []];
         foreach ($data as $value) {
-            $tipoData = $clientesModelModel->where('id', $value['id_tipo'])->first();
+            $clienteData = $clientesModelModel->where('id', $value['id_cliente'])->first();
             $bancoData = $bancoModel->where('id', $value['id_banco'])->first();
             $buttons = '';
-            if (hasPermission('modificarreceber')) {
+            if (hasPermission('modificarReceber')) {
                 $buttons .= ' <button type="button" style="font-size:0.55em" class="btn btn-warning" onclick="estornarFunc('.$value['id'].')" title="Estornar Quitado"><i class="fa fa-minus"></i></button>';
             }
             // if (hasPermission('modificarreceber')) {
             //     $buttons .= ' <button type="button" class="btn btn-primary" style="font-size:0.55em" onclick="editFunc('.$value['id'].')"><i class="fas fa-edit"></i></button>';
             // }
-            $valor_total = $value['valor_receber'] + $value['vl_acrescimo'] - $value['vl_desconto'];
+            $valor_total = $value['valor'] + $value['vl_acrescimo'] - $value['vl_desconto'];
             $result['data'][] = [
                 'descricao' => $value['nome'],
                 'dt_quitado' => date('d/m/Y',strtotime($value['dt_quitado'])),
-                //'valor' => number_format($value['valor_receber'],2,',','.'),
                 'valor' => number_format($valor_total,2,',','.'),
-                'banco' => $bancoData['descricao'],
+                'banco' => $bancoData['descricao']??'<span class="badge badge-primary">Não Informado</span>',
                 'situacao' => '<span class="badge badge-success">Pago</span>',
-                'tipo' => $tipoData['nome'] ?? '-',
+                'cliente' => $clienteData['razao'] ?? '-',
+                'dt_estorno' => $value['dt_estorno'],
                 'acoes' => $buttons
             ];
         }

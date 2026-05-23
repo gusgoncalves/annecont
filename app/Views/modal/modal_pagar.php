@@ -16,7 +16,7 @@
               <select class="form-control" style="width:100%" id="tipo" name="tipo" required>
                 <option value="">ESCOLHA UMA CATEGORIA</option>
                 <?php foreach ($tipos as $t) : ?>
-                  <option value="<?php echo $t['id'] ?>"><?php echo $t['nome'] ?></option>
+                  <option value="<?= $t['id'] ?>"><?= $t['nome'] ?></option>
                 <?php endforeach ?>
               </select>
               <div class="invalid-feedback">Preenchimento Obrigatório!</div>
@@ -73,14 +73,14 @@
           <h5 class="modal-title text-center">EDITAR PAGAMENTO</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?php echo base_url('pagar/edit') ?>" method="post" class="requires-validation" id="updateForm" novalidate>
+        <form role="form" action="<?= site_url('pagar/edit') ?>" method="post" class="requires-validation" id="updateForm" novalidate>
           <div class="modal-body">
             <div class="form-group">
               <label for="editar_tipo">TIPO</label>
               <select class="form-control" id="editar_tipo" style="width:100%" name="editar_tipo">
                 <option value=""></option>
                 <?php foreach ($tipos as $t) : ?>
-                  <option value="<?php echo $t['id'] ?>"><?php echo $t['nome'] ?></option>
+                  <option value="<?= $t['id'] ?>"><?= $t['nome'] ?></option>
                 <?php endforeach ?>
               </select>
               <div class="invalid-feedback">Preenchimento Obrigatório!</div>
@@ -137,6 +137,7 @@
                 <div class="form-group">
                   <label for="dt_baixa">DATA DO PAGAMENTO</label>
                   <input type="date" class="form-control" id="dt_baixa" name="dt_baixa" required>
+                  <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                 </div>
               </div>
               <div class="col-md-6">
@@ -206,7 +207,7 @@
   <?php endif; ?>
     <!-- ================== MODAL DE APAGAR PAGAR ======================= -->
 <?php if (hasPermission('apagarReceber')) : ?>
-  <!-- remove brand modal -->
+    <!-- remove brand modal -->
   <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -216,7 +217,7 @@
         </div>
         <form role="form" action="<?= site_url('pagar/delete') ?>" method="post" id="removeForm">
           <div class="modal-body">
-            <p>Tem certeza que deseja remover este pagamento?</p>
+            <p><b>Tem certeza que deseja remover este pagamento?</b></p>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-success">SIM</button>
@@ -286,7 +287,6 @@
       dataType: 'json',
       success: function(response) {
         //console.log(response);
-        // pega os dados corretos
         let data = response.data;
         // preenche campos
         $("#editar_tipo").val(data.id_tipo);

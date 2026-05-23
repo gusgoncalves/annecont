@@ -16,6 +16,14 @@ ON DELETE CASCADE;
 
 ALTER TABLE anneco90_db.pagar ADD id_usuario_estornou INT NULL;
 
-
 CREATE INDEX idx_quitado_vencimento
 ON pagar (quitado, dt_vencimento);
+
+CREATE INDEX idx_quitado_recebimento
+ON receber (quitado, dt_recebimento);
+
+ALTER TABLE movimentacao_conta ADD COLUMN id_pagar INT NULL;
+ALTER TABLE movimentacao_conta ADD COLUMN id_receber INT NULL;
+
+ALTER TABLE movimentacao_conta ADD CONSTRAINT fk_mov_pagar FOREIGN KEY (id_pagar) REFERENCES pagar(id) ON DELETE SET NULL;
+ALTER TABLE movimentacao_conta ADD CONSTRAINT fk_mov_receber FOREIGN KEY (id_receber) REFERENCES receber(id) ON DELETE SET NULL;

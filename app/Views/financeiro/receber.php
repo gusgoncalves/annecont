@@ -1,5 +1,4 @@
 <?php
-
 /** @var array $tipos */
 /** @var array $bancos */
 ?>
@@ -66,7 +65,14 @@ Contas a Receber
         },
         {data: 'descricao'},
         {data: 'vencimento'},
-        {data: 'valor'},
+        { data : 'valor',
+            render: function (data, type, row) {
+              if (row.dt_estorno != null && row.dt_estorno != '') {
+                return `${data} <span class="badge badge-primary ml-1">Houve Estorno</span>`;
+              }
+              return data;
+            } 
+          },
         {data: 'situacao'},
         {data: 'acoes'},
       ],

@@ -1,6 +1,6 @@
 <?php /** @var array $clientes */
  /** @var array $bancos */ ?>
-<!-- ===============MODAL DE CRIAÇÃO DE RECEBER======================= -->
+  <!-- ===============MODAL DE CRIAÇÃO DE RECEBER======================= -->
 <?php if (hasPermission('criarReceber')) : ?>
   <div class="modal fade" tabindex="-1" role="dialog" id="addModal">
     <div class="modal-dialog" role="document">
@@ -21,11 +21,10 @@
                   <!-- Se estiver na listagem geral, exibe o combo -->
                   <select class="form-control" id="id_cliente" name="id_cliente" required>
                     <?php foreach ($clientes as $c) : ?>
-                      <option value="">ESCOLHA UM CLIENTE </option>
                         <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option>
                       <?php endforeach ?>
-                    <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                   </select>
+                  <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                 <?php endif; ?>
             </div>
             <div class="form-group">
@@ -59,17 +58,16 @@
     </div><!-- /.modal-dialog -->
   </div><!-- /. end modal -->
 <?php endif; ?>
-
-<!-- ================== MODAL DE EDIÇÃO DE RECEBER ======================= -->
+  <!-- ================== MODAL DE EDIÇÃO DE RECEBER ======================= -->
 <?php if (hasPermission('modificarReceber')) : ?>
-  <div class="modal fade" tabindex="-1" role="dialog" id="editModalReceber">
+  <div class="modal fade" tabindex="-1" role="dialog" id="editModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header bg-primary">
           <h4 class="modal-title text-center">EDITAR RECEBIMENTO</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?php echo base_url('financeiro/editarReceber') ?>" method="post" id="updateFormReceber">
+        <form role="form" action="<?= site_url('receber/edit') ?>" class="requires-validation" method="post" id="updateForm" novalidate>
           <div class="modal-body">
             <div class="form-group">
               <?php if (isset($cliente_data)) : ?>
@@ -77,18 +75,21 @@
               <?php endif; ?>
               <label for="editar_nome">IDENTIFICAÇÃO DA CONTA</label>
               <input type="text" class="form-control" id="editar_nome" name="editar_nome" placeholder="Identificação da conta" required>
+              <div class="invalid-feedback">Preenchimento Obrigatório!</div>
             </div>
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="editar_dt_recebimento">DATA RECEBIMENTO</label>
                   <input type="date" class="form-control" id="editar_dt_recebimento" name="editar_dt_recebimento" placeholder="Data da entrada" required>
+                  <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="editar_valor">VALOR DA CONTA</label>
                   <input type="number" min="0.00" step="0.01" class="form-control" id="editar_valor" name="editar_valor" placeholder="Valor da conta" required autocomplete="OFF">
+                  <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                 </div>
               </div>
             </div>
@@ -106,35 +107,37 @@
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
 <?php endif; ?>
-<!-- ================ QUITAR OS DADOS DE UMA CONTA A RECEBER =============================================== -->
+  <!-- ================ QUITAR OS DADOS DE UMA CONTA A RECEBER =============================================== -->
 <?php if (hasPermission('modificarReceber')) : ?>
   <!-- remove brand modal -->
-  <div class="modal fade" tabindex="-1" role="dialog" id="quitarModalReceber">
+  <div class="modal fade" tabindex="-1" role="dialog" id="quitarModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header bg-warning">
           <h5 class="modal-title text-center">QUITAR CONTA</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?php echo base_url('financeiro/quitarReceber') ?>" method="post" id="quitarFormReceber">
+        <form role="form" action="<?= site_url('receber/quitar') ?>" method="post" class="requires-validation" id="quitarForm" novalidate>
           <div class="modal-body">
             <p><b>Esse Movimento aparecerá no fluxo de caixa! </b></p>
             <p><h3 class="text-center bg-primary"><b> Valor da conta:  R$ <span id="valorSpan"></span></b></h3></p>
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="dt_baixa">DATA DA BAIXA</label>
+                  <label for="dt_baixa">DATA DO PAGAMENTO</label>
                   <input type="date" class="form-control" id="dt_baixa" name="dt_baixa" required>
+                  <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="id_banco">CONTA A RECEBER</label>
+                  <label for="id_banco">BANCO A RECEBER</label>
                   <select class="form-control" id="id_banco" name="id_banco">
                     <?php foreach ($bancos as $b) : ?>
                       <option value="">ESCOLHA UM BANCO </option>
-                        <option value="<?php echo $b['id'] ?>"><?php echo $b['descricao'] ?></option>
+                        <option value="<?= $b['id'] ?>"><?= $b['descricao'] ?></option>
                       <?php endforeach ?>
+                      <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                   </select>
                 </div>
               </div>
@@ -163,17 +166,17 @@
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
 <?php endif; ?>
-<!-- ================ESTORNAR OS DADOS DE UMA CONTA A RECEBER =============================================== -->
+  <!-- ================ESTORNAR OS DADOS DE UMA CONTA A RECEBER =============================================== -->
 <?php if (hasPermission('modificarReceber')) : ?>
   <!-- remove brand modal -->
-  <div class="modal fade" tabindex="-1" role="dialog" id="estornarModalReceber">
+  <div class="modal fade" tabindex="-1" role="dialog" id="estornarModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header bg-warning">
           <h5 class="modal-title text-center">ESTORNAR CONTA</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?php echo base_url('financeiro/estornarReceber') ?>" method="post" id="estornarFormReceber">
+        <form role="form" action="<?php echo base_url('receber/estornar') ?>" method="post" id="estornarForm">
           <div class="modal-body">
 
             <p><b>ESSA OPÇÃO FAZ COM QUE A CONTA RETORNE PARA O STATUS <b>ABERTO</b>?</b></p>
@@ -189,9 +192,9 @@
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
 <?php endif; ?>
-<!-- ================ APAGAR OS DADOS DE UMA CONTA A RECEBER =============================================== -->
+  <!-- ================ APAGAR OS DADOS DE UMA CONTA A RECEBER =============================================== -->
 <?php if (hasPermission('apagarReceber')) : ?>
-  <div class="modal fade" tabindex="-1" role="dialog" id="removeModalReceber">
+  <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header bg-danger">
@@ -199,12 +202,9 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
 
-        <form role="form" action="<?php echo base_url('financeiro/removeReceber') ?>" method="post" id="removeFormReceber">
+        <form role="form" action="<?php echo base_url('receber/delete') ?>" method="post" id="removeForm">
           <div class="modal-body">
-            <input type="text" name="cliente_id" id="cliente_id"> <!-- Campo oculto para ID do Cliente -->
-            <input type="text" name="receber_id" id="receber_id"> <!-- Campo oculto para ID do Receber -->
-            <p>Tem certeza que deseja remover este pagamento?</p>
-            <p>ESSE PROCESSO É IRREVERSÍVEL!!</p>
+            <p><b>Tem certeza que deseja remover esta conta?</b></p>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-success">SIM</button>
@@ -216,10 +216,8 @@
   </div><!-- /.modal -->
 <?php endif; ?>
 
-
 <script type="text/javascript">
   var base_url = "<?= base_url(); ?>";
-
 
   //======================================================
   $('#id_cliente').select2({
@@ -232,176 +230,170 @@
     dropdownParent: $('#quitarModal'),
     theme: 'classic'
   });
-  //=============================FUNÇÃO CRIAR ========================================
-  $("#createFormReceber").unbind('submit').on('submit', function() {
-        var form = $(this);
-        // remove the text-danger
-        $(".text-danger").remove();
-        $.ajax({
-            url: form.attr('action'),
-            type: form.attr('method'),
-            data: form.serialize(), // /converting the form data into array and sending it to server
-            dataType: 'json',
-            success: function(response) {
-                if (response.success === true) {
-                    $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">' +
-                        '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>' + response.messages +
-                        '</div>');
-                    $("#sucesso").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#sucesso").slideUp(500);
-                    });
-                    // hide the modal
-                    $("#addModalReceber").modal('hide');
-                    location.reload();
-                    // reset the form
-                    $("#createFormReceber")[0].reset();
-                    $("#createFormReceber .form-group").removeClass('has-error').removeClass('has-success');
-                } else {
-                    if (response.messages instanceof Object) {
-                        $.each(response.messages, function(index, value) {
-                            var id = $("#" + index);
-                            id.closest('.form-group')
-                                .removeClass('has-error')
-                                .removeClass('has-success')
-                                .addClass(value.length > 0 ? 'has-error' : 'has-success');
-                            id.after(value);
-                        });
-                    } else {
-                        $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">' +
-                            '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>' + response.messages +
-                            '</div>');
-                        $("#erro").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#erro").slideUp(500);
-                        });
-                    }
-                }
-            }
-        });
-        return false;
+  //=========ENVIA DADOS DE CRIAR FORM==================
+  $('#createForm').unbind('submit').on('submit', function(e) {
+    e.preventDefault();
+    var form = $(this);
+    $.ajax({
+      url: form.attr('action'),
+      type: form.attr('method'),
+      data: form.serialize(),
+      dataType: 'json',
+      success: function(response) {
+        if (response.success) {
+          $("#addModal").modal('hide');
+          $('#createForm')[0].reset();
+          manageTable.ajax.reload(null, false);
+          showToast(response.messages, 'success');
+          // Redirecionar corretamente
+        } else {
+          showToast(response.messages, 'error');
+        }
+      }
     });
+  });
+  $('#addModal').on('hidden.bs.modal', function() {
+    // limpa formulário
+    $('#createForm')[0].reset();
+    // remove validação bootstrap
+    $('#createForm').removeClass('was-validated');
+    // reseta visual dos campos
+  });
   //=============================FUNÇÃO EDITAR ========================================
   function editFuncReceber(id) {
     $.ajax({
-      url: base_url + 'financeiro/buscaDadosReceberPorID/' + id,
-      type: 'post',
+     url: base_url + 'receber/getById/' + id,
+      type: 'GET',
       dataType: 'json',
       success: function(response) {
+        let data = response.data;
         $("#editar_nome").val(response.nome);
         $("#editar_dt_recebimento").val(response.dt_recebimento);
         $("#editar_valor").val(response.valor);
         $("#receber_descricao").val(response.observacoes);
-        // envia o form de editar 
-        $("#updateFormReceber").unbind('submit').bind('submit', function() {
-          var form = $(this);
-          // remove the text-danger
-          $(".text-danger").remove();
-          $.ajax({
-            url: form.attr('action') + '/' + id,
-            type: form.attr('method'),
-            data: form.serialize(), // /converte os dados para forma de serviço de servidor
-            dataType: 'json',
-            success: function(response) {
-              console.log(response);
-              if (response.success === true) {
-                $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">' +
-                  '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>' + response.messages +
-                  '</div>');
-                $("#sucesso").fadeTo(2000, 500).slideUp(500, function() {
-                  $("#sucesso").slideUp(500);
-                });
-                // esconde o modal
-                $("#editModalReceber").modal('hide');
-                // Redirecionar para a página do cliente após a edição
-                if (response.redirect) {
-                  setTimeout(function() {
-                      window.location.href = response.redirect; // Redireciona para a URL enviada
-                  }, 1000); // Espera 1 segundo antes de redirecionar
+        // abre modal
+        $("#editModal").modal('show');
+        // submit update
+        $("#updateForm")
+          .off('submit')
+          .on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            $.ajax({
+              url: form.attr('action') + '/' + id,
+              type: form.attr('method'),
+              data: form.serialize(),
+              dataType: 'json',
+              success: function(response) {
+                if (response.success) {
+                  $("#editModal").modal('hide');
+                  $("#updateForm")[0].reset();
+                  manageTable.ajax.reload(null, false);
+                  showToast(response.messages, 'success');
+                } else {
+                  showToast(response.messages, 'error');
                 }
-                $("#updateFormReceber .form-group").removeClass('has-error').removeClass('has-success');
-              } else {
-                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">' +
-                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>' + response.messages +
-                  '</div>');
-                $("#erro").fadeTo(2000, 500).slideUp(500, function() {
-                  $("#erro").slideUp(500);
-                });
+              },
+              error: function() {
+                showToast('Erro ao atualizar o Pagamento.', 'error');
               }
-              
-            }
+            });
+            return false;
           });
-          return false;
-        });
+      },
+      error: function() {
+        showToast('Erro ao buscar o Pagamento.', 'error');
       }
     });
   }
-
   //=========================FUNÇÃO CALCULAR DINAMICAMENTE ===============================
   function calcularNovoValor(baseValor, acrescimo, desconto) {
+
     baseValor = parseFloat(baseValor) || 0;
     acrescimo = parseFloat(acrescimo) || 0;
     desconto = parseFloat(desconto) || 0;
 
-    var novoValor = baseValor + acrescimo - desconto;
-    return novoValor.toFixed(2);
+    let novoValor = baseValor + acrescimo - desconto;
+
+    return novoValor.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
   }
   //=============================FUNÇÃO QUITAR ========================================
-  function quitarFuncReceber(id, id_cliente, valor) {
-    if (id) {
-      $('#valorSpan').text(parseFloat(valor).toFixed(2).replace('.', ','));
-
-      $('#vl_acrescimo, #vl_desconto').on('input', function () {
-        var acrescimo = $('#vl_acrescimo').val() || 0;
-        var desconto = $('#vl_desconto').val() || 0;
-        var novoValor = calcularNovoValor(valor, acrescimo, desconto);
-        $('#valorSpan').text(parseFloat(novoValor).toFixed(2).replace('.', ','));
+  function quitarFunc(id, valorBase) 
+  {
+    $('#valorSpan').text(
+      parseFloat(valorBase).toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })
+    );
+    // recalcula dinamicamente
+    $('#vl_acrescimo, #vl_desconto')
+    .off('input')
+    .on('input', function() {
+      let acrescimo = $('#vl_acrescimo').val();
+      let desconto = $('#vl_desconto').val();
+      let novoValor = calcularNovoValor(valorBase, acrescimo, desconto);
+      $('#valorSpan').text(novoValor);
+    });
+    // abre modal
+    $("#quitarModal").modal('show');
+    // submit
+    $("#quitarForm")
+    .off('submit')
+    .on('submit', function(e) {
+      e.preventDefault();
+      let form = $(this);
+      let formData = form.serializeArray();
+      // adiciona ID manualmente
+      formData.push({
+        name: 'quitar_id',
+        value: id
       });
-
-      $("#quitarFormReceber").on('submit', function (event) {
-        event.preventDefault();
-        var form = $(this);
-        var formData = form.serializeArray();
-        formData.push({ name: 'quitar_id', value: id });
-
-        $(".text-danger").remove();
-        $.ajax({
-          url: form.attr('action'),
-          type: form.attr('method'),
-          data: formData,
-          dataType: 'json',
-          success: function (response) {
-            $("#quitarModalReceber").modal('hide');
-            if (response.success === true) {
-              $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">' +
-                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>' + response.messages +
-                '</div>');
-              $("#sucesso").fadeTo(2000, 500).slideUp(500, function () {
-                $("#sucesso").slideUp(500);
-              });
-            } else {
-              $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">' +
-                '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>' + response.messages +
-                '</div>');
-              $("#erro").fadeTo(2000, 500).slideUp(500, function () {
-                $("#erro").slideUp(500);
-              });
-            }
-            location.reload();
-            form[0].reset();
-            form.find('.form-group').removeClass('has-error').removeClass('has-success');
-            form.find('.text-danger').remove();
+      $.ajax({
+        url: form.attr('action'),
+        type: form.attr('method'),
+        data: formData,
+        dataType: 'json',
+        success: function(response){
+          if (response.success) {
+            $("#quitarModal").modal('hide');
+            $("#quitarForm")[0].reset();
+            manageTable.ajax.reload(null, false);
+            showToast(response.messages, 'success');
+          } else {
+            showToast(response.messages, 'error');
           }
-        });
-        return false;
+        },
+        error: function() {
+          showToast('Erro ao quitar a conta.', 'error');
+        }
       });
-    }
+      return false;
+    });
   }
+  $('#quitarModal').on('hidden.bs.modal', function() {
+    // limpa formulário
+    $('#quitarForm')[0].reset();
+    // limpa valor exibido
+    $('#valorSpan').text('0,00');
+    // remove eventos antigos
+    $('#vl_acrescimo, #vl_desconto').off('input');
+    $('#quitarForm').off('submit');
+  });
   //=========================FUNÇÃO ESTORNAR ============================
-  function estornarFunc(id) {
-    if (id) {
-      $("#estornarForm").on('submit', function(event) {
-        event.preventDefault(); // Previne o envio padrão do formulário
-        var form = $(this);
-        $(".text-danger").remove();
+ function estornarFunc(id) 
+  {
+    // abre modal
+    $("#estornarModal").modal('show');
+    // submit
+    $("#estornarForm")
+      .off('submit')
+      .on('submit', function(e) {
+        e.preventDefault();
+        let form = $(this);
         $.ajax({
           url: form.attr('action'),
           type: form.attr('method'),
@@ -410,91 +402,57 @@
           },
           dataType: 'json',
           success: function(response) {
-            manageTableQuitado.ajax.reload(null, false);
-            manageTableNaoQuitado.ajax.reload(null, false);
-            // esconde o modal           
-            $("#estornarModal").modal('hide');
-            if (response.success === true) {
-              $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">' +
-                //'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>' + response.messages +
-                '</div>');
-              $("#sucesso").fadeTo(2000, 500).slideUp(500, function() {
-                $("#sucesso").slideUp(500);
-              });
+            if (response.success) {
+              $("#estornarModal").modal('hide');
+              $("#estornarForm")[0].reset();
+              manageTable.ajax.reload(null, false);
+              showToast(response.messages, 'success');
             } else {
-              $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">' +
-                //'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>' + response.messages +
-                '</div>');
-              $("#erro").fadeTo(2000, 500).slideUp(500, function() {
-                $("#erro").slideUp(500);
-              });
+              showToast(response.messages, 'error');
             }
-            // Recarrega a página após fechar o modal
-            location.reload();
-            // Limpa o conteúdo do modal
-            form[0].reset(); // Reseta todos os campos do formulário
-            form.find('.form-group').removeClass('has-error').removeClass('has-success'); // Remove classes de erro e sucesso
-            form.find('.text-danger').remove(); // Remove mensagens de erro
+          },
+          error: function() {
+            showToast('Erro ao estornar a conta.', 'error');
           }
         });
         return false;
       });
-    }
   }
+  // limpa modal ao fechar
+  $('#estornarModal').on('hidden.bs.modal', function() {
+    $('#estornarForm')[0].reset();
+    $('#estornarForm').off('submit');
+  });
   // ==============================FUNÇÃO REMOVER ==============================================
-  function removeFuncReceber(id_receber, id_cliente = null) {
-        $('#receber_id').val(id_receber);
-        $('#cliente_id').val(id_cliente || '');
-    }
-
-    $(document).ready(function() {
-        $('#removeFormReceber').on('submit', function(e) {
-            e.preventDefault();
-
-            var form = $(this);
-            var url = form.attr('action');
-            var data = form.serialize();
-
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: data,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        $('#removeModalReceber').modal('hide');
-
-                        $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">' +
-                            '<strong><span class="glyphicon glyphicon-ok-sign"></span></strong> ' + response.messages +
-                            '</div>');
-                        $("#sucesso").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#sucesso").slideUp(500);
-                        });
-
-                        // Redireciona após um tempo, se houver URL de redirecionamento
-                        if (response.redirect) {
-                            setTimeout(function() {
-                                window.location.href = response.redirect;
-                            }, 1000);
-                        } else {
-                            // Atualiza a página se não houver redirecionamento
-                            setTimeout(function() {
-                                location.reload();
-                            }, 1000);
-                        }
-
-                    } else {
-                        $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">' +
-                            '<strong><span class="glyphicon glyphicon-exclamation-sign"></span></strong> ' + response.messages +
-                            '</div>');
-                        $("#erro").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#erro").slideUp(500);
-                        });
-                    }
+  function removeFunc(id) 
+  {
+    $('#removeModal').modal('show');
+    // remove submits antigos
+    $('#removeForm').off('submit');
+    // novo submit
+    $('#removeForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: {
+                id: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    $('#removeModal').modal('hide');
+                    $('#removeForm')[0].reset();
+                    manageTable.ajax.reload(null, false);
+                    showToast(response.messages, 'success');
+                } else {
+                    showToast(response.messages, 'error');
                 }
-            });
+            },
+            error: function() {
+                showToast('Erro ao remover o Conta.', 'error');
+            }
         });
     });
+  }  
 </script>

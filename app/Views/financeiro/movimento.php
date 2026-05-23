@@ -1,15 +1,14 @@
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
+<?php /** @var array $movimento */ ?>
+<?= $this->extend('layout') ?>
+<?= $this->section('title') ?>
+Fluxo de Caixa
+<?= $this->endSection() ?>
 
-  </section>
-  <!-- Main content -->
+<?= $this->section('content') ?>
+  <section class="content-header"></section>
   <section class="content">
-    <!-- Small boxes (Stat box) -->
     <div class="row">
       <div class="col-md-12 col-xs-12">
-        <div id="messages"></div>
         <div class="card">
           <div class="card-header bg-primary">
             <h5 class="text-center">FLUXO DE CAIXA / MÊS</h5>
@@ -38,9 +37,6 @@
                 </div>
                 </br>
               </div>
-              <?php if(!empty($dt_inicial)||!empty($dt_final)) : ?>
-                <h5 class="text-center bg-secondary"> Contas referefente ao período de <b><?= date('d/m/Y', strtotime($dt_inicial)); ?></b> até <b><?= date('d/m/Y', strtotime($dt_final)); ?></b> </h5>
-              <?php endif; ?>
               </br>
               <table id="manageTable" class="table table-striped table-bordered table-hover">
                 <thead>
@@ -51,7 +47,7 @@
                     <th>VALOR</th>
                   </tr>
                 </thead>
-                <?php foreach ($movimentos as $k => $v) : ?>
+                <?php foreach ($movimento as $v) : ?>
                   <?php if ($v['tipo'] == 'C') : ?>
                     <tr class="bg-success">
                       <td width="10%"><b>RECEBER</b></td>
@@ -73,12 +69,12 @@
                     <td></td>
                     <td></td>
                     <?php
-                    $total = $credito['credito'] - $debito['debito'];
-                    if ($total <= 0) {
-                      echo "<td class='bg-danger'><h4>R$ " . number_format($total, 2, ',', '.') . "</h4></td>";
-                    } else {
-                      echo "<td class='bg-success'><h4>R$ " . number_format($total, 2, ',', '.') . "</h4></td>";
-                    }
+                    // $total = $credito['credito'] - $debito['debito'];
+                    // if ($total <= 0) {
+                    //   echo "<td class='bg-danger'><h4>R$ " . number_format($total, 2, ',', '.') . "</h4></td>";
+                    // } else {
+                    //   echo "<td class='bg-success'><h4>R$ " . number_format($total, 2, ',', '.') . "</h4></td>";
+                    // }
                     ?>
                   </tr>
               </table>
@@ -93,24 +89,9 @@
     <!-- /.row -->
   </section>
   <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
-
-<script type="text/javascript">
-  var base_url = "<?php echo base_url(); ?>";
-
-  //=======================ATIVAR O MENU ===========================
-$(function () {
-    var url = window.location.href;
-
-    // Ativar o link diretamente acessado no menu
-    $('ul.nav-sidebar a, ul.nav-treeview a').filter(function () {
-        return this.href === url || url.startsWith(this.href);
-    }).addClass('active')
-    .closest('.nav-treeview') // Ativa o submenu se necessário
-    .css({'display': 'block'})
-    .addClass('menu-open')
-    .prev('a') // Ativa o menu principal
-    .addClass('active');
-});
-</script>
+<?= $this->endSection() ?>
+<?= $this->section('scripts') ?>
+  <script type="text/javascript">
+    var base_url = "<?php echo base_url(); ?>";
+  </script>
+<?= $this->endSection() ?>

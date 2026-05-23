@@ -17,10 +17,10 @@ class ReceberModel extends Model
         'obserevacoes',
         'quitado',
         'dt_quitado',
-        'dt_estornado',
+        'dt_estorno',
         'id_usuario',
         'id_usuario_quitou',
-        'id_usuario_estornou',
+        'id_usuario_estorno',
         'vl_acrescimo',
         'vl_desconto'
     ];
