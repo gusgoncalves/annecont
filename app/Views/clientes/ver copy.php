@@ -172,7 +172,32 @@
                     </div>
                     <!-- ============================TAB DOS FUNCIONÁRIOS================================== -->
                     <div class="tab-pane fade" id="tab-funcionarios" role="tabpanel" aria-labelledby="tab-funcionarios-tab">
-                          <div id="conteudo-funcionarios"></div>
+                      <?php if(hasPermission('criarFuncionario')): ?>
+                        <a href="<?php echo base_url('funcionarios/create/'.$cliente['id']) ?>" class="btn btn-success btn-block"><i class="fas fa-plus-square"></i> NOVO FUNCIONÁRIO</a>
+                      <?php endif; ?>
+                      </br>
+                      <!-- ==========================MOSTRA OS FUNCIONÁRIOS======================== -->
+                      <div class="card">
+                        <div class="card-header bg-primary">
+                          <h5 class="text-center">FUNCIONÁRIOS</h5>
+                        </div>
+                        <div class="card-body">
+                          <table class="table table-striped table-bordered">
+                            <tr>
+                              <th>NOME:</th>
+                              <th>WHATSAPP:</th>
+                              <th>VER</th>
+                            </tr>
+                            <?php foreach($funcionario_data as $k => $v ) : ?>
+                              <tr> 
+                                <td class="width:10%"><?= strtoupper($v['nome']); ?></td>
+                                <td><?= strtoupper($v['whatsapp']);?></td>
+                                <td><a href="<?php echo base_url('funcionarios/update/'.$v['id']) ?>" style="font-size:0.55em" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
+                              </tr>
+                            <?php endforeach; ?>
+                          </table>
+                        </div>
+                      </div>
                     </div>
                     <!-- =======================================TAB DOS SOCIOS===================================== -->
                     <div class="tab-pane fade" id="tab-socios" role="tabpanel" aria-labelledby="tab-socios-tab">
@@ -537,26 +562,27 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <?php endif; ?>
-
-<div class="modal fade" id="modalGlobal">
-
-    <div class="modal-dialog modal-lg">
-
-        <div class="modal-content">
-
-            <div class="modal-body" id="modalGlobalBody">
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
   <script type="text/javascript">
+    $(document).ready(function() {
+      $("#mainClienteNav").addClass('active');
+      $("#clienteMainNav").addClass('active');
+      
+      $("#sucesso").fadeTo(2000, 500).slideUp(500, function(){
+        $("#sucesso").slideUp(500);
+      });
+      $("#erro").fadeTo(2000, 500).slideUp(500, function(){
+        $("#erro").slideUp(500);
+      });
+    });
+    //=================== SELECT 2 =====================================
+    $('#id_cliente').select2({
+        width : '100%',
+        dropdownParent: $('#addModalFaturamento')
+      });  
+    //=========================================================
     function obrigacaoFunc(id,cliente)
     {
       if(id) {
@@ -596,49 +622,20 @@
         });
       }
     }
-
-    $('#tab-funcionarios-tab').on('click', function () {
-
-      $('#conteudo-funcionarios').load(
-          '<?= base_url('funcionarios/ajaxList/'.$cliente['id']) ?>'
-      );
-
+    //==============================VALIDA FORM ==================================
+    $(function () {
+      'use strict'
+      const forms = document.querySelectorAll('.requires-validation')
+      Array.from(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+          form.classList.add('was-validated')
+        }, false)
+      })
     });
-    $(document).on('click', '#btnNovoFuncionario', function () {
-
-        $('#modalGlobalBody').load(
-            '<?= base_url('funcionarios/ajaxCreate/'.$cliente['id']) ?>'
-        );
-
-        $('#modalGlobal').modal('show');
-
-    });
-   
-    $(document).on('submit', '#formFuncionario', function(e){
-
-    e.preventDefault();
-
-    $.ajax({
-
-        url: $(this).attr('action'),
-
-        type: 'POST',
-
-        data: $(this).serialize(),
-
-        success: function(response){
-
-            $('#modalGlobal').modal('hide');
-
-            $('#conteudo-funcionarios').load(
-                '<?= base_url('funcionarios/ajaxList/'.$cliente['id']) ?>'
-            );
-
-        }
-
-    });
-
-});
-    
   </script>
 <?= $this->endSection() ?>

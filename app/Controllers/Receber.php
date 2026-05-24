@@ -302,7 +302,7 @@ class Receber extends BaseController
             $response['messages'] = 'Conta não encontrada.';
             return $this->response->setJSON($response);
         }
-        $dias = (strtotime(date('Y-m-d')) - strtotime($conta['dt_quitado'])) / 86400;
+        $dias = (strtotime(date('Y-m-d')) - strtotime((string) $conta['dt_quitado'])) / 86400;
         if($dias > 7){
             return $this->response->setJSON([
                 'success' => false,

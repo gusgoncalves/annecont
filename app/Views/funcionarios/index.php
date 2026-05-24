@@ -75,6 +75,8 @@
       ajax: base_url + 'funcionarios/busca/',//MONTA A DATA TABLE
       responsive: true,
       autoWidth: false,
+      deferRender: true,
+      processing: true,
       paging: true,//tira a paginação
       searching: true, //tira o input de pesquisa
       ordering: false, //tira a opção de ordenar

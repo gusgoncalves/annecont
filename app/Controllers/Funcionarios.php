@@ -17,12 +17,17 @@ class Funcionarios extends BaseController
     public function buscaDados()
     {
         $funcModel = new FuncionariosModel();
-        $clienteModel = new ClientesModel();
+        //$clienteModel = new ClientesModel();
     	$result = array('data' => array());
-		$data = $funcModel->orderBy('ativo', 'ASC')->orderBy('nome', 'DESC')->findAll();
+		$data = $funcModel
+            ->select('funcionarios.*,clientes.razao')
+            ->join('clientes','clientes.id = funcionarios.id_cliente','left')
+            ->orderBy('ativo', 'ASC')
+            ->orderBy('nome', 'DESC')
+            ->findAll();
 
 		foreach ($data as $value) {
-            $clienteData = $clienteModel->where('id', $value['id_cliente'])->first();
+            //$clienteData = $clienteModel->where('id', $value['id_cliente'])->first();
             $buttons = '';
             if(hasPermission('verFuncionario')) {//se tiver permissão para alterar clientes
     			$buttons .= ' <a href="'.base_url('funcionarios/transporte/'.$value['id']).'" class="btn btn-dark" style="font-size:0.55em"><i class="fas fa-bus"></i></a>';
@@ -37,7 +42,7 @@ class Funcionarios extends BaseController
     			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
             }
 			$result['data'][] = array(
-                'cliente' => $clienteData['razao'],
+                'cliente' => $value['razao'],
 				'nome' => $value['nome'],
                 'whatsapp' => $value['whatsapp'],
                 'ativo' => $value['ativo'] == 1 ? '<span class="badge badge-success">ATIVO</span>' : '<span class="badge badge-danger">INATIVO</span>',
@@ -245,4 +250,38 @@ class Funcionarios extends BaseController
         $funcionario = $funcModel->find($id);
         return view('funcionarios/alimentacao', ['funcionario' => $funcionario, 'cliente' => $cliente, 'active_menu' => 'funcionarios']);
     }
+    public function ajaxList($id_cliente)
+    {
+        $funcionariosModel = new FuncionariosModel();
+        $data['funcionarios'] = $funcionariosModel
+            ->where('id_cliente', $id_cliente)
+            ->findAll();
+
+        $data['cliente_id'] = $id_cliente;
+
+        return view('funcionarios/ajax/list', $data);
+    }
+    public function ajaxCreate($id_cliente)
+    {
+        $data['cliente_id'] = $id_cliente;
+
+        return view('funcionarios/ajax/form', $data);
+    }
+    public function storeAjax()
+{
+    $funcionariosModel = new FuncionariosModel();
+    $funcionariosModel->save([
+
+        'id_cliente' => $this->request->getPost('id_cliente'),
+
+        'nome' => $this->request->getPost('nome'),
+
+        'whatsapp' => $this->request->getPost('whatsapp')
+
+    ]);
+
+    return $this->response->setJSON([
+        'success' => true
+    ]);
+}
 }

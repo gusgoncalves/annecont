@@ -26,6 +26,9 @@ $routes->group('clientes', ['filter' => 'auth:verCliente'], function($routes) {
 });
 $routes->group('funcionarios', ['filter' => 'auth:verFuncionario'], function($routes) {
     $routes->get('/', 'Funcionarios::index');
+    $routes->get('ajaxList/(:num)', 'Funcionarios::ajaxList/$1');
+    $routes->get('ajaxCreate/(:num)', 'Funcionarios::ajaxCreate/$1');
+    $routes->post('storeAjax', 'Funcionarios::storeAjax');
     $routes->get('busca', 'Funcionarios::buscaDados');
     $routes->get('create', 'Funcionarios::create');
     $routes->post('store', 'Funcionarios::store');

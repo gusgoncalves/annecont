@@ -228,19 +228,21 @@ class Clientes extends BaseController
         $faturamentoModel = new \App\Models\FaturamentoModel();
         $loginsModel = new \App\Models\LoginsModel();
         $mesesModel = new \App\Models\MesesModel();
+        $tipoCertidao = new \App\Models\TipoCertidaoModel();
 
         $cliente = $clientesModel->find($id);
         $cidade = $cidadeModel->find($cliente['id_cidade']);
         $obrigacoes_data = $obrigacoesModel->getObrigacoesPorCliente($id);
         $obrigacoes_feito = $obrigacoesModel->obrigacoesFeita($id);
         $funcionarios = $funcionariosModel->getFuncionariosPorCliente($id);
-        $socios = $sociosModel->SociosPorCliente($id);
-        $certificados = $certificadosModel->MostraCertificadosPorCliente($id);
-        $certidoes = $certidoesModel->MostraCertidoesPorCliente($id);
-        $faturamentos = $faturamentoModel->MostraFaturamentoPorCliente($id);
-        $total_faturamento = $faturamentoModel->MostraTotalFaturamentoPorCliente($id);
-        $logins = $loginsModel->MostraLoginsPorCliente($id);
-        $select_meses = $mesesModel->selectMeses();
+        $socios = $sociosModel->where('id_cliente',$id);
+        $certificados = $certificadosModel->where('id_cliente',$id);
+        $certidoes = $certidoesModel->where('id_cliente',$id);
+        $faturamentos = $faturamentoModel->where('id_cliente',$id);
+        $total_faturamento = $faturamentoModel->selectSum('valor')->where('id_cliente',$id)->findAll();
+        $logins = $loginsModel->where('id_cliente',$id);
+        $tipo = $tipoCertidao->findAll();
+        $meses = $mesesModel->orderBy('nome','asc')->findAll();
         if (!$cliente) {
             return redirect()->to('/clientes')->with('errors', 'Cliente não encontrado');
         }
@@ -257,7 +259,8 @@ class Clientes extends BaseController
             'faturamento_data' => $faturamentos,
             'total_faturamento' => $total_faturamento,
             'login_data' => $logins,
-            'combo_meses' => $select_meses,
+            'combo_meses' => $meses,
+            'tipo_certidao' => $tipo,
         ]);
     }                                                                                                                           
 }
