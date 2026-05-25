@@ -136,15 +136,18 @@
   //=================== SELECT 2 =====================================
   $('#id_cliente').select2({
     width: '100%',
-    dropdownParent: $('#addModalCertidao')
+    dropdownParent: $('#addModalCertidao'),
+    theme: 'classic'
   });
   $('#id_tipo_certidao').select2({
     width: '100%',
-    dropdownParent: $('#addModalCertidao')
+    dropdownParent: $('#addModalCertidao'),
+    theme: 'classic'
   });
   $('#edit_tipo_certidao').select2({
     width: '100%',
-    dropdownParent: $('#editModalCertidao')
+    dropdownParent: $('#editModalCertidao'),
+    theme: 'classic'
   });
   //=========ENVIA DADOS DE CRIAR FORM==================
   $('#createFormCertidao').unbind('submit').on('submit', function(e) {

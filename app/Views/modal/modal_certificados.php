@@ -131,10 +131,12 @@
     //=================== SELECT 2 =====================================
     $('#id_cliente').select2({
         width: '100%',
-        dropdownParent: $('#addModalCertificado')
+        dropdownParent: $('#addModalCertificado'),
+        theme: 'classic'
     });
     //===========================MOSTRA CAMPOS DO FORM DE CADASTRO =================================
-    function toggleInputs(valor) {
+    function toggleInputs(valor) 
+    {
         if(valor ==='insert'){
             const descricao = document.getElementById('certificado_descricao');
             const vencimento = document.getElementById('validade');
@@ -265,40 +267,42 @@
         });
     }
     //================================FUNÇÃO REMOVER ===========================================================
-    function removeCertificado(id_certificado, id_cliente = null) {
+    function removeCertificado(id_certificado, id_cliente = null) 
+    {
         $('#remove_certificado_id').val(id_certificado);
         $('#remove_cliente_id').val(id_cliente || '');
         $('#removeModalCertificado').modal('show');
     }
-    $(document).ready(function() {
+    $(document).ready(function() 
+    {
         $('#removeFormCertificado')
-            .off('submit')
-            .on('submit', function(e) {
-                e.preventDefault();
-                var form = $(this);
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'POST',
-                    data: form.serialize(),
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.success) {
-                            // fecha modal
-                            $('#removeModalCertificado').modal('hide');
-                            // limpa form
-                            $('#removeFormCertificado')[0].reset();
-                            // atualiza tabela
-                            manageTable.ajax.reload(null, false);
-                            // toast
-                            showToast(response.messages, 'success');
-                        } else {
-                            showToast(response.messages, 'error');
-                        }
-                    },
-                    error: function() {
-                        showToast('Erro ao remover certificado.', 'error');
+        .off('submit')
+        .on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        // fecha modal
+                        $('#removeModalCertificado').modal('hide');
+                        // limpa form
+                        $('#removeFormCertificado')[0].reset();
+                        // atualiza tabela
+                        manageTable.ajax.reload(null, false);
+                        // toast
+                        showToast(response.messages, 'success');
+                    } else {
+                        showToast(response.messages, 'error');
                     }
-                });
+                },
+                error: function() {
+                    showToast('Erro ao remover certificado.', 'error');
+                }
             });
         });
+    });
 </script>

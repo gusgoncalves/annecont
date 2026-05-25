@@ -147,7 +147,10 @@
     //==========================MASCARA AUTOMÁTICA =======================
     $('[data-mask]').inputmask(); //PUXA AS FUNÇÕES DE MÁSCARA
     //==========================MASCARA SELECT 2 =======================
-    $('#id_cliente').select2();
+   $('#id_cliente').select2({
+    width: '100%',
+    theme: 'classic'
+  });
     
     $("#sucesso").fadeTo(2000, 500).slideUp(500, function(){
       $("#sucesso").slideUp(500);

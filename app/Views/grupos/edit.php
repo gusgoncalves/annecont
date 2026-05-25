@@ -20,7 +20,7 @@
               <div class="card-body">
                 <div class="form-group">
                   <label for="group_name">NOME DO GRUPO</label>
-                  <input type="text" class="form-control" id="group_name" name="group_name" placeholder="Digite o nome do grupo" value="<?php echo $grupo['group_name']; ?>" autocomplete="off" required>
+                  <input type="text" class="form-control" id="group_name" name="group_name" placeholder="Digite o nome do grupo" value="<?= $grupo['group_name']; ?>" autocomplete="off" required>
                 </div>
                 <div class="form-group">
                 <label for="permission"><h2>Autorizações como Criar, Modificar, Ver e Apagar afetam as permissões dos campos no decorrer do sistema.</h2></label>

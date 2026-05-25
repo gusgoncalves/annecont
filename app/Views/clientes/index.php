@@ -73,11 +73,13 @@
         ajax: base_url + "clientes/busca/",
         responsive: true,
         autoWidth: false,
-        paging:false,
-        searching: true, 
-        ordering: false, 
+        deferRender: true,
+        processing: true,
+        paging: true,//tira a paginação
+        searching: true, //tira o input de pesquisa
+        ordering: false, //tira a opção de ordenar
         info: false,
-        language: {url: 'https://cdn.datatables.net/plug-ins/2.0.5/i18n/pt-BR.json',},
+        language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
         columns: [
           { data: 'icone' },
           { data : 'razao',
@@ -92,6 +94,13 @@
           { data: 'whatsapp' },
           { data: 'acoes' }
         ],
+        columnDefs: [
+        {
+          targets: [0,4],
+          width: "5%",
+          className: "text-center text-nowrap"
+        }
+      ],
         createdRow: function (row, data, dataIndex) {
           if (data.ativo == 2) {
             $(row).addClass('table-secondary');

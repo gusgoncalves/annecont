@@ -15,17 +15,19 @@ class Certificados extends BaseController
         $cliente = $clienteModel->findAll();
         return view('certificados/index',['active_menu' => 'certificados','clientes' => $cliente]);
     }
-    // ============================== BUSCAR DADOS DE CERTIFICADOS PARA A DATATABLE ==============================
+    // ============================== BUSCAR DADOS PARA A DATATABLE ==============================
     public function buscaDados()
     {
         $certificadosModel = new CertificadosModel();
-        $clienteModel = new ClientesModel();
     	$result = array('data' => array());
 		
-        $data = $certificadosModel->orderBy('descricao', 'asc')->findAll();
+        //$data = $certificadosModel->orderBy('descricao', 'asc')->findAll();
+        $data = $certificadosModel->select('certificados.*,clientes.razao')
+            ->join('clientes','clientes.id = certificados.id_cliente','left')
+            ->orderBy('razao', 'ASC')
+            ->findAll();
 
 		foreach ($data as $value) {
-            $clienteData = $clienteModel->where('id', $value['id_cliente'])->first();
             $buttons = '';
     
             if(hasPermission('modificarCertificado')) {//se tiver permissão para alterar clientes
@@ -35,7 +37,7 @@ class Certificados extends BaseController
     			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeCertificado('.$value['id'].')" data-toggle="modal" data-target="#removeModalCertificado"><i class="fas fa-trash"></i></button>';
             }
 			$result['data'][] = array(
-                'cliente' => $clienteData['razao'],
+                'cliente' => $value['razao'],
 				'descricao' => $value['descricao'],
                 'dt_validade' => date('d/m/Y', strtotime($value['dt_validade'])),
                 'senha' => $value['senha'],
@@ -45,7 +47,7 @@ class Certificados extends BaseController
 		} // /foreach
 		echo json_encode($result);
     }    
-    // ============================== SALVAR FUNCIONÁRIO ==============================
+    // ============================== SALVAR  ==============================
     public function create()
     {
        $rules = [
@@ -95,7 +97,7 @@ class Certificados extends BaseController
             ]);
         }
     }
-    //========================FUNÇÃO PARA PEGAR OS DADOS DO CERTIFICADO POR ID =================
+    //========================FUNÇÃO PARA PEGAR OS DADOS POR ID =================
     public function getById($id)
     {
         $certificadosModel = new CertificadosModel();
@@ -112,7 +114,7 @@ class Certificados extends BaseController
             ]);
         }
     }
-    // ============================== ATUALIZAR FUNCIONÁRIO ==============================
+    // ============================== ATUALIZAR ==============================
     public function update($id = null)
     {
         $rules = [
@@ -148,7 +150,7 @@ class Certificados extends BaseController
             ]);
         }
     }
-    // ============================== DELETAR FUNCIONÁRIO ==============================
+    // ============================== DELETAR  ==============================
     public function delete()
     {
         $id = $this->request->getPost('id');

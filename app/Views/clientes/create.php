@@ -163,26 +163,16 @@
     //================FUNÇÃO DE ADD CIDADE APÓS ADD O ESTADO ===============
     $(function(){
       $('#cliente_uf').change(function(){
-
         let id_estado = $(this).val();
-
-        $('#cliente_cidade')
-          .prop('disabled', true)
-          .html('<option>Carregando...</option>');
-
+        $('#cliente_cidade').prop('disabled', true).html('<option>Carregando...</option>');
         $.post(base_url + 'clientes/getCidades', {
           id_estado: id_estado
         }, function(data){
-
           let options = '<option value="">Selecione a cidade</option>';
-
           data.forEach(function(cidade){
             options += `<option value="${cidade.id}">${cidade.nome_cidade}</option>`;
           });
-
-          $('#cliente_cidade')
-            .html(options)
-            .prop('disabled', false);
+          $('#cliente_cidade').html(options).prop('disabled', false);
         });
       });
     });
@@ -217,7 +207,6 @@
       v = v.replace( /(\d{3})(\d{1,2})$/ , "$1-$2"); //Coloca um hífen entre o terceiro e o quarto dígitos
       return v;
     }
-
     setTimeout(function() {
             const alertBox = document.getElementById('alert-success');
             if (alertBox) {

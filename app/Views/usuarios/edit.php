@@ -119,8 +119,9 @@
     //=================================================================
     $('[data-mask]').inputmask() //PUXA AS FUNÇÕES DE MÁSCARA
 
-    $(function () {
-      $('#groups').select2()
-    });
+    $('#groups').select2({
+    width: '100%',
+    theme: 'classic'
+  });
   </script>
 <?= $this->endSection() ?>

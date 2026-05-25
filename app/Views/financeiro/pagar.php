@@ -53,13 +53,13 @@ Contas a Pagar
     ajax: base_url + "pagar/busca",
     responsive: true,
     autoWidth: false,
-    paging: false, //tira a paginação
+    deferRender: true,
+    processing: true,
+    paging: true,//tira a paginação
     searching: true, //tira o input de pesquisa
     ordering: false, //tira a opção de ordenar
     info: false,
-    language: {
-      url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
-    },
+    language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
     columns: [{
         data: 'vencimento'
       },
@@ -78,7 +78,14 @@ Contas a Pagar
       {
         data: 'acoes'
       },
-    ]
+    ],
+    columnDefs: [
+      {
+        targets: [0,4,5],
+        width: "1%",
+        className: "text-center text-nowrap"
+      }
+    ]    
   });
  
 </script>

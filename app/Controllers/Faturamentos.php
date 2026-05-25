@@ -26,23 +26,25 @@ class Faturamentos extends BaseController
     public function buscaDados()
     {
         $faturamentoModel = new FaturamentoModel();
-        $clienteModel = new ClientesModel();
     	$result = array('data' => array());
 		
-        $data = $faturamentoModel->findAll();
+        $data = $faturamentoModel
+            ->select('faturamentos.*,clientes.razao')
+            ->join('clientes','clientes.id = faturamentos.id_cliente','left')
+            ->orderBy('mes', 'asc')
+            ->orderBy('ano', 'asc')
+            ->findAll();
 
 		foreach ($data as $value) {
-            $clienteData = $clienteModel->where('id', $value['id_cliente'])->first();
-            $buttons = '';
-    
+            $buttons = '';    
             if(hasPermission('modificarFaturamento')) {//se tiver permissão para alterar clientes
     			$buttons .= '<button type="button" class="btn btn-primary" style="font-size:0.55em" onclick="editFaturamento('.$value['id'].')"><i class="fas fa-edit"></i></button>';
             }
             if(hasPermission('apagarFaturamento')) { 
-    			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeFaturamento('.$value['id'].')" data-toggle="modal" data-target="#removeModalFaturamento"><i class="fas fa-trash"></i></button>';
+    			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeFaturamento('.$value['id'].')" data-toggle="modal"><i class="fas fa-trash"></i></button>';
             }
 			$result['data'][] = array(
-                'cliente' => $clienteData['razao'],
+                'cliente' => $value['razao'],
                 'mes' =>$value['mes'],
                 'ano' => $value['ano'],
                 'valor' => number_format($value['valor'], 2, ',', '.'),               

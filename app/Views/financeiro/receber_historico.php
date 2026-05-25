@@ -66,16 +66,15 @@ Histórico de contas
     });
     // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
     manageTable = $("#manageTable").DataTable({
-      processing: true,
       responsive: true,
       autoWidth: false,
-      paging: true,
-      searching: true,
-      ordering: false,
+      deferRender: true,
+      processing: true,
+      paging: true,//tira a paginação
+      searching: true, //tira o input de pesquisa
+      ordering: false, //tira a opção de ordenar
       info: false,
-      language: {
-        url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
-      },
+      language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
       ajax: {
         url: base_url + "receber/busca_historico",
         type: "POST",
@@ -100,7 +99,7 @@ Histórico de contas
       ],
       columnDefs: [
         {
-          targets: 6,
+          targets: [5,6],
           width: "1%",
           className: "text-center text-nowrap"
         }

@@ -180,7 +180,8 @@
             document.getElementById('total').value = total.toFixed(2);
         }
         //==============MONTA O RELATÓRIO PARA IMPRESSÃO ===========
-        function printReport() {
+        function printReport() 
+        {
             const dias = parseFloat(document.getElementById('dias').value) || 0;
             const total = parseFloat(document.getElementById('total').value) || 0;
             const alimentacao = parseFloat(document.getElementById('alimentacao').value) || 0;
@@ -211,85 +212,64 @@
             document.getElementById('calculadov4').textContent = totalGeralFormatado;
 
             const conteudo = document.getElementById('imprimir').innerHTML;
-
             const tela_impressao = window.open('', '', 'width=900,height=700');
-
             tela_impressao.document.write(`
                 <html>
                 <head>
                     <title>Impressão</title>
-
                     <style>
-
                         body {
                             font-family: Arial, Helvetica, sans-serif;
                             margin: 10px;
                             font-size: 12px;
                         }
-
                         h1 {
                             text-align: center;
                             text-decoration: underline;
                             margin: 5px 0;
                             font-size: 20px;
                         }
-
                         .texto {
                             font-size: 12pt;
                             line-height: 1.5;
                             text-align: justify;
                         }
-
                         .moldura {
                             border: 1px solid #000;
                             padding: 10px;
                             margin-bottom: 10px;
                             border-radius: 5px;
                         }
-
                         .hr-pontilhado {
                             border: none;
                             border-top: 1px dotted #000;
                             margin: 15px 0;
                         }
-
                         p {
                             margin: 5px 0;
                         }
-
                         .text-right {
                             text-align: right;
                         }
-
                         .text-left {
                             text-align: left;
                         }
-
                         @media print {
-
                             body {
                                 margin: 0;
                             }
-
                             .moldura {
                                 page-break-inside: avoid;
                             }
                         }
-
                     </style>
-
                 </head>
-
                 <body>
-
                     ${conteudo}
-
                 </body>
                 </html>
             `);
-
             tela_impressao.document.close();
-
             setTimeout(() => {
                 tela_impressao.focus();
                 tela_impressao.print();

@@ -22,15 +22,16 @@ class Logins extends BaseController
     public function buscaDados()
     {
         $loginsModel = new LoginsModel();
-        $clienteModel = new ClientesModel();
     	$result = array('data' => array());
 		
-        $data = $loginsModel->orderBy('descricao', 'asc')->findAll();
+        $data = $loginsModel->select('login_cliente.*,clientes.razao')
+            ->join('clientes','clientes.id = login_cliente.id_cliente','left')
+            ->orderBy('clientes.razao', 'asc')
+            ->findAll();
 
 		foreach ($data as $value) {
-            $clienteData = $clienteModel->where('id', $value['id_cliente'])->first();
             $buttons = '';
-    
+
             if(hasPermission('modificarLogin')) {//se tiver permissão para alterar clientes
     			$buttons .= '<button type="button" class="btn btn-primary" style="font-size:0.55em" onclick="editLogin('.$value['id'].')"><i class="fas fa-edit"></i></button>';
             }
@@ -38,16 +39,16 @@ class Logins extends BaseController
     			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeLogin('.$value['id'].')" data-toggle="modal" data-target="#removeModalLogin"><i class="fas fa-trash"></i></button>';
             }
 			$result['data'][] = array(
-                'cliente' => $clienteData['razao'],
+                'cliente' => $value['razao'],
                 'descricao' =>$value['descricao'],
                 'usuario' => $value['usuario'],
-                'senha' => $value['senha'],               
+                'senha' => $value['senha'],
 				'acoes' => $buttons
 			);
 		} // /foreach
 		echo json_encode($result);
     }    
-    // ============================== SALVAR FUNCIONÁRIO ==============================
+    // ============================== SALVAR ==============================
     public function create()
     {
        $rules = [
@@ -117,7 +118,7 @@ class Logins extends BaseController
             ]);
         }
     }
-    // ============================== ATUALIZAR FUNCIONÁRIO ==============================
+    // ============================== ATUALIZAR ==============================
     public function update($id = null)
     {
         $rules = [
@@ -158,14 +159,14 @@ class Logins extends BaseController
             ]);
         }
     }
-    // ============================== DELETAR FUNCIONÁRIO ==============================
+    // ============================== DELETAR ==============================
     public function delete()
     {
         $id = $this->request->getPost('id');
         if(!$id) {
             return $this->response->setJSON([
                 'success' => false, 
-                'messages' => 'Login não encontrada na base de dados!!'
+                'messages' => 'Login não encontrado!!'
             ]);
         }
         $loginsModel = new LoginsModel();

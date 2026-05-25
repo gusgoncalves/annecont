@@ -52,7 +52,9 @@
       ajax: base_url + 'logins/busca/',//MONTA A DATA TABLE
       responsive: true,
       autoWidth: false,
-      paging: false,//tira a paginação
+      deferRender: true,
+      processing: true,
+      paging: true,//tira a paginação
       searching: true, //tira o input de pesquisa
       ordering: false, //tira a opção de ordenar
       info: false,
@@ -67,6 +69,13 @@
         { data: 'usuario' },
         { data: 'senha' },
         { data: 'acoes' },
+      ],
+      columnDefs: [
+        {
+          targets: 4,
+          width: "1%",
+          className: "text-center text-nowrap"
+        }
       ]
     });
   </script>

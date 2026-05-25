@@ -30,7 +30,7 @@
                     <?php endif; ?>
                     <?php if (hasPermission("verFuncionario")) : ?>
                       <li class="nav-item">
-                        <a class="nav-link" style="border: 1px solid #dee2e6; border-radius:0.25em" id="tab-funcionarios-tab" data-toggle="pill" href="#tab-funcionarios" role="tab" aria-controls="tab-funcionarios" aria-selected="false">Funcionários</a>
+                        <a class="nav-link tab-funcionarios" href="#" data-id="<?= $cliente['id'] ?>"?>Funcionários</a>
                       </li>
                     <?php endif; ?>
                     <?php if (hasPermission("verCliente")) : ?>
@@ -62,6 +62,13 @@
                         <a class="nav-link bg-danger" onclick="history.go(-1);" style="border: 1px solid #dee2e6; border-radius:0.25em" id="tab-logins-tab" data-toggle="pill" href="#tab-voltar" role="tab" aria-controls="tab-logins" aria-selected="false">Voltar</a>
                       </li>
                   </ul>
+                </div>
+                <div class="tab-pane fade"
+                    id="tab-funcionarios"
+                    role="tabpanel">
+
+                    <div id="conteudo-funcionarios"></div>
+
                 </div>
                 <div class="card-body">
                   <div class="tab-content" id="custom-tabs-one-tabContent">
@@ -556,89 +563,35 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
-  <script type="text/javascript">
-    function obrigacaoFunc(id,cliente)
-    {
-      if(id) {
-        $("#obrigacoesForm").on('submit', function() {
+  <script>
 
-          var form = $(this);
+function carregarFuncionarios(id_cliente)
+{
+    $('#conteudo-funcionarios').html(`
+        <div class="text-center p-5">
+            <i class="fas fa-spinner fa-spin fa-3x"></i>
+        </div>
+    `);
 
-          $(".text-danger").remove();
-          $.ajax({
-            url: form.attr('action'),
-            type: form.attr('method'),
-            data: { id:id,cliente:cliente }, 
-            dataType: 'json',
-            success:function(response) {
-              
-              // esconde o modal
-                $("#feitoModal").modal('hide');
-              if(response.success === true) {
-                $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">'+
-                  '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-                '</div>');
-                  $("#sucesso").fadeTo(2000, 500).slideUp(500, function(){
-                    $("#sucesso").slideUp(500);
-                  });
-                  window.location.reload();
-              } else {
-                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">'+
-                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                '</div>');
-                $("#erro").fadeTo(2000, 500).slideUp(500, function(){
-                  $("#erro").slideUp(500);
-                });
-              }
-            }
-          });
-          return false;
-        });
-      }
-    }
-
-    $('#tab-funcionarios-tab').on('click', function () {
-
-      $('#conteudo-funcionarios').load(
-          '<?= base_url('funcionarios/ajaxList/'.$cliente['id']) ?>'
-      );
-
+    $.ajax({
+        url: "<?= base_url('clientes/abaFuncionarios'); ?>/" + id_cliente,
+        type: "GET",
+        success: function(response)
+        {
+            $('#conteudo-funcionarios').html(response);
+        }
     });
-    $(document).on('click', '#btnNovoFuncionario', function () {
+}
 
-        $('#modalGlobalBody').load(
-            '<?= base_url('funcionarios/ajaxCreate/'.$cliente['id']) ?>'
-        );
-
-        $('#modalGlobal').modal('show');
-
-    });
-   
-    $(document).on('submit', '#formFuncionario', function(e){
+$(document).on('click', '.tab-funcionarios', function(e){
 
     e.preventDefault();
 
-    $.ajax({
+    let id_cliente = $(this).data('id');
 
-        url: $(this).attr('action'),
-
-        type: 'POST',
-
-        data: $(this).serialize(),
-
-        success: function(response){
-
-            $('#modalGlobal').modal('hide');
-
-            $('#conteudo-funcionarios').load(
-                '<?= base_url('funcionarios/ajaxList/'.$cliente['id']) ?>'
-            );
-
-        }
-
-    });
+    carregarFuncionarios(id_cliente);
 
 });
-    
-  </script>
+
+</script>
 <?= $this->endSection() ?>

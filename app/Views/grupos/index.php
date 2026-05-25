@@ -36,18 +36,15 @@
                   <?php if($grupos): ?>                  
                     <?php foreach ($grupos as $v): ?>
                       <tr>
-                        <td><?php echo $v['group_name']; ?></td>
-
-                        <?php if(hasAnyPermission(['modificarGrupo','apagarGrupo'])): ?>
+                        <td><?= $v['group_name']; ?></td>
                         <td class="col-4">
                           <?php if(hasPermission('modificarGrupo')): ?>
-                          <a href="<?php echo base_url('grupos/edit/'.$v['id']) ?>" class="btn btn-primary" style="font-size:0.55em"><i class="fas fa-edit"></i></a>  
+                          <a href="<?= site_url('grupos/edit/'.$v['id']) ?>" class="btn btn-primary" style="font-size:0.55em"><i class="fas fa-edit"></i></a>  
                           <?php endif; ?>
                           <?php if(hasPermission('apagarGrupo')): ?>
                           <button type="button" onclick="removeFunc(<?= $v['id'] ?>)" class="btn btn-danger" data-toggle="modal" data-target="#removeModal" style="font-size:0.55em"><i class="fas fa-trash"></i></button>
                           <?php endif; ?>
                         </td>
-                        <?php endif; ?>
                       </tr>
                     <?php endforeach ?>
                   <?php endif; ?>

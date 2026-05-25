@@ -52,7 +52,9 @@ Contas a Receber
       ajax: base_url + "receber/busca",
       responsive: true,
       autoWidth: false,
-      paging: true, //tira a paginação
+      deferRender: true,
+      processing: true,
+      paging: true,//tira a paginação
       searching: true, //tira o input de pesquisa
       ordering: false, //tira a opção de ordenar
       info: false,
@@ -78,11 +80,11 @@ Contas a Receber
       ],
       columnDefs: [
         {
-          targets: 5,
+          targets: [2,3,4,5],
           width: "1%",
           className: "text-center text-nowrap"
         }
-      ]
+      ]    
     });
   </script>
 <?= $this->endSection() ?>

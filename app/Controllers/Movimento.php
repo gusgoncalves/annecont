@@ -10,16 +10,6 @@ use App\Models\MovimentoModel;
 
 class Movimento extends BaseController
 {
-    // public function index()
-    // {
-    //     // $pagarModel = new PagarModel();
-    //     // $pagar = $pagarModel->findAll();
-    //     // $receberModel = new ReceberModel();
-    //     // $receber = $receberModel->findAll();
-    //     $movimentoModel = new MovimentoModel();
-    //     $movimento = $movimentoModel->findAll();
-    //     return view('financeiro/movimento', ['active_menu' => 'fluxo_caixa','movimento' => $movimento]);
-    // }
     public function index()
     {
         $movimentoModel = new MovimentoModel();

@@ -7,7 +7,7 @@
           <h4 class="modal-title text-center">CADASTRO DE LOGINS</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?php echo base_url('logins/create') ?>" class="requires-validation" method="post" id="createFormLogin" novalidate>
+        <form role="form" action="<?= site_url('logins/create') ?>" class="requires-validation" method="post" id="createFormLogin" novalidate>
           <div class="modal-body">
              <div class="form-group">
               <label for="id_cliente">CLIENTE</label>
@@ -59,7 +59,7 @@
           <h4 class="modal-title text-center">ALTERAR LOGIN</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?php echo base_url('logins/edit') ?>" method="post" id="updateFormLogin">
+        <form role="form" action="<?= site_url('logins/edit') ?>" method="post" id="updateFormLogin">
           <div class="modal-body">
             <div id="messages"></div>
             <div class="form-group">
@@ -96,7 +96,7 @@
           <h4 class="modal-title text-center">APAGAR LOGINS</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?php echo base_url('logins/delete') ?>" method="post" id="removeFormLogin">
+        <form role="form" action="<?=site_url('logins/delete') ?>" method="post" id="removeFormLogin">
           <div class="modal-body">
             <input type="hidden" name="id_login_cliente" id="id_login_cliente"> <!-- Campo oculto para ID do Cliente -->
             <input type="hidden" name="id_login" id="id_login"> <!-- Campo oculto para ID do Certificado -->
@@ -117,7 +117,8 @@
     //=================== SELECT 2 =====================================
     $('#id_cliente').select2({
         width: '100%',
-        dropdownParent: $('#addModalLogin')
+        dropdownParent: $('#addModalLogin'),
+        theme: 'classic'
     });
 
      //=========ENVIA DADOS DE CRIAR FORM==================
@@ -202,7 +203,8 @@
     });
   }
   //================================FUNÇÃO REMOVER ===========================================================
-  function removeLogin(id) {
+  function removeLogin(id) 
+  {
 		$('#removeModalLogin').modal('show');
 		// remove submits antigos
 		$('#removeFormLogin').off('submit');

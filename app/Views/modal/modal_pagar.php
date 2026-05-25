@@ -280,7 +280,8 @@
     // reseta visual dos campos
   });
   //===================================FUNÇÃO DE EDITAR ============================================
-  function editFunc(id) {
+  function editFunc(id) 
+  {
     $.ajax({
       url: base_url + 'pagar/getById/' + id,
       type: 'GET',

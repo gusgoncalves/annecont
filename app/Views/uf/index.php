@@ -46,19 +46,28 @@
     
   // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
    manageTable = $('#manageTable').DataTable({
-      ajax: base_url + '/uf/busca/',//MONTA A DATA TABLE
-      responsive: true,
-      autoWidth: false,
-      paging: true,//tira a paginação
-      searching: true, //tira o input de pesquisa
-      ordering: false, //tira a opção de ordenar
-      info: false,
-      language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
-        columns: [
-        { data: 'descricao' },
-        { data: 'sigla' },
-        { data: 'acoes' },
+    ajax: base_url + '/uf/busca/',//MONTA A DATA TABLE
+    responsive: true,
+    autoWidth: false,
+    deferRender: true,
+    processing: true,
+    paging: true,//tira a paginação
+    searching: true, //tira o input de pesquisa
+    ordering: false, //tira a opção de ordenar
+    info: false,
+    language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
+    columns: [
+      { data: 'descricao' },
+      { data: 'sigla' },
+      { data: 'acoes' },
+    ],
+    columnDefs: [
+        {
+          targets: [1,2],
+          width: "10%",
+          className: "text-center text-nowrap"
+        }
       ]
-    });
+  });
   </script>
 <?= $this->endSection() ?>

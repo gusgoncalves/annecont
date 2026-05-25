@@ -22,7 +22,7 @@
               <thead>
               <tr>
                 <th>CLIENTE</th>
-                <th>NOME</th>
+                <th>NOME SÓCIO</th>
                 <th>WHATSAPP</th>
                 <?php if(hasAnyPermission(['modificarCliente','apagarCliente'])): ?>
                   <th class="col-2">AÇÕES</th>
@@ -73,11 +73,14 @@
       ajax: base_url + 'socios/busca/',//MONTA A DATA TABLE
       responsive: true,
       autoWidth: false,
+      deferRender: true,
+      processing: true,
       paging: true,//tira a paginação
       searching: true, //tira o input de pesquisa
       ordering: false, //tira a opção de ordenar
       info: false,
       language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
+
       columns: [
         { data: 'cliente',
           render: function (data, type, row) {
@@ -87,6 +90,12 @@
         { data: 'nome'},
         { data: 'whatsapp' },
         { data: 'acoes' },
+      ],columnDefs: [
+        {
+          targets: 3,
+          width: "1%",
+          className: "text-center text-nowrap"
+        }
       ]
     });
   </script>

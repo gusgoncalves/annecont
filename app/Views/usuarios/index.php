@@ -30,7 +30,7 @@
                   <th>TELEFONE</th>
                   <th>GRUPO</th>
                   <?php if(hasAnyPermission(['modificarUser','apagarUser'])): ?>
-                  <th class="col-2">AÇÕES</th>
+                  <th class="col-2 text-center text-nowrap" style="width:1%">AÇÕES</th>
                   <?php endif; ?>
                 </tr>
                 </thead>
@@ -44,7 +44,7 @@
                         <td><?php echo $v['phone']; ?></td>
                         <td><?php echo $v['group_name']; ?></td>
                         <?php if(hasAnyPermission(['modificarUser', 'apagarUser'])): ?>
-                        <td>
+                        <td class="text-center text-nowrap" style="width:1%">
                           <?php if(hasPermission('modificarUser')): ?>
                             <a href="<?= site_url('usuarios/edit/'.$v['id']) ?>" class="btn btn-primary" style="font-size:0.55em"><i class="fas fa-edit"></i></a>
                           <?php endif; ?>
@@ -93,16 +93,15 @@
   <script type="text/javascript">
    
       manageTable = $('#userTable').DataTable({
-        'responsive': true,
-        //lengthChange: true, //mostrar resultados por etapas
-        'autoWidth': false,
-        //'dom': 'Bfrtip',
-        'paging':false,//tira a paginação
-        'searching': true, //tira o input de pesquisa
-        'ordering': false, //tira a opção de ordenar
-        'info':false,
-        'language': {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
-        'buttons': ["print"] //"colvis" é uma opção para ver as colunas e escolher 
+        responsive: true,
+        autoWidth: false,
+        deferRender: true,
+        processing: true,
+        paging: false,//tira a paginação
+        searching: true, //tira o input de pesquisa
+        ordering: false, //tira a opção de ordenar
+        info: false,
+        language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
     });
   </script>
 <?= $this->endSection() ?>

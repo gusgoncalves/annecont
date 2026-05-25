@@ -18,19 +18,18 @@ class Certidoes extends BaseController
         $tipo = $tipoCertidaoModel->findAll();        
         return view('certidoes/index',['active_menu' => 'certidoes','clientes' => $cliente,'tipos' => $tipo]);
     }
-    // ============================== BUSCAR DADOS DE CERTIFICADOS PARA A DATATABLE ==============================
+    // ============================== BUSCAR DADOS DE CERTIDOES PARA A DATATABLE ==============================
     public function buscaDados()
     {
         $certidoesModel = new CertidoesModel();
-        $clienteModel = new ClientesModel();
-        $tipoCertidaoModel = new TipoCertidaoModel();
     	$result = array('data' => array());
 		
-        $data = $certidoesModel->orderBy('descricao', 'asc')->findAll();
-
+        $data = $certidoesModel
+            ->select('certidoes.*,clientes.razao,tipo_certidao.nome')
+            ->join('clientes','clientes.id = certidoes.id_cliente','left')
+            ->join('tipo_certidao','tipo_certidao.id = certidoes.id_tipo_certidao','left')
+            ->orderBy('descricao', 'asc')->findAll();
 		foreach ($data as $value) {
-            $clienteData = $clienteModel->where('id', $value['id_cliente'])->first();
-            $tipoCertidaoData = $tipoCertidaoModel->where('id', $value['id_tipo_certidao'])->first();
             $buttons = '';
     
             if(hasPermission('modificarCertidao')) {//se tiver permissão para alterar clientes
@@ -40,8 +39,8 @@ class Certidoes extends BaseController
     			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeCertidao('.$value['id'].')" data-toggle="modal" data-target="#removeModalCertidao"><i class="fas fa-trash"></i></button>';
             }
 			$result['data'][] = array(
-                'cliente' => $clienteData['razao'],
-                'tipo' => $tipoCertidaoData['nome'],
+                'cliente' => $value['razao'],
+                'tipo' => $value['nome'],
                 'dt_expira' => date('d/m/Y', strtotime($value['dt_expira']))?: '',                
 				'acoes' => $buttons
 			);

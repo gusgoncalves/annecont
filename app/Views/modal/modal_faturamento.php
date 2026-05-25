@@ -2,7 +2,6 @@
     /** @var array $meses */
 ?>
 <?php if (hasPermission('criarFaturamento')): ?>
-    <!-- create brand modal -->
     <div class="modal fade" tabindex="-1" role="dialog" id="addModalFaturamento">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -147,10 +146,12 @@
     //=================== SELECT 2 =====================================
     $('#id_cliente').select2({
         width: '100%',
-        dropdownParent: $('#addModalFaturamento')
+        dropdownParent: $('#addModalFaturamento'),
+        theme: 'classic'
     });
     //=========ENVIA DADOS DE CRIAR FORM==================
-    $('#createFormFaturamento').unbind('submit').on('submit', function(e) {
+    $('#createFormFaturamento').unbind('submit').on('submit', function(e) 
+    {
         e.preventDefault();
         var form = $(this);
         $.ajax({

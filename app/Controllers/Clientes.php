@@ -23,10 +23,10 @@ class Clientes extends BaseController
         foreach($dados as $value) {
            $buttons = '';
            if(hasPermission('verCliente')) {
-               $buttons .= '<a href="' . base_url('clientes/ver/' . $value['id']) . '" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a> ';
+               $buttons .= '<a href="' . base_url('clientes/ver/' . $value['id']) . '" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></a> ';
            }
            if(hasPermission('modificarCliente')) {
-               $buttons .= '<a href="' . base_url('clientes/edit/' . $value['id']) . '" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a> ';
+               $buttons .= '<a href="' . base_url('clientes/edit/' . $value['id']) . '" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a> ';
            }
            if(hasPermission('apagarCliente')) {
                $buttons .= '<button type="button" class="btn btn-sm btn-danger" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
@@ -207,10 +207,8 @@ class Clientes extends BaseController
     public function getCidades()
     {
         $idUf = $this->request->getPost('id_estado');
-
         $model = new \App\Models\CidadesModel();
         $cidades = $model->getCidadesPorEstado($idUf);
-
         return $this->response->setJSON($cidades);
     }
     // ==================================================================
@@ -262,5 +260,17 @@ class Clientes extends BaseController
             'combo_meses' => $meses,
             'tipo_certidao' => $tipo,
         ]);
-    }                                                                                                                           
+    } 
+    public function abaFuncionarios($id_cliente)
+{
+    $funcionariosModel = new \App\Models\FuncionariosModel();
+
+    $data['funcionarios'] = $funcionariosModel
+        ->where('id_cliente', $id_cliente)
+        ->findAll();
+
+    $data['id_cliente'] = $id_cliente;
+
+    return view('clientes/abas/funcionarios', $data);
+}                                                                                                                          
 }

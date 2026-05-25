@@ -54,6 +54,8 @@
       ajax: base_url + 'certificados/busca/',//MONTA A DATA TABLE
       responsive: true,
       autoWidth: false,
+      deferRender: true,
+      processing: true,
       paging: true,//tira a paginação
       searching: true, //tira o input de pesquisa
       ordering: false, //tira a opção de ordenar
@@ -70,6 +72,13 @@
         { data: 'senha' },
         { data: 'ativo' },
         { data: 'acoes' },
+      ],
+      columnDefs: [
+        {
+          targets: 5,
+          width: "1%",
+          className: "text-center text-nowrap"
+        }
       ]
     });
   </script>

@@ -13,6 +13,7 @@ $routes->get('auth/logout', 'Auth::logout');
 $routes->get('logout', 'Auth::logout');
 
 $routes->group('clientes', ['filter' => 'auth:verCliente'], function($routes) {
+    $routes->get('clientes/abaFuncionarios/(:num)', 'Clientes::abaFuncionarios/$1');
     $routes->get('/', 'Clientes::index');
     $routes->get('busca', 'Clientes::buscaDados');
     $routes->get('create', 'Clientes::create');
@@ -186,4 +187,15 @@ $routes->group('grupos', ['filter' => 'auth:verGrupo'], function($routes) {
     $routes->post('update', 'Grupos::update');
     $routes->post('delete', 'Grupos::delete');
     $routes->post('delete/(:num)', 'Grupos::delete/$1');
+});
+$routes->group('empresa', ['filter' => 'auth:modificarEmpresa'], function($routes) {
+    $routes->get('/', 'Empresa::index');
+    $routes->get('busca', 'Empresa::buscaDados');
+    $routes->get('create', 'Empresa::create');
+    $routes->post('store', 'Empresa::store');
+    $routes->get('edit/(:num)', 'Empresa::edit/$1');
+    $routes->post('update/(:num)', 'Empresa::update/$1');
+    $routes->post('update', 'Empresa::update');
+    $routes->post('delete', 'Empresa::delete');
+    $routes->post('delete/(:num)', 'Empresa::delete/$1');
 });

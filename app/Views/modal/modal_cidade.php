@@ -43,7 +43,7 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 <?php endif; ?>
-<!-- ======================================MODIFICAR MODAL DE FATURAMENTO ==================================== -->
+<!-- ======================================MODIFICAR MODAL DE CIDADES ==================================== -->
 <?php if (hasPermission('modificarCidade')): ?>
     <!-- edit brand modal -->
     <div class="modal fade" tabindex="-1" role="dialog" id="editModal">
@@ -88,7 +88,7 @@
     </div><!-- /.modal -->
 <?php endif; ?>
 <!-- ============================================================================================ -->
-<?php if (hasPermission('apagarUF')): ?>
+<?php if (hasPermission('apagarCidade')): ?>
     <!-- remove brand modal -->
     <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
         <div class="modal-dialog" role="document">

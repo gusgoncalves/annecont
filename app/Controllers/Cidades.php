@@ -17,16 +17,17 @@ class Cidades extends BaseController
         $cidades = $cidadesModel->findAll();        
         return view('cidades/index',['active_menu' => 'cidades','cidades' =>$cidades, 'estados' => $estados]);
     }
-    // ============================== BUSCAR DADOS DE CIDADES PARA A DATATABLE ==============================
+    // ============================== BUSCAR DADOS PARA A DATATABLE ==============================
     public function buscaDados()
     {
-        $estadosModel = new EstadosModel();
         $cidadesModel = new CidadesModel();
     	$result = array('data' => array());
 		
-        $data = $cidadesModel->orderBy('nome_cidade', 'asc')->findAll();
+        $data = $cidadesModel->select('cidades.*,uf.uf')
+            ->join('uf','uf.id = cidades.id_uf','left')
+            ->orderBy('nome_cidade', 'asc')
+            ->findAll();
 		foreach ($data as $value) {
-            $ufData = $estadosModel->where('id', $value['id_uf'])->first();
             $buttons = '';
     
             if(hasPermission('modificarCidade')) {//se tiver permissão para alterar clientes
@@ -37,7 +38,7 @@ class Cidades extends BaseController
             }
 			$result['data'][] = array(
                 'nome_cidade' =>$value['nome_cidade'],
-                'UF' => $ufData['uf'],
+                'UF' => $value['uf'],
 				'acoes' => $buttons
 			);
 		} // /foreach
@@ -91,7 +92,7 @@ class Cidades extends BaseController
             ]);
         }
     }
-    //========================FUNÇÃO PARA PEGAR OS DADOS DA CIDADE POR ID =================
+    //========================FUNÇÃO PARA PEGAR OS DADOS POR ID =================
     public function getById($id)
     {
         $cidadesModel = new CidadesModel();
@@ -108,7 +109,7 @@ class Cidades extends BaseController
             ]);
         }
     }
-    // ============================== ATUALIZAR CIDADE ==============================
+    // ============================== ATUALIZAR ==============================
     public function update($id = null)
     {
         $rules = [
@@ -147,7 +148,7 @@ class Cidades extends BaseController
             ]);
         }
     }
-    // ============================== DELETAR CIDADE ==============================
+    // ============================== DELETAR ==============================
     public function delete()
     {
         $id = $this->request->getPost('id');

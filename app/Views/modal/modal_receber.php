@@ -231,7 +231,8 @@
     theme: 'classic'
   });
   //=========ENVIA DADOS DE CRIAR FORM==================
-  $('#createForm').unbind('submit').on('submit', function(e) {
+  $('#createForm').unbind('submit').on('submit', function(e) 
+  {
     e.preventDefault();
     var form = $(this);
     $.ajax({
@@ -260,7 +261,8 @@
     // reseta visual dos campos
   });
   //=============================FUNÇÃO EDITAR ========================================
-  function editFunc(id) {
+  function editFunc(id) 
+  {
     $.ajax({
      url: base_url + 'receber/getById/' + id,
       type: 'GET',
@@ -384,7 +386,7 @@
     $('#quitarForm').off('submit');
   });
   //=========================FUNÇÃO ESTORNAR ============================
- function estornarFunc(id) 
+  function estornarFunc(id) 
   {
     // abre modal
     $("#estornarModal").modal('show');

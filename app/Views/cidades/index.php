@@ -43,12 +43,13 @@
   <script type="text/javascript">
     var manageTable;
     var base_url = "<?= base_url(); ?>";
-    
     // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
     manageTable = $('#manageTable').DataTable({
       ajax: base_url + '/cidades/busca/',//MONTA A DATA TABLE
       responsive: true,
       autoWidth: false,
+      deferRender: true,
+      processing: true,
       paging: true,//tira a paginação
       searching: true, //tira o input de pesquisa
       ordering: false, //tira a opção de ordenar
@@ -58,6 +59,13 @@
         { data: 'nome_cidade' },
         { data: 'UF' },
         { data: 'acoes' },
+      ],
+      columnDefs: [
+        {
+          targets: [1,2],
+          width: "10%",
+          className: "text-center text-nowrap"
+        }
       ]
     });
   </script>

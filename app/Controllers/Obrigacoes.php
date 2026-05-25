@@ -30,10 +30,10 @@ class Obrigacoes extends BaseController
             }
 			$result['data'][] = array(
                 'descricao' => $value['descricao'],
-                'valor' => $value['valor'],
-                'dt_inicio' => date('d/m/Y', strtotime($value['dt_inicio'])),
-                'dt_fim' => date('d/m/Y', strtotime($value['dt_fim'])),
-                'ativo' => $value['ativo'] == 1 ? '<span class="badge badge-success">Sim</span>' : '<span class="badge badge-danger">Não</span>',
+                'valor' => $value['valor']==0?'<span class="badge badge-default">R$ 0,00</span>':'R$ '.number_format($value['valor'],2,',','.'),
+                'dt_inicio' => empty($value['dt_inicio']) ? '<span class="badge badge-secondary">Sempre</span>' : date('d/m/Y', strtotime($value['dt_inicio'])),
+                'dt_fim' => empty($value['dt_fim']) ? '<span class="badge badge-secondary">Sempre</span>' : date('d/m/Y', strtotime($value['dt_fim'])),
+                'ativo' => $value['ativo'] == 1 ? '<span class="badge badge-success">Ativo</span>' : '<span class="badge badge-danger">Inativo</span>',
 				'acoes' => $buttons
 			);
 		} // /foreach
@@ -123,8 +123,8 @@ class Obrigacoes extends BaseController
         $data = [
             'descricao' => $this->request->getPost('edit_obrigacao_descricao'),
             'valor' => $this->request->getPost('edit_valor'),
-            'dt_inicio' => $this->request->getPost('edit_dt_inicio'),
-            'dt_fim' => $this->request->getPost('edit_dt_fim'),
+            'dt_inicio' => empty($this->request->getPost('edit_dt_inicio')) ? null : $this->request->getPost('edit_dt_inicio'),
+            'dt_fim' => empty($this->request->getPost('edit_dt_fim')) ? null : $this->request->getPost('edit_dt_fim'),
             'ativo' => $this->request->getPost('edit_obrigacao_ativo'),
         ];
         $obrigacoesModel = new ObrigacoesModel();

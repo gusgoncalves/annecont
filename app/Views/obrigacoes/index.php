@@ -182,7 +182,9 @@
       ajax: base_url + 'obrigacoes/busca/',
       responsive: true,
       autoWidth: false,
-      paging: false,//tira a paginação
+      deferRender: true,
+      processing: true,
+      paging: true,//tira a paginação
       searching: true, //tira o input de pesquisa
       ordering: false, //tira a opção de ordenar
       info: false,
@@ -194,6 +196,13 @@
         { data: 'dt_fim' },
         { data: 'ativo' },
         { data: 'acoes' },
+      ],
+      columnDefs: [
+        {
+          targets: 5,
+          width: "1%",
+          className: "text-center text-nowrap"
+        }
       ]
     });
     //========================================ENVIA DADOS DE CRIAR FORM===================================

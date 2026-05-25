@@ -17,7 +17,6 @@ class Funcionarios extends BaseController
     public function buscaDados()
     {
         $funcModel = new FuncionariosModel();
-        //$clienteModel = new ClientesModel();
     	$result = array('data' => array());
 		$data = $funcModel
             ->select('funcionarios.*,clientes.razao')
@@ -27,7 +26,6 @@ class Funcionarios extends BaseController
             ->findAll();
 
 		foreach ($data as $value) {
-            //$clienteData = $clienteModel->where('id', $value['id_cliente'])->first();
             $buttons = '';
             if(hasPermission('verFuncionario')) {//se tiver permissão para alterar clientes
     			$buttons .= ' <a href="'.base_url('funcionarios/transporte/'.$value['id']).'" class="btn btn-dark" style="font-size:0.55em"><i class="fas fa-bus"></i></a>';
@@ -63,7 +61,7 @@ class Funcionarios extends BaseController
     {
        $rules = [
             'id_cliente' => 'required',
-            'funcionario_nome' => 'required|min_length[3]|is_unique[funcionarios.nome]',
+            'funcionario_nome' => 'required|min_length[3]',
             'funcionario_cpf' => 'required|exact_length[14]|is_unique[funcionarios.cpf]',
             'funcionario_whatsapp' => 'required',
             'funcionario_alimentacao' => 'permit_empty|regex_match[/^\d+([.,]\d{1,2})?$/]',
@@ -77,7 +75,6 @@ class Funcionarios extends BaseController
             'funcionario_nome' => [
                 'required' => 'O campo nome é obrigatório',
                 'min_length' => 'O campo nome deve conter no mínimo 3 caracteres',
-                'is_unique' => 'O nome já existe na base de dados'
             ],
             'funcionario_cpf' => [
                 'required' => 'O campo CPF é obrigatório',
@@ -143,7 +140,7 @@ class Funcionarios extends BaseController
     {
         $rules = [
             'id_cliente' => 'required',
-            'funcionario_nome' => 'required|min_length[3]|is_unique[funcionarios.nome, id, '.$id.']',
+            'funcionario_nome' => 'required|min_length[3]]',
             'funcionario_cpf' => 'required|exact_length[14]|is_unique[funcionarios.cpf, id, '.$id.']',
             'funcionario_whats' => 'required',
             'funcionario_alimentacao' => 'permit_empty|regex_match[/^\d+([.,]\d{1,2})?$/]',
@@ -157,7 +154,6 @@ class Funcionarios extends BaseController
             'funcionario_nome' => [
                 'required' => 'O campo nome é obrigatório',
                 'min_length' => 'O campo nome deve conter no mínimo 3 caracteres',
-                'is_unique' => 'O nome já existe na base de dados'
             ],
             'funcionario_cpf' => [
                 'required' => 'O campo CPF é obrigatório',

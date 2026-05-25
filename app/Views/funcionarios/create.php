@@ -4,7 +4,7 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('title') ?>
-  Clientes
+  Cadastro de Funcionários
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -24,12 +24,13 @@
                     <?php if(empty($cliente['id'])){ ?>
                       <div class="form-group">
                         <label for="id_cliente">CLIENTE</label>
-                        <select class="form-control form-select-lg" id="id_cliente" style="width:100%" name="id_cliente">
+                        <select class="form-control form-select-lg" id="id_cliente" style="width:100%" name="id_cliente" required>
                           <option value="">SELECIONE O CLIENTE</option>
                           <?php foreach($cliente as $c): ?>
                             <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option> 
                           <?php endforeach; ?>
                         </select>
+                        <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                       </div>
                     <?php }else{ ?>
                       <div class="form-group">
@@ -98,7 +99,7 @@
                   <div class="col-sm-4">               
                     <div class="form-group">
                       <label for="funcionario_email">EMAIL</label>
-                      <input type="email" class="form-control" id="funcionario_email" name="funcionario_email" placeholder="Email do Funcionário" autocomplete="OFF"/>
+                      <input type="email" class="form-control" id="funcionario_email" name="funcionario_email" value="<?= old('funcionario_email') ?>" placeholder="Email do Funcionário" autocomplete="OFF"/>
                     </div>
                   </div>                  
                 </div><!-- row -->
@@ -106,13 +107,13 @@
                   <div class="col-sm-4">
                     <div class="form-group">
                       <label for="funcionario_cep">CEP</label>
-                      <input type="text" class="form-control" id="funcionario_cep" name="funcionario_cep" placeholder="Código postal do Funcionário" autocomplete="off" data-inputmask='"mask": "99999-999"' data-mask>
+                      <input type="text" class="form-control" id="funcionario_cep" name="funcionario_cep" placeholder="CEP do Funcionário" value="<?= old('funcionario_cep') ?>" autocomplete="off" data-inputmask='"mask": "99999-999"' data-mask>
                     </div>
                   </div>
                   <div class="col-sm-8">
                     <div class="form-group">
                       <label for="funcionario_endereco">ENDEREÇO COMPLETO</label>
-                      <input type="text" class="form-control" id="funcionario_endereco" name="funcionario_endereco" placeholder="Endereço do Funcionário" autocomplete="off">
+                      <input type="text" class="form-control" id="funcionario_endereco" name="funcionario_endereco" value="<?= old('funcionario_endereco') ?>" placeholder="Endereço do Funcionário" autocomplete="off">
                     </div>
                   </div>                  
                 </div>
@@ -120,7 +121,7 @@
                   <div class="col-md-12">
                     <div class="form-group">
                       <label for="funcionario_observacoes">INFORMAÇÕES</label>
-                      <textarea type="text" class="form-control" id="funcionario_observacoes" name="funcionario_observacoes" placeholder="Descreva o informações importantes do Funcionário" autocomplete="off">
+                      <textarea type="text" class="form-control" id="funcionario_observacoes" name="funcionario_observacoes" value="<?= old('funcionario_observacoes') ?>" placeholder="Descreva o informações importantes do Funcionário" autocomplete="off">
                         <?= old('funcionario_observacoes') ?>
                       </textarea>
                     </div>
@@ -152,10 +153,10 @@
     $("#funcionario_observacoes").summernote()
     //==========================MASCARA AUTOMÁTICA =======================
     $('[data-mask]').inputmask() //PUXA AS FUNÇÕES DE MÁSCARA
-
-    $(function () {
-      $('#id_cliente').select2()
+    
+    $('#id_cliente').select2({
+      width: '100%',
+      theme: 'classic'
     });
-
   </script>
 <?= $this->endSection() ?>

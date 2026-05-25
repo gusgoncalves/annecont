@@ -16,11 +16,9 @@ class Grupos extends BaseController
     
     public function create()
     {        
-        $grupoModel = new \App\Models\GruposModel();
+        $grupoModel = new GruposModel();
         //CARREGA NA VIEW AS TABELAS PARA USAR NA PESQUISA
-        return view('grupos/create', [
-            'active_menu' => 'grupos',
-            'grupos' => $grupoModel->findAll(),
+        return view('grupos/create', ['active_menu' => 'grupos','grupos' => $grupoModel->findAll(),
         ]);
     }
 
@@ -61,10 +59,7 @@ class Grupos extends BaseController
             return redirect()->to('/grupos')->with('errors', 'Grupo não encontrado');
         }
         //CARREGA NA VIEW AS TABELAS PARA USAR NA PESQUISA
-        return view('grupos/edit', [
-            'active_menu' => 'grupos',
-            'grupo' => $grupo
-        ]);
+        return view('grupos/edit', ['active_menu' => 'grupos','grupo' => $grupo]);
     }
 
     public function update($id)
@@ -88,7 +83,7 @@ class Grupos extends BaseController
         if(!$id) {
             return $this->response->setJSON([
                 'success' => false, 
-                'messages' => 'Grupo não encontrado na base de dados!!'
+                'messages' => 'Grupo não encontrado!!'
             ]);
         }
         $gruposModel = new GruposModel();
@@ -96,7 +91,7 @@ class Grupos extends BaseController
         if ($delete == true) {
             return $this->response->setJSON([
                 'success' => true, 
-                'messages' => 'Registro do grupo excluído com sucesso'
+                'messages' => 'Registro excluído com sucesso'
             ]);
         } else {
             return $this->response->setJSON([

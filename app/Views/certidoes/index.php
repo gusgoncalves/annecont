@@ -1,6 +1,6 @@
 <?= $this->extend('layout') ?>
 <?= $this->section('title') ?>
-  Certificados
+  Certidões
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -49,7 +49,9 @@
       ajax: base_url + 'certidoes/busca/',//MONTA A DATA TABLE
       responsive: true,
       autoWidth: false,
-      paging: false,//tira a paginação
+      deferRender: true,
+      processing: true,
+      paging: true,//tira a paginação
       searching: true, //tira o input de pesquisa
       ordering: false, //tira a opção de ordenar
       info: false,
@@ -63,6 +65,13 @@
         { data: 'tipo' },
         { data: 'dt_expira' },
         { data: 'acoes' },
+      ],
+      columnDefs: [
+        {
+          targets: 3,
+          width: "1%",
+          className: "text-center text-nowrap"
+        }
       ]
     });
   </script>
