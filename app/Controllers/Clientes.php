@@ -82,7 +82,7 @@ class Clientes extends BaseController
         //CARREGA NA VIEW AS TABELAS PARA USAR NA PESQUISA
         return view('clientes/create', [
             'active_menu' => 'area_cliente',
-            'portes' => $portesModel->selectPortes(),
+            'portes' => $portesModel->findAll(),
             'estados' => $estadosModel->selectEstados(),
         ]);
     }
@@ -261,16 +261,9 @@ class Clientes extends BaseController
             'tipo_certidao' => $tipo,
         ]);
     } 
-    public function abaFuncionarios($id_cliente)
-{
-    $funcionariosModel = new \App\Models\FuncionariosModel();
-
-    $data['funcionarios'] = $funcionariosModel
-        ->where('id_cliente', $id_cliente)
-        ->findAll();
-
-    $data['id_cliente'] = $id_cliente;
-
-    return view('clientes/abas/funcionarios', $data);
-}                                                                                                                          
+    public function abaClientes($id_cliente = null)
+    {   $clientesModel = new ClientesModel();
+        $clientes = $clientesModel->find($id_cliente);
+        return view('clientes/dados',['cliente'=>$clientes]);
+    }                                                                                 
 }

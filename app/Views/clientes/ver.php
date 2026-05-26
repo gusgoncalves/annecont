@@ -6,6 +6,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
+  <section class="content-header"></section>
   <section class="content">
     <div class="container-fluid">
       <div class="row"> 
@@ -30,7 +31,7 @@
                     <?php endif; ?>
                     <?php if (hasPermission("verFuncionario")) : ?>
                       <li class="nav-item">
-                        <a class="nav-link tab-funcionarios" href="#" data-id="<?= $cliente['id'] ?>"?>Funcionários</a>
+                        <a class="nav-link" style="border: 1px solid #dee2e6; border-radius:0.25em" id="tab-funcionarios-tab" data-toggle="pill" href="#tab-funcionarios" role="tab" aria-controls="tab-funcionarios" aria-selected="false">Funcionários</a>
                       </li>
                     <?php endif; ?>
                     <?php if (hasPermission("verCliente")) : ?>
@@ -63,67 +64,11 @@
                       </li>
                   </ul>
                 </div>
-                <div class="tab-pane fade"
-                    id="tab-funcionarios"
-                    role="tabpanel">
-
-                    <div id="conteudo-funcionarios"></div>
-
-                </div>
                 <div class="card-body">
                   <div class="tab-content" id="custom-tabs-one-tabContent">
                     <!-- ====================================== TAB COM AS INFORMAÇÕES DO CLIENTE ==========================================-->
                     <div class="tab-pane fade show active" id="tab-informacoes" role="tabpanel" aria-labelledby="tab-informacoes-tab">
-                      <table class="table table-striped table-bordered">
-                        <tr>
-                          <th>NOME:</th>
-                          <td><?= strtoupper($cliente['fantasia']); ?></td>
-                        </tr>
-                        <tr>
-                          <th>RAZÃO:</th>
-                          <td><?= strtoupper($cliente['razao']); ?></td>
-                        </tr>
-                        <tr>
-                          <th>CNPJ:</th>
-                          <td><?= $cliente['cnpj']; ?></td>
-                        </tr>
-                        <tr>
-                          <th>ENDEREÇO:</th>
-                          <td><?= strtoupper($cliente['endereco']); ?></td>
-                        </tr>
-                        <tr>
-                          <th>CEP:</th>
-                          <td><?= strtoupper($cliente['cep']); ?></td>
-                        </tr>
-                        <tr>
-                          <th>CIDADE:</th>
-                          <td><?= strtoupper($cidade['nome_cidade']); ?></td>
-                        </tr>
-                        <tr>
-                          <th>WHATSAPP:</th>
-                          <td><?= $cliente['whatsapp']; ?></td>
-                        </tr>
-                        <tr>
-                          <th>EMAIL:</th>
-                          <td><?= $cliente['email']; ?></td>
-                        </tr>
-                        <tr>
-                          <th>ABERTURA:</th>
-                          <td><?= date('d/m/Y', strtotime($cliente['dt_abertura'])); ?></td>
-                        </tr>
-                        <tr>
-                          <th>CADASTRO:</th>
-                          <td><?= date('d/m/Y', strtotime($cliente['dt_cadastro'])); ?></td>
-                        </tr>
-                        <tr>
-                          <th>VALOR A PAGAR:</th>
-                          <td><?= $cliente['valor']; ?></td>
-                        </tr>
-                        <tr>
-                          <th>OBSERVAÇÕES:</th>
-                          <td><?= $cliente['observacoes']; ?></td>
-                        </tr>
-                      </table>
+                      <div id="conteudo-dados"></div>
                     </div>
                     <!-- ====================================== TAB COM AS INFORMAÇÕES DAS OBRIGAÇÕES ==========================================-->
                     <div class="tab-pane fade" id="tab-obrigacoes" role="tabpanel" aria-labelledby="tab-obrigacoes-tab">
@@ -179,7 +124,7 @@
                     </div>
                     <!-- ============================TAB DOS FUNCIONÁRIOS================================== -->
                     <div class="tab-pane fade" id="tab-funcionarios" role="tabpanel" aria-labelledby="tab-funcionarios-tab">
-                          <div id="conteudo-funcionarios"></div>
+                      <?= view('funcionarios/index', ['id_cliente' => $cliente['id']]) ?>
                     </div>
                     <!-- =======================================TAB DOS SOCIOS===================================== -->
                     <div class="tab-pane fade" id="tab-socios" role="tabpanel" aria-labelledby="tab-socios-tab">
@@ -544,54 +489,79 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <?php endif; ?>
-
-<div class="modal fade" id="modalGlobal">
-
-    <div class="modal-dialog modal-lg">
-
-        <div class="modal-content">
-
-            <div class="modal-body" id="modalGlobalBody">
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
-  <script>
-
-function carregarFuncionarios(id_cliente)
-{
-    $('#conteudo-funcionarios').html(`
-        <div class="text-center p-5">
-            <i class="fas fa-spinner fa-spin fa-3x"></i>
-        </div>
-    `);
-
-    $.ajax({
-        url: "<?= base_url('clientes/abaFuncionarios'); ?>/" + id_cliente,
-        type: "GET",
-        success: function(response)
-        {
-            $('#conteudo-funcionarios').html(response);
+  <script type="text/javascript">
+    
+    $(document).ready(function(){
+      // CARREGA A PRIMEIRA AUTOMATICAMENTE
+      $('#conteudo-dados').load(
+          '<?= site_url('clientes/abaClientes/'.$cliente['id']) ?>'
+      );
+      $('#conteudo-dados').addClass('loaded');
+      // QUANDO CLICAR NAS TABS
+      $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+        let target = $(e.target).attr("href");
+        // FUNCIONÁRIOS
+        if(target == '#tab-funcionarios' && !$('#conteudo-funcionarios').hasClass('loaded')) {
+          $('#conteudo-funcionarios').load(
+            '<?= site_url('funcionarios/abaFuncionarios/'.$cliente['id']) ?>',
+            function() {
+                $('#conteudo-funcionarios').addClass('loaded');
+            }
+          );
         }
+        // OBRIGAÇÕES
+        if(target == '#tab-obrigacoes' && !$('#conteudo-obrigacoes').hasClass('loaded')) {
+          $('#conteudo-obrigacoes').load(
+            '<?= site_url('obrigacoes/abaObrigacoes/'.$cliente['id']) ?>',
+            function() {
+                $('#conteudo-obrigacoes').addClass('loaded');
+            }
+          );
+        }
+      });
     });
-}
+    //=========================================================
+    function obrigacaoFunc(id,cliente)
+    {
+      if(id) {
+        $("#obrigacoesForm").on('submit', function() {
 
-$(document).on('click', '.tab-funcionarios', function(e){
+          var form = $(this);
 
-    e.preventDefault();
-
-    let id_cliente = $(this).data('id');
-
-    carregarFuncionarios(id_cliente);
-
-});
-
-</script>
+          $(".text-danger").remove();
+          $.ajax({
+            url: form.attr('action'),
+            type: form.attr('method'),
+            data: { id:id,cliente:cliente }, 
+            dataType: 'json',
+            success:function(response) {
+              
+              // esconde o modal
+                $("#feitoModal").modal('hide');
+              if(response.success === true) {
+                $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">'+
+                  '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
+                '</div>');
+                  $("#sucesso").fadeTo(2000, 500).slideUp(500, function(){
+                    $("#sucesso").slideUp(500);
+                  });
+                  window.location.reload();
+              } else {
+                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">'+
+                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
+                '</div>');
+                $("#erro").fadeTo(2000, 500).slideUp(500, function(){
+                  $("#erro").slideUp(500);
+                });
+              }
+            }
+          });
+          return false;
+        });
+      }
+    }
+  </script>
 <?= $this->endSection() ?>

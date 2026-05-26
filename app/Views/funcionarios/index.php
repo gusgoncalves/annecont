@@ -1,10 +1,4 @@
-<?= $this->extend('layout') ?>
-
-<?= $this->section('title') ?>
-  Funcionários
-<?= $this->endSection() ?>
-
-<?= $this->section('content') ?>
+<?php /** @var int $id_cliente */ ?>
   <section class="content-header"></section>
   <section class="content">
     <div class="row">
@@ -16,12 +10,11 @@
           <!-- /.card-header -->
           <div class="card-body">
             <?php if(hasPermission('criarFuncionario')): ?>
-              <a href="<?php echo base_url('funcionarios/create') ?>" class="btn btn-lg btn-primary mb-2"><i class="fas fa-plus-square"></i> NOVO FUNCIONÁRIO</a>
+              <a href="<?= site_url('funcionarios/create/'.$id_cliente) ?>" class="btn btn-lg btn-primary mb-2"><i class="fas fa-plus-square"></i> NOVO FUNCIONÁRIO</a>
             <?php endif; ?>
             <table id="manageTable" class="table table-bordered table-striped table-hover">
               <thead>
               <tr>
-                <th>CLIENTE</th>
                 <th>FUNCIONÁRIO</th>
                 <th>WHATSAPP</th>
                 <th>ATIVO</th>
@@ -62,31 +55,24 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
   <?php endif; ?>
-<?= $this->endSection() ?>
 
-<?= $this->section('scripts') ?>
   <script type="text/javascript">
     var manageTable;
     var base_url = "<?= site_url(); ?>";
-  
+    let id_cliente = <?= (int)$id_cliente ?>;
     // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
     manageTable = $('#manageTable').DataTable({
-      ajax: base_url + 'funcionarios/busca/',//MONTA A DATA TABLE
+      ajax: base_url + 'funcionarios/busca/'+id_cliente,//MONTA A DATA TABLE
       responsive: true,
       autoWidth: false,
       deferRender: true,
       processing: true,
-      paging: true,//tira a paginação
-      searching: true, //tira o input de pesquisa
+      paging: false,//tira a paginação
+      searching: false, //tira o input de pesquisa
       ordering: false, //tira a opção de ordenar
       info: false,
       language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
       columns: [
-        { data: 'cliente',
-          render: function (data, type, row) {
-              return `<b>${data}</b>`;
-            }
-        },
         { data: 'nome', 
           render: function (data, type, row) {
               if(parseInt(row.ativo) === 2) {
@@ -101,7 +87,7 @@
       ],
       columnDefs: [
         {
-          targets: 4,
+          targets: 3,
           width: "1%",
           className: "text-center text-nowrap"
         }
@@ -112,4 +98,4 @@
       }
     });
   </script>
-<?= $this->endSection() ?>
+

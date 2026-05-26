@@ -14,16 +14,21 @@ class Funcionarios extends BaseController
         return view('funcionarios/index',['active_menu' => 'funcionarios']);
     }
     // ============================== BUSCAR DADOS DE FUNCIONÁRIOS PARA A DATATABLE ==============================
-    public function buscaDados()
+    public function buscaDados($id_cliente = null)
     {
         $funcModel = new FuncionariosModel();
     	$result = array('data' => array());
-		$data = $funcModel
+		
+        $funcModel
             ->select('funcionarios.*,clientes.razao')
-            ->join('clientes','clientes.id = funcionarios.id_cliente','left')
-            ->orderBy('ativo', 'ASC')
-            ->orderBy('nome', 'DESC')
-            ->findAll();
+            ->join('clientes','clientes.id = funcionarios.id_cliente','left');
+        if($id_cliente) {
+            $funcModel->where('funcionarios.id_cliente',$id_cliente);
+        }
+        $data = $funcModel
+                ->orderBy('ativo', 'ASC')
+                ->orderBy('nome', 'DESC')
+                ->findAll();        
 
 		foreach ($data as $value) {
             $buttons = '';
@@ -40,7 +45,6 @@ class Funcionarios extends BaseController
     			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
             }
 			$result['data'][] = array(
-                'cliente' => $value['razao'],
 				'nome' => $value['nome'],
                 'whatsapp' => $value['whatsapp'],
                 'ativo' => $value['ativo'] == 1 ? '<span class="badge badge-success">ATIVO</span>' : '<span class="badge badge-danger">INATIVO</span>',
@@ -50,16 +54,14 @@ class Funcionarios extends BaseController
 		echo json_encode($result);
     }
     // ============================== FIM BUSCAR DADOS DE FUNCIONÁRIOS PARA A DATATABLE ==============================
-    public function create()
+    public function create($id_cliente = null)
     {
-        $clienteModel = new ClientesModel();
-        $cliente = $clienteModel->orderBy('razao', 'asc')->findAll();
-        return view('funcionarios/create', ['cliente' => $cliente, 'active_menu' => 'funcionarios']);
+        return view('funcionarios/create', ['id_cliente' => $id_cliente, 'active_menu' => 'funcionarios']);
     }
     // ============================== SALVAR FUNCIONÁRIO ==============================
     public function store()
     {
-       $rules = [
+        $rules = [
             'id_cliente' => 'required',
             'funcionario_nome' => 'required|min_length[3]',
             'funcionario_cpf' => 'required|exact_length[14]|is_unique[funcionarios.cpf]',
@@ -104,8 +106,9 @@ class Funcionarios extends BaseController
             // echo '</pre>';
             // exit;
         }
+        $id_cliente =$this->request->getPost('id_cliente'); 
         $data = [
-            'id_cliente' => $this->request->getPost('id_cliente'),
+            'id_cliente' =>$id_cliente,
             'nome' => $this->request->getPost('funcionario_nome'),
             'cpf' => $this->request->getPost('funcionario_cpf'),
             'whatsapp' => $this->request->getPost('funcionario_whatsapp'),
@@ -123,7 +126,7 @@ class Funcionarios extends BaseController
         $funcionariosModel = new FuncionariosModel();
         $create = $funcionariosModel->insert($data);
         if ($create) {
-            return redirect()->to('/funcionarios')->with('success', 'Funcionário criado com sucesso');
+            return redirect()->to('/clientes/ver/'.$id_cliente)->with('success', 'Funcionário criado com sucesso');
         } else {
             return redirect()->back()->withInput()->with('errors','Um erro ocorreu!!');
         }
@@ -139,8 +142,7 @@ class Funcionarios extends BaseController
     public function update($id)
     {
         $rules = [
-            'id_cliente' => 'required',
-            'funcionario_nome' => 'required|min_length[3]]',
+            'funcionario_nome' => 'required|min_length[3]',
             'funcionario_cpf' => 'required|exact_length[14]|is_unique[funcionarios.cpf, id, '.$id.']',
             'funcionario_whats' => 'required',
             'funcionario_alimentacao' => 'permit_empty|regex_match[/^\d+([.,]\d{1,2})?$/]',
@@ -148,9 +150,6 @@ class Funcionarios extends BaseController
             'funcionario_transporte' => 'permit_empty|regex_match[/^\d+([.,]\d{1,2})?$/]',
         ];
         $messages = [
-            'id_cliente' => [
-                'required' => 'O campo cliente é obrigatório'
-            ],
             'funcionario_nome' => [
                 'required' => 'O campo nome é obrigatório',
                 'min_length' => 'O campo nome deve conter no mínimo 3 caracteres',
@@ -173,15 +172,15 @@ class Funcionarios extends BaseController
                 'regex_match' => 'Informe um valor válido. Ex: 11,50'
             ],
         ];
-        
+    
         if(!$this->validate($rules, $messages)) {
             return redirect()->back()
                 ->withInput()
                 ->with('errors', implode('<br>', $this->validator->getErrors()));
+                
         }
-        
+        $id_cliente = $this->request->getPost('id_cliente');       
         $data = [
-            'id_cliente' => $this->request->getPost('id_cliente'),
             'nome' => $this->request->getPost('funcionario_nome'),
             'cpf' => $this->request->getPost('funcionario_cpf'),
             'whatsapp' => $this->request->getPost('funcionario_whats'),
@@ -199,7 +198,7 @@ class Funcionarios extends BaseController
         $funcionariosModel = new FuncionariosModel();
         $update = $funcionariosModel->update($id, $data);
         if ($update) {
-            return redirect()->to('/funcionarios')->with('success', 'Funcionário atualizado com sucesso');
+            return redirect()->to('/clientes/ver/'.$id_cliente)->with('success', 'Funcionário atualizado com sucesso');
         } else {
             return redirect()->back()->withInput()->with('errors','Um erro ocorreu!!');
         }

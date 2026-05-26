@@ -15,6 +15,7 @@ $routes->get('logout', 'Auth::logout');
 $routes->group('clientes', ['filter' => 'auth:verCliente'], function($routes) {
     $routes->get('clientes/abaFuncionarios/(:num)', 'Clientes::abaFuncionarios/$1');
     $routes->get('/', 'Clientes::index');
+    $routes->get('abaClientes/(:num)', 'Clientes::abaClientes/$1');
     $routes->get('busca', 'Clientes::buscaDados');
     $routes->get('create', 'Clientes::create');
     $routes->post('store', 'Clientes::store');
@@ -27,11 +28,8 @@ $routes->group('clientes', ['filter' => 'auth:verCliente'], function($routes) {
 });
 $routes->group('funcionarios', ['filter' => 'auth:verFuncionario'], function($routes) {
     $routes->get('/', 'Funcionarios::index');
-    $routes->get('ajaxList/(:num)', 'Funcionarios::ajaxList/$1');
-    $routes->get('ajaxCreate/(:num)', 'Funcionarios::ajaxCreate/$1');
-    $routes->post('storeAjax', 'Funcionarios::storeAjax');
-    $routes->get('busca', 'Funcionarios::buscaDados');
-    $routes->get('create', 'Funcionarios::create');
+    $routes->get('busca/(:num)', 'Funcionarios::buscaDados/$1');
+    $routes->get('create/(:num)', 'Funcionarios::create/$1');
     $routes->post('store', 'Funcionarios::store');
     $routes->get('edit/(:num)', 'Funcionarios::edit/$1');
     $routes->post('update/(:num)', 'Funcionarios::update/$1');
