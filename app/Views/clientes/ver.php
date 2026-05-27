@@ -128,66 +128,7 @@
                     </div>
                     <!-- =======================================TAB DOS SOCIOS===================================== -->
                     <div class="tab-pane fade" id="tab-socios" role="tabpanel" aria-labelledby="tab-socios-tab">
-                      <?php if(hasPermission('criarCliente')): ?>
-                        <a href="<?php echo base_url('socios/create/'.$cliente['id']) ?>" class="btn btn-success btn-block"><i class="fas fa-plus-square"></i> NOVO SÓCIO</a>
-                      <?php endif; ?>
-                      </br>
-                      <div class="card">
-                        <div class="card-header bg-primary">
-                          <h5 class="text-center">SÓCIOS</h5>
-                        </div>
-                        <div class="card-body">
-                          <?php foreach($socio_data as $s => $z) : ?>
-                          <table class="table table-striped table-bordered">
-                            <tr>
-                              <th>NOME:</th>
-                              <td class="width:10%"><?= empty($z['nome']) ?'sem socio':$z['nome']; ?></td>
-                            </tr>
-                            <tr>
-                              <th>CPF:</th>
-                              <td><?= strtoupper(empty($z['cpf']) ?'sem socio':$z['cpf']); ?></td>
-                            </tr>
-                            <tr>
-                              <th>RG:</th>
-                              <td><?= empty($z['rg']) ?'sem socio':$z['rg'] ?></td>
-                            </tr>
-                            <tr>
-                              <th>TÍTULO:</th>
-                              <td><?= strtoupper(empty($z['titulo'])) ? 'sem socio':$z['titulo'] ?></td>
-                            </tr>
-                            <tr>
-                              <th>WHATSAPP:</th>
-                              <td><?= strtoupper(empty($z['whatsapp'])) ?'sem socio':$z['whatsapp'] ?></td>
-                            </tr>
-                            <tr>
-                              <th>ENDEREÇO:</th>
-                              <td><?= strtoupper(empty($z['endereco'])) ?'sem socio':$z['endereco'] ?></td>
-                            </tr>
-                            <tr>
-                              <th>RECIBO:</th>
-                              <td><?= strtoupper(empty($z['recibo'])) ?'sem socio':$z['recibo'] ?></td>
-                            </tr>
-                            <tr>
-                              <th>EMAIL:</th>
-                              <td><?= strtoupper(empty($z['email'])) ?'sem socio':$z['email'] ?></td>
-                            </tr>
-                            <tr>
-                              <th>NASCIMENTO:</th>
-                              <td><?= (empty($z['nascimento'])) ?'sem socio':$z['nascimento']?></td>
-                            </tr>
-                            <tr>
-                              <th>NOME DA MÃE:</th>
-                              <td><?= strtoupper(empty($z['nome_mae'])) ?'sem socio':$z['nome_mae'] ?></td>
-                            </tr>
-                            <tr>
-                              <th>OBSERVAÇÕES:</th>
-                              <td><?= strtoupper(empty($z['observacoes'])) ?'sem socio':$z['observacoes'] ?></td>
-                            </tr>
-                            </br>
-                          </table>
-                        <?php endforeach; ?>
-                        </div>
-                      </div>
+                      <div id="conteudo-socios"></div>
                     </div>
                     <!-- ======================================TAB DOS CERTIFICADOS===================================== -->
                     <div class="tab-pane fade" id="tab-certificados" role="tabpanel" aria-labelledby="tab-certificados-tab">
@@ -421,74 +362,6 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <?php endif; ?>
-<!-- ===========================MODAL DOS CERTIFICADOS ============================= -->
-<?php if(hasPermission('criarCertificado')): ?>
-<!-- cria o modal -->
-<div class="modal fade"  role="dialog" id="addModalCertificado">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-primary">
-        <h4 class="modal-title text-center">NOVO CERTIFICADO</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-      <form role="form" action="<?php echo base_url('certificados/create/'.$cliente['id']) ?>" class="requires-validation" method="post" id="createForm" novalidate>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="certificado_descricao">DESCRIÇÃO</label>
-            <input type="text" class="form-control" id="certificado_descricao" name="certificado_descricao" placeholder="Digite o nome Certificado" autocomplete="off" required>
-            <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-          </div>
-          <div class="form-group">
-            <label for="certificado_validade">VALIDADE</label>
-            <input type="date" class="form-control" id="certificado_validade" name="certificado_validade" autocomplete="off">
-            <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-          </div>
-          <div class="form-group">
-            <label for="certificado_senha">SENHA</label>
-            <input type="text" class="form-control" id="certificado_senha" name="certificado_senha" placeholder="Digite a senha do Certificado" autocomplete="off">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">SALVAR</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">FECHAR</button>
-        </div>
-      </form>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<?php endif; ?>
-<!-- ===============================MODAL PARA NOVAS CERTIDÕES ===================== -->
-<?php if(hasPermission('criarCertidao')): ?>
-<!-- create brand modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="addModalCertidao">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-primary">
-        <h4 class="modal-title text-center">NOVA CERTIDÃO</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-      <form role="form" action="<?php echo base_url('certidoes/create/'.$cliente['id']) ?>" class="requires-validation" method="post" id="createForm" novalidate>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="certidao_nome">NOME DA CERTIDÃO</label>
-            <input type="text" class="form-control" id="certidao_nome" name="certidao_nome" placeholder="Descreva a Certidão" autocomplete="off" required>
-            <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-          </div>
-          <div class="form-group">
-            <label for="certidao_expira">DATA QUE EXPIRA</label>
-            <input type="date" class="form-control" id="certidao_expira" name="certidao_expira" autocomplete="off" required>
-            <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">SALVAR</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">FECHAR</button>
-        </div>
-      </form>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<?php endif; ?>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
@@ -503,12 +376,12 @@
       // QUANDO CLICAR NAS TABS
       $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
         let target = $(e.target).attr("href");
-        // FUNCIONÁRIOS
-        if(target == '#tab-funcionarios' && !$('#conteudo-funcionarios').hasClass('loaded')) {
-          $('#conteudo-funcionarios').load(
-            '<?= site_url('funcionarios/abaFuncionarios/'.$cliente['id']) ?>',
+        // SOCIOS
+        if(target == '#tab-socios' && !$('#conteudo-socios').hasClass('loaded')) {
+          $('#conteudo-socios').load(
+            '<?= site_url('socios/abaSocios/'.$cliente['id']) ?>',
             function() {
-                $('#conteudo-funcionarios').addClass('loaded');
+                $('#conteudo-socios').addClass('loaded');
             }
           );
         }

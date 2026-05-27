@@ -5,43 +5,20 @@
   Cadastro Sócios
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
-
   <section class="content-header"></section>
   <section class="content">
     <div class="row">
       <div class="col-md-12 col-xs-12">
         <div class="card">
             <div class="card-header bg-primary">
-              <h3>CADASTRO DE SÓCIO</h3>
+              <h3>Cadastro de Sócios- <b><?= strtoupper($cliente[0]['razao']) ?></b></h3>
             </div>
             <form role="form" action="<?= site_url('socios/store')?>" class="requires-validation" method="post" enctype="multipart/form-data" novalidate>
               <div class="card-body">
                 <div class="row">
-                  <div class="col-md-12">
-                    <?php if(empty($cliente['id'])): ?>
-                      <div class="form-group">
-                        <label for="id_cliente">CLIENTE</label>
-                        <select class="form-control form-select-lg" id="id_cliente" style="width:100%" name="id_cliente">
-                          <option value="">SELECIONE UM CLIENTE</option>
-                          <?php foreach ($cliente as $v): ?>
-                            <option value="<?php echo $v['id'] ?>"><?php echo $v['razao'] ?></option>
-                          <?php endforeach ?>
-                        </select>
-                      </div>
-                    <?php else: ?>
-                      <div class="form-group">
-                        <input type="hidden" class="form-control" name="id_cliente" value="<?= $cliente['id'] ;?>">
-                      </div>
-                      <div class="form-group">
-                        <label for="cliente_nome">CLIENTE</label>
-                        <input type="text" class="form-control" id="cliente_nome" name="cliente_nome" value="<?= old($cliente['fantasia']) ?>" readonly>
-                      </div>
-                    <?php endif; ?>
-                  </div><!-- col -->           
-                </div><!-- row -->
-                <div class="row">
                   <div class="col-md-12">              
                     <div class="form-group">
+                      <input type="hidden" name="id_cliente" value="<?= $cliente[0]['id'] ?>">
                       <label for="socio_nome">NOME COMPLETO</label>
                       <input type="text" class="form-control" id="socio_nome" name="socio_nome" placeholder="Nome completo do Sócio" value="<?= old('socio_nome') ?>" maxlength="50" autocomplete="off" required>
                       <div class="invalid-feedback">Preenchimento Obrigatório!</div>
@@ -123,11 +100,7 @@
               </div><!-- /.card-body -->
               <div class="card-footer">
                 <button type="submit" class="btn btn-success">SALVAR</button>
-                <?php if(isset($cliente_data['id'])): ?>
-                  <a href="<?php echo base_url('clientes/ver/'.$cliente['id']) ?>" class="btn btn-danger">FECHAR</a>
-                <?php else: ?>
-                  <a href="<?php echo base_url('socios/') ?>" class="btn btn-danger">FECHAR</a>
-                <?php endif;?>
+                <a href="<?php echo base_url('clientes/ver/'.$cliente[0]['id']) ?>" class="btn btn-danger">FECHAR</a>
               </div><!-- div -->
             </form>
           </div><!-- card -->

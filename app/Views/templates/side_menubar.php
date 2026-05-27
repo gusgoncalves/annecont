@@ -1,9 +1,11 @@
 <?php
-  $current = service('uri')->getSegment(1);
-  $sub     = service('uri')->getSegment(2);
-
-  // rota completa
-  $currentRoute = $current . (!empty($sub) ? '/' . $sub : '');
+$currentController = service('uri')->getSegment(1);
+$currentMethod     = service('uri')->getSegment(2);
+  
+  $currentRoute = $currentController;
+  if (!empty($currentMethod)){
+    $currentRoute .= '/' . $currentMethod;
+  } 
 
   $grupos = [
     'principal'     => ['dashboard'],
@@ -23,12 +25,11 @@
       'movimento',
       'pagar',
       'receber',
-      'pagar/historico',
-      'receber/historico'
     ],
+
     'historicos' => [
-      'pagar/historico',
-      'receber/historico'
+      'pagar',
+      'receber'
     ],
 
     'cadastros'     => [
@@ -50,16 +51,25 @@
     ]
   ];
 
-  function isActive($currentRoute, $grupo)
+  function navGroupActive($controller, $grupo)
   {
-      return in_array($currentRoute, $grupo);
+      return in_array($controller, $grupo);
+  }
+
+  function navItemActive($route, $target)
+  {
+      return $route === $target ? 'active' : '';
+  }
+
+  function isActive($controller, $grupo)
+  {
+      return in_array($controller, $grupo);
   }
 
   function navActive($currentRoute, $route)
   {
       return $currentRoute === $route ? 'active' : '';
   }
-
 ?>
   <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -74,24 +84,24 @@
           <!-- ================================= PRINCIPAL ================================ -->
         <?php if (hasPermission('modificarEmpresa')) : ?>
           <li class="nav-item" id="principalMainMenu">
-            <a href="<?= site_url('dashboard') ?>" class="nav-link <?= navActive($currentRoute, 'dashboard') ?>"><i class="fas fa-tags"></i><p>&nbsp;&nbsp; PRINCIPAL</p></a>
+            <a href="<?= site_url('dashboard') ?>" class="nav-link <?= navActive($currentController, 'dashboard') ?>"><i class="fas fa-tags"></i><p>&nbsp;&nbsp; PRINCIPAL</p></a>
           </li>
           <div class="dropdown-divider"></div>
         <?php endif; ?>
           <!-- ================================= CLIENTES ================================ -->
         <?php if (hasPermission('verCliente')) : ?>
-          <?php $openCliente = isActive($currentRoute, $grupos['area_cliente']); ?>
+          <?php $openCliente = isActive($currentController, $grupos['area_cliente']); ?>
           <li class="nav-item <?= $openCliente ? 'menu-open' : '' ?>">
             <a href="#" class="nav-link <?= $openCliente ? 'active' : '' ?>"><i class="fas fa-users"></i><p>&nbsp;&nbsp; ÁREA CLIENTE<i class="fas fa-angle-left right"></i></p></a>
             <ul class="nav nav-treeview" style="<?= $openCliente ? 'display:block;' : '' ?>">
               <?php if (hasPermission('verCliente')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('clientes') ?>" class="nav-link <?= navActive($currentRoute, 'clientes') ?>"><i class="fas fa-user-tie"></i><p>&nbsp;&nbsp; Cliente</p></a>
+                  <a href="<?= site_url('clientes') ?>" class="nav-link <?= navActive($currentController, 'clientes') ?>"><i class="fas fa-user-tie"></i><p>&nbsp;&nbsp; Cliente</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verFuncionario')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('funcionarios') ?>" class="nav-link <?= navActive($currentRoute, 'funcionarios') ?>"><i class="fas fa-user-friends"></i><p>&nbsp;&nbsp; Funcionários</p></a>
+                  <a href="<?= site_url('funcionarios') ?>" class="nav-link <?= navActive($currentController, 'funcionarios') ?>"><i class="fas fa-user-friends"></i><p>&nbsp;&nbsp; Funcionários</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verCliente')) : ?>
@@ -101,27 +111,27 @@
               <?php endif; ?>
               <?php if (hasPermission('verCertificado')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('certificados') ?>" class="nav-link <?= navActive($currentRoute, 'certificados') ?>"><i class="fas fa-certificate"></i><p>&nbsp;&nbsp; Certificados</p></a>
+                  <a href="<?= site_url('certificados') ?>" class="nav-link <?= navActive($currentController, 'certificados') ?>"><i class="fas fa-certificate"></i><p>&nbsp;&nbsp; Certificados</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verCertidao')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('certidoes') ?>" class="nav-link <?= navActive($currentRoute, 'certidoes') ?>"><i class="fas fa-scroll"></i><p>&nbsp;&nbsp; Certidões</p></a>
+                  <a href="<?= site_url('certidoes') ?>" class="nav-link <?= navActive($currentController, 'certidoes') ?>"><i class="fas fa-scroll"></i><p>&nbsp;&nbsp; Certidões</p></a>
                 </li>
               <?php endif; ?> 
               <?php if (hasPermission('verObrigacao')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('obrigacoes') ?>" class="nav-link <?= navActive($currentRoute, 'obrigacoes') ?>"><i class="fas fa-sitemap"></i><p>&nbsp;&nbsp; Obrigações</p></a>
+                  <a href="<?= site_url('obrigacoes') ?>" class="nav-link <?= navActive($currentController, 'obrigacoes') ?>"><i class="fas fa-sitemap"></i><p>&nbsp;&nbsp; Obrigações</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verLogin')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('logins') ?>" class="nav-link <?= navActive($currentRoute, 'logins') ?>"><i class="fas fa-unlock-alt"></i><p>&nbsp;&nbsp; Logins</p></a>
+                  <a href="<?= site_url('logins') ?>" class="nav-link <?= navActive($currentController, 'logins') ?>"><i class="fas fa-unlock-alt"></i><p>&nbsp;&nbsp; Logins</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verFaturamento')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('faturamento') ?>" class="nav-link <?= navActive($currentRoute, 'faturamento') ?>"><i class="fas fa-hand-holding-usd"></i><p>&nbsp;&nbsp; Faturamento</p></a>
+                  <a href="<?= site_url('faturamento') ?>" class="nav-link <?= navActive($currentController, 'faturamento') ?>"><i class="fas fa-hand-holding-usd"></i><p>&nbsp;&nbsp; Faturamento</p></a>
                 </li>
               <?php endif; ?>
             </ul>
@@ -130,7 +140,7 @@
         <?php endif; ?>
           <!-- ================================= FINANCEIRO ================================ -->
         <?php if (hasAnyPermission(['verFluxo', 'verPagar', 'verReceber'])) : ?>
-          <?php $openFinanceiro = isActive($currentRoute, $grupos['financeiro']); ?>
+          <?php $openFinanceiro = navGroupActive($currentController, $grupos['financeiro']); ?>
           <li class="nav-item <?= $openFinanceiro ? 'menu-open' : '' ?>">
             <a href="#" class="nav-link <?= $openFinanceiro ? 'active' : '' ?>"><i class="fas fa-balance-scale-right"></i><p>&nbsp;&nbsp; FINANCEIRO<i class="fas fa-angle-left right"></i></p></a>
             <ul class="nav nav-treeview" style="<?= $openFinanceiro ? 'display:block;' : '' ?>">
@@ -150,15 +160,15 @@
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verPagar')) : ?>
-                <?php $openHistorico = isActive($currentRoute, $grupos['historicos']); ?>
+                <?php $openHistorico = in_array($currentRoute, ['pagar/historico','receber/historico']); ?>
                 <li class="nav-item <?= $openHistorico ? 'menu-open' : '' ?>">
                   <a href="#" class="nav-link <?= $openHistorico ? 'active' : '' ?>"><i class="fas fa-history"></i><p>&nbsp;&nbsp; HISTÓRICO<i class="fas fa-angle-left right"></i></p></a>
                   <ul class="nav nav-treeview" style="<?= $openHistorico ? 'display:block;' : '' ?>">
                     <li class="nav-item">
-                      <a href="<?= site_url('pagar/historico') ?>" class="nav-link <?= navActive($currentRoute, 'pagar/historico') ?>"><i class="fas fa-history"></i><p>&nbsp;&nbsp; PAGAR</p></a>
+                      <a href="<?= site_url('pagar/historico') ?>" class="nav-link <?= navItemActive($currentRoute, 'pagar/historico') ?>"><i class="fas fa-history"></i><p>&nbsp;&nbsp; PAGAR</p></a>
                     </li>
                     <li class="nav-item">
-                      <a href="<?= site_url('receber/historico') ?>" class="nav-link <?= navActive($currentRoute, 'receber/historico') ?>"><i class="fas fa-history"></i><p>&nbsp;&nbsp; RECEBER</p></a>
+                      <a href="<?= site_url('receber/historico') ?>" class="nav-link <?= navItemActive($currentRoute, 'receber/historico') ?>"><i class="fas fa-history"></i><p>&nbsp;&nbsp; RECEBER</p></a>
                     </li>
                   </ul>
                 </li> 
@@ -169,38 +179,38 @@
         <?php endif; ?>
           <!-- ================================= CADASTROS ================================ -->
         <?php if (hasAnyPermission(['verTipoCertidao', 'verPorte', 'verCidade', 'verUF', 'verTipoConta'])) : ?>
-          <?php $openCadastros = isActive($currentRoute, $grupos['cadastros']); ?>
+          <?php $openCadastros = isActive($currentController, $grupos['cadastros']); ?>
           <li class="nav-item <?= $openCadastros ? 'menu-open' : '' ?>">
             <a href="#" class="nav-link <?= $openCadastros ? 'active' : '' ?>"><i class="fas fa-table"></i><p>&nbsp;&nbsp; CADASTROS<i class="fas fa-angle-left right"></i></p></a>
             <ul class="nav nav-treeview" style="<?= $openCadastros ? 'display:block;' : '' ?>">
               <?php if (hasPermission('verTipoCertidao')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('tipo_certidao') ?>" class="nav-link <?= navActive($currentRoute, 'tipo_certidao') ?>"><i class="fas fa-map-marked-alt"></i><p>&nbsp;&nbsp; Tipo de Certidão</p></a>
+                  <a href="<?= site_url('tipo_certidao') ?>" class="nav-link <?= navActive($currentController, 'tipo_certidao') ?>"><i class="fas fa-map-marked-alt"></i><p>&nbsp;&nbsp; Tipo de Certidão</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verPorte')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('portes') ?>" class="nav-link <?= navActive($currentRoute, 'portes') ?>"><i class="fa fa-map-signs"></i><p>&nbsp;&nbsp; Porte de Empresa</p></a>
+                  <a href="<?= site_url('portes') ?>" class="nav-link <?= navActive($currentController, 'portes') ?>"><i class="fa fa-map-signs"></i><p>&nbsp;&nbsp; Porte de Empresa</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verUF')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('uf') ?>" class="nav-link <?= navActive($currentRoute, 'uf') ?>"><i class="fas fa-map-marked-alt"></i><p>&nbsp;&nbsp; UF - Estados</p></a>
+                  <a href="<?= site_url('uf') ?>" class="nav-link <?= navActive($currentController, 'uf') ?>"><i class="fas fa-map-marked-alt"></i><p>&nbsp;&nbsp; UF - Estados</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verCidade')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('cidades') ?>" class="nav-link <?= navActive($currentRoute, 'cidades') ?>"><i class="fa fa-map-signs"></i><p>&nbsp;&nbsp; Cidades</p></a>
+                  <a href="<?= site_url('cidades') ?>" class="nav-link <?= navActive($currentController, 'cidades') ?>"><i class="fa fa-map-signs"></i><p>&nbsp;&nbsp; Cidades</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verTipoConta')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('tipo_conta') ?>" class="nav-link <?= navActive($currentRoute, 'tipo_conta') ?>"><i class="fas fa-shopping-bag"></i><p>&nbsp;&nbsp; Tipo de Pagamentos</p></a>
+                  <a href="<?= site_url('tipo_conta') ?>" class="nav-link <?= navActive($currentController, 'tipo_conta') ?>"><i class="fas fa-shopping-bag"></i><p>&nbsp;&nbsp; Tipo de Pagamentos</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('modificarEmpresa')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('bancos') ?>" class="nav-link <?= navActive($currentRoute, 'bancos') ?>"><i class="fas fa-university"></i><p>&nbsp;&nbsp; Caixa</p></a>
+                  <a href="<?= site_url('bancos') ?>" class="nav-link <?= navActive($currentController, 'bancos') ?>"><i class="fas fa-university"></i><p>&nbsp;&nbsp; Caixa</p></a>
                 </li>
               <?php endif; ?>
            </ul>
@@ -209,18 +219,18 @@
         <?php endif; ?>
           <!-- ================================= ACESSOS ================================ -->
         <?php if (hasAnyPermission(['verUser', 'verGrupo'])) : ?>
-          <?php $openPermissoes = isActive($currentRoute, $grupos['acessos']); ?>
+          <?php $openPermissoes = isActive($currentController, $grupos['acessos']); ?>
           <li class="nav-item <?= $openPermissoes ? 'menu-open' : '' ?>">
             <a href="#" class="nav-link <?= $openPermissoes ? 'active' : '' ?>"><i class="fas fa-key"></i><p>&nbsp;&nbsp; ACESSOS<i class="fas fa-angle-left right"></i></p></a>
             <ul class="nav nav-treeview" style="<?= $openPermissoes ? 'display:block;' : '' ?>">
               <?php if (hasPermission('verUser')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('usuarios') ?>" class="nav-link <?= navActive($currentRoute, 'usuarios') ?>"><i class="fa fa-user-plus"></i><p>&nbsp;&nbsp; USUÁRIOS</p></a>
+                  <a href="<?= site_url('usuarios') ?>" class="nav-link <?= navActive($currentController, 'usuarios') ?>"><i class="fa fa-user-plus"></i><p>&nbsp;&nbsp; USUÁRIOS</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verGrupo')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('grupos') ?>" class="nav-link <?= navActive($currentRoute, 'grupos') ?>"><i class="fas fa-users-cog"></i><p>&nbsp;&nbsp; GRUPOS</p></a>
+                  <a href="<?= site_url('grupos') ?>" class="nav-link <?= navActive($currentController, 'grupos') ?>"><i class="fas fa-users-cog"></i><p>&nbsp;&nbsp; GRUPOS</p></a>
                 </li>
               <?php endif; ?>
             </ul>
@@ -230,7 +240,7 @@
           <!-- ================================= EMPRESA ================================ -->
         <?php if (hasPermission('modificarEmpresa')) : ?>
           <li class="nav-item">
-            <a href="<?= site_url('empresa') ?>" class="nav-link <?= navActive($currentRoute, 'empresa') ?>"><i class="fa fa-building fa-lg"></i><p>&nbsp;&nbsp; DADOS ANNECONT</p></a>
+            <a href="<?= site_url('empresa') ?>" class="nav-link <?= navActive($currentController, 'empresa') ?>"><i class="fa fa-building fa-lg"></i><p>&nbsp;&nbsp; DADOS ANNECONT</p></a>
           </li>
         <?php endif; ?>
       </ul>

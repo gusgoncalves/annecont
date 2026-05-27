@@ -264,6 +264,6 @@ class Clientes extends BaseController
     public function abaClientes($id_cliente = null)
     {   $clientesModel = new ClientesModel();
         $clientes = $clientesModel->find($id_cliente);
-        return view('clientes/dados',['cliente'=>$clientes]);
+        return view('clientes/dados',['cliente'=>$clientes,'active_menu' => 'area_cliente']);
     }                                                                                 
 }

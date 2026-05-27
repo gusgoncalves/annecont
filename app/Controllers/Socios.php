@@ -42,25 +42,21 @@ class Socios extends BaseController
 		echo json_encode($result);
     }
     // ============================== FIM BUSCAR DADOS DE SÓCIOS PARA A DATATABLE ==============================
-    public function create()
+    public function create($id_cliente = null)
     {
         $clienteModel = new ClientesModel();
-        $cliente = $clienteModel->orderBy('razao', 'asc')->findAll();
-        return view('socios/create', ['cliente' => $cliente, 'active_menu' => 'socios']);
+        $cliente = $clienteModel->where('id', $id_cliente)->findAll();
+        return view('socios/create', ['active_menu' => 'area_cliente','cliente'=> $cliente]);
     }
     // ============================== SALVAR FUNCIONÁRIO ==============================
     public function store()
     {
        $rules = [
-            'id_cliente' => 'required',
             'socio_nome' => 'required|min_length[3]|is_unique[socios.nome]',
             'socio_cpf' => 'required|exact_length[14]|is_unique[socios.cpf]',
             'socio_whats' => 'required'
         ];
         $messages = [
-            'id_cliente' => [
-                'required' => 'O campo cliente é obrigatório'
-            ],
             'socio_nome' => [
                 'required' => 'O campo nome é obrigatório',
                 'min_length' => 'O campo nome deve conter no mínimo 3 caracteres',
@@ -84,8 +80,9 @@ class Socios extends BaseController
             // echo '</pre>';
             // exit;
         }
+        $id_cliente = $this->request->getPost('id_cliente');
         $data = [
-            'id_cliente' => $this->request->getPost('id_cliente'),
+            'id_cliente' => $id_cliente,
             'nome' => $this->request->getPost('socio_nome'),
             'cpf' => $this->request->getPost('socio_cpf'),
             'rg' => $this->request->getPost('socio_rg'),
@@ -103,7 +100,7 @@ class Socios extends BaseController
         $SociosModel = new SociosModel();
         $create = $SociosModel->insert($data);
         if ($create) {
-            return redirect()->to('/socios')->with('success', 'Funcionário criado com sucesso');
+            return redirect()->to('/clientes/ver/'.$id_cliente)->with('success', 'Sócio criado com sucesso');
         } else {
             return redirect()->back()->withInput()->with('errors','Um erro ocorreu!!');
         }
@@ -194,4 +191,9 @@ class Socios extends BaseController
             ]);
         }
     }
+    public function abaSocios($id_cliente = null)
+    {   $sociosModel = new SociosModel();
+        $socios = $sociosModel->where('id_cliente', $id_cliente)->findAll();;
+        return view('socios/dados',['id_cliente'=> $id_cliente, 'socio'=>$socios,'active_menu' => 'area_cliente']);
+    }            
 }

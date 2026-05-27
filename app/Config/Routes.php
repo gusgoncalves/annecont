@@ -40,6 +40,8 @@ $routes->group('funcionarios', ['filter' => 'auth:verFuncionario'], function($ro
 $routes->group('socios', ['filter' => 'auth:verCliente'], function($routes) {
     $routes->get('/', 'Socios::index');
     $routes->get('busca', 'Socios::buscaDados');
+    $routes->get('abaSocios/(:num)', 'Socios::abaSocios/$1');
+    $routes->get('create/(:num)', 'Socios::create/$1');
     $routes->get('create', 'Socios::create');
     $routes->post('store', 'Socios::store');
     $routes->get('edit/(:num)', 'Socios::edit/$1');
