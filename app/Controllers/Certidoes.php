@@ -19,47 +19,36 @@ class Certidoes extends BaseController
         return view('certidoes/index',['active_menu' => 'certidoes','clientes' => $cliente,'tipos' => $tipo]);
     }
     // ============================== BUSCAR DADOS DE CERTIDOES PARA A DATATABLE ==============================
-    public function buscaDados()
+    public function abaCertidoes($id_cliente = null)
     {
-        $certidoesModel = new CertidoesModel();
-    	$result = array('data' => array());
-		
-        $data = $certidoesModel
-            ->select('certidoes.*,clientes.razao,tipo_certidao.nome')
-            ->join('clientes','clientes.id = certidoes.id_cliente','left')
-            ->join('tipo_certidao','tipo_certidao.id = certidoes.id_tipo_certidao','left')
-            ->orderBy('descricao', 'asc')->findAll();
-		foreach ($data as $value) {
-            $buttons = '';
-    
-            if(hasPermission('modificarCertidao')) {//se tiver permissão para alterar clientes
-    			$buttons .= '<button type="button" class="btn btn-primary" style="font-size:0.55em" onclick="editCertidao('.$value['id'].')"><i class="fas fa-edit"></i></button>';
-            }
-            if(hasPermission('apagarCertidao')) { 
-    			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeCertidao('.$value['id'].')" data-toggle="modal" data-target="#removeModalCertidao"><i class="fas fa-trash"></i></button>';
-            }
-			$result['data'][] = array(
-                'cliente' => $value['razao'],
-                'tipo' => $value['nome'],
-                'dt_expira' => date('d/m/Y', strtotime($value['dt_expira']))?: '',                
-				'acoes' => $buttons
-			);
-		} // /foreach
-		echo json_encode($result);
+        $CertidoesModel = new CertidoesModel();
+        $TipoCertidao = new TipoCertidaoModel();
+        
+        $certidoes = $CertidoesModel
+            ->select('certidoes.*, tipo_certidao.nome')
+            ->join('tipo_certidao', 'tipo_certidao.id = certidoes.id_tipo_certidao ', 'left')
+            ->where('id_cliente', $id_cliente)
+            ->orderBy('descricao', 'DESC')
+            ->findAll();
+        $tipos = $TipoCertidao->findAll();
+        
+        $data = [
+            'id_cliente' => $id_cliente,
+            'certidoes' => $certidoes,
+            'tipos' => $tipos,
+            'active_menu' => 'area_cliente'
+        ];
+        return view('certidoes/index', $data);
     }    
     // ============================== SALVAR FUNCIONÁRIO ==============================
     public function create()
     {
        $rules = [
-            'id_cliente' => 'required',
             'id_tipo_certidao' => 'required',
             'certidao_descricao' => 'required',
             'certidao_expira' => 'required'
         ];
         $messages = [
-            'id_cliente' => [
-                'required' => 'O campo cliente é obrigatório'
-            ],
             'id_tipo_certidao' => [
                 'required' => 'O campo tipo de certidão é obrigatório'
             ],
@@ -70,26 +59,20 @@ class Certidoes extends BaseController
                 'required' => 'O campo data de expiração é obrigatório',
             ]
         ];  
-        //  echo '<pre>';
-        //  print_r($this->request->getPost());
-        //  echo '</pre>';
-        //  exit;      
+
         if(!$this->validate($rules, $messages)) {
            return $this->response->setJSON([
                 'success' => false,
                 'messages' => implode('<br>', $this->validator->getErrors())
             ]);
         }
+        $cliente = $this->request->getPost('id_cliente');
         $data = [
-            'id_cliente' => $this->request->getPost('id_cliente'),
+            'id_cliente' => $cliente,
             'id_tipo_certidao' => $this->request->getPost('id_tipo_certidao'),
             'descricao' => $this->request->getPost('certidao_descricao'),
             'dt_expira' => $this->request->getPost('certidao_expira'),
         ];
-        //  echo '<pre>';
-        //  print_r($data);
-        //  echo '</pre>';
-        //  exit; 
         $certidoesModel = new CertidoesModel();
         $create = $certidoesModel->insert($data);
         if ($create) {
@@ -117,7 +100,7 @@ class Certidoes extends BaseController
         } else {
             return $this->response->setJSON([
                 'success' => false,
-                'messages' => 'Certificado não encontrado'
+                'messages' => 'Certidão não encontrada'
             ]);
         }
     }

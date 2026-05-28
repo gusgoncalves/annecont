@@ -99,7 +99,7 @@ $currentMethod     = service('uri')->getSegment(2);
                   <a href="<?= site_url('clientes') ?>" class="nav-link <?= navActive($currentController, 'clientes') ?>"><i class="fas fa-user-tie"></i><p>&nbsp;&nbsp; Cliente</p></a>
                 </li>
               <?php endif; ?>
-              <?php if (hasPermission('verFuncionario')) : ?>
+              <!-- <?php if (hasPermission('verFuncionario')) : ?>
                 <li class="nav-item">
                   <a href="<?= site_url('funcionarios') ?>" class="nav-link <?= navActive($currentController, 'funcionarios') ?>"><i class="fas fa-user-friends"></i><p>&nbsp;&nbsp; Funcionários</p></a>
                 </li>
@@ -133,7 +133,7 @@ $currentMethod     = service('uri')->getSegment(2);
                 <li class="nav-item">
                   <a href="<?= site_url('faturamento') ?>" class="nav-link <?= navActive($currentController, 'faturamento') ?>"><i class="fas fa-hand-holding-usd"></i><p>&nbsp;&nbsp; Faturamento</p></a>
                 </li>
-              <?php endif; ?>
+              <?php endif; ?> -->
             </ul>
           </li>
           <div class="dropdown-divider"></div>

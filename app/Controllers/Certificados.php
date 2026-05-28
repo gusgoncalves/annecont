@@ -5,84 +5,53 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\CertificadosModel;
-use App\Models\ClientesModel;
 
 class Certificados extends BaseController
 {
     public function index()
     {
-        $clienteModel = new ClientesModel();
-        $cliente = $clienteModel->findAll();
-        return view('certificados/index',['active_menu' => 'certificados','clientes' => $cliente]);
+        $CertificadoModel = new CertificadosModel();
+        $certificados = $CertificadoModel->wherefindAll();
+        return view('certificados/index',['active_menu' => 'certificados']);
     }
     // ============================== BUSCAR DADOS PARA A DATATABLE ==============================
-    public function buscaDados()
+    public function abaCertificados($id_cliente = null)
     {
-        $certificadosModel = new CertificadosModel();
-    	$result = array('data' => array());
-		
-        //$data = $certificadosModel->orderBy('descricao', 'asc')->findAll();
-        $data = $certificadosModel->select('certificados.*,clientes.razao')
-            ->join('clientes','clientes.id = certificados.id_cliente','left')
-            ->orderBy('razao', 'ASC')
-            ->findAll();
-
-		foreach ($data as $value) {
-            $buttons = '';
-    
-            if(hasPermission('modificarCertificado')) {//se tiver permissão para alterar clientes
-    			$buttons .= '<button type="button" class="btn btn-primary" style="font-size:0.55em" onclick="editCertificado('.$value['id'].')"><i class="fas fa-edit"></i></button>';
-            }
-            if(hasPermission('apagarCertificado')) { 
-    			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeCertificado('.$value['id'].')" data-toggle="modal" data-target="#removeModalCertificado"><i class="fas fa-trash"></i></button>';
-            }
-			$result['data'][] = array(
-                'cliente' => $value['razao'],
-				'descricao' => $value['descricao'],
-                'dt_validade' => date('d/m/Y', strtotime($value['dt_validade'])),
-                'senha' => $value['senha'],
-                'ativo' => $value['ativo'] == 1 ? '<span class="badge badge-success">ATIVO</span>' : '<span class="badge badge-danger">INATIVO</span>',
-				'acoes' => $buttons
-			);
-		} // /foreach
-		echo json_encode($result);
-    }    
+        $CertificadoModel = new CertificadosModel();
+        
+        $certificados = $CertificadoModel->where('id_cliente', $id_cliente)->orderBy('descricao', 'DESC')->findAll();        
+        $data = [
+            'id_cliente' => $id_cliente,
+            'certificados' => $certificados,
+            'active_menu' => 'area_cliente'
+        ];
+        return view('certificados/index', $data);
+    }
     // ============================== SALVAR  ==============================
     public function create()
     {
        $rules = [
-            'id_cliente' => 'required',
             'certificado_validade' => 'required'
         ];
         $messages = [
-            'id_cliente' => [
-                'required' => 'O campo cliente é obrigatório'
-            ],
             'certificado_validade' => [
                 'required' => 'O campo validade é obrigatório',
             ]
         ];  
-        //  echo '<pre>';
-        //  print_r($this->request->getPost());
-        //  echo '</pre>';
-        //  exit;      
         if(!$this->validate($rules, $messages)) {
            return $this->response->setJSON([
                 'success' => false,
                 'messages' => implode('<br>', $this->validator->getErrors())
             ]);
         }
+        $cliente = $this->request->getPost('id_cliente');
         $data = [
-            'id_cliente' => $this->request->getPost('id_cliente'),
+            'id_cliente' => $cliente,
             'descricao' => $this->request->getPost('certificado_descricao'),
             'dt_validade' => $this->request->getPost('certificado_validade'),
             'senha' => $this->request->getPost('certificado_senha'),
             'ativo' => 1//$this->request->getPost('certificado_ativo') ? 1 : 0,
         ];
-        //  echo '<pre>';
-        //  print_r($data);
-        //  echo '</pre>';
-        //  exit; 
         $certificadosModel = new CertificadosModel();
         $create = $certificadosModel->insert($data);
         if ($create) {

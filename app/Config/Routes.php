@@ -27,7 +27,8 @@ $routes->group('clientes', ['filter' => 'auth:verCliente'], function($routes) {
     $routes->post('getCidades', 'Clientes::getCidades');
 });
 $routes->group('funcionarios', ['filter' => 'auth:verFuncionario'], function($routes) {
-    $routes->get('/', 'Funcionarios::index');
+    $routes->get('abaFuncionarios/(:num)', 'Funcionarios::abaFuncionarios/$1');
+    $routes->get('/', 'FuncionariosClientes/$1');
     $routes->get('busca/(:num)', 'Funcionarios::buscaDados/$1');
     $routes->get('create/(:num)', 'Funcionarios::create/$1');
     $routes->post('store', 'Funcionarios::store');
@@ -50,7 +51,7 @@ $routes->group('socios', ['filter' => 'auth:verCliente'], function($routes) {
 });
 $routes->group('certificados', ['filter' => 'auth:verCertificado'], function($routes) {
     $routes->get('/', 'Certificados::index');
-    $routes->get('busca', 'Certificados::buscaDados');
+    $routes->get('abaCertificados/(:num)', 'Certificados::abaCertificados/$1');
     $routes->post('create', 'Certificados::create');
     $routes->get('getById/(:num)', 'Certificados::getById/$1');
     $routes->post('edit/(:num)', 'Certificados::update/$1');
@@ -58,7 +59,7 @@ $routes->group('certificados', ['filter' => 'auth:verCertificado'], function($ro
 });
 $routes->group('certidoes', ['filter' => 'auth:verCertidao'], function($routes) {
     $routes->get('/', 'Certidoes::index');
-    $routes->get('busca', 'Certidoes::buscaDados');
+    $routes->get('abaCertidoes/(:num)', 'Certidoes::abaCertidoes/$1');
     $routes->post('create', 'Certidoes::create');
     $routes->get('getById/(:num)', 'Certidoes::getById/$1');
     $routes->post('edit/(:num)', 'Certidoes::update/$1');

@@ -1,10 +1,3 @@
-<?= $this->extend('layout') ?>
-<?= $this->section('title') ?>
-  Certidões
-<?= $this->endSection() ?>
-
-<?= $this->section('content') ?>
-  <section class="content-header"></section>
   <section class="content">
     <div class="row">
       <div class="col-md-12 col-xs-12">
@@ -18,61 +11,43 @@
               <button class="btn btn-lg btn-primary mb-2" data-toggle="modal" data-target="#addModalCertidao"><i class="fas fa-plus-square"></i> NOVA CERTIDÃO</button>
               <br />
             <?php endif; ?>
-            <table id="manageTable" class="table table-bordered table-striped table-hover">
-              <thead>
-                <tr>
-                  <th>CLIENTE</th>
-                  <th>CERTIDAO</th>
-                  <th>EXPIRA</th>
-                  <?php if(hasAnyPermission(['modificarCertidao','apagarCertidao'])): ?>
-                  <th class="col-2">AÇÕES</th>
-                  <?php endif; ?>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- AQUI DENTRO VAI O CONTEÚDO DA DATATABLE -->
-              </tbody>
-            </table>
+            <?php if(empty($certidoes)): ?>
+              <div class="alert alert-warning mb-0">
+                Nenhum certificado cadastrado.
+              </div>
+            <?php else : ?>
+              <table id="certidaoTable" class="table table-bordered table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>TIPO</th>
+                    <th>EXPIRA</th>
+                    <th>VALIDADE</th>
+                    <?php if(hasAnyPermission(['modificarCertidao','apagarCertidao'])): ?>
+                    <th class="text-center text-nowrap col-auto">AÇÕES</th>
+                    <?php endif; ?>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach($certidoes as $k => $value) : ?>
+                    <tr>
+                      <td><?= $value['nome'] ?></td>
+                      <td><?= date('d/m/Y', strtotime($value['dt_expira'])) ?></td>
+                      <td><?= $value['descricao'] ?></td>
+                      <td class="text-center text-nowrap col-auto">
+                        <?php if(hasPermission('modificarCertidao')): ?>
+                          <button type="button" class="btn btn-primary" style="font-size:0.55em" onclick="editCertidao('<?= $value['id']?>')"><i class="fas fa-edit"></i></button>
+                        <?php endif; ?>
+                        <?php if(hasPermission('apagarCertidao')): ?>
+                          <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeCertidao('<?= $value['id']?>')" data-toggle="modal" data-target="#removeModalCertidao"><i class="fas fa-trash"></i></button>
+                        <?php endif; ?>
+                      </td>
+                    </tr>
+                  <?php endforeach ; ?>
+                </tbody>
+              </table>
+            <?php endif; ?>
           </div><!-- /.card-body -->
         </div><!-- col-md-12 -->
       </div><!-- /.row -->
     </section>    <!-- /.content -->
   <?= $this->include('modal/modal_certidoes') ?>
-<?= $this->endSection() ?>
-<?= $this->section('scripts') ?>
-  <script type="text/javascript">
-    var manageTable;
-    var base_url = "<?= base_url(); ?>";
-
-    // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
-    manageTable = $('#manageTable').DataTable({
-      ajax: base_url + 'certidoes/busca/',//MONTA A DATA TABLE
-      responsive: true,
-      autoWidth: false,
-      deferRender: true,
-      processing: true,
-      paging: true,//tira a paginação
-      searching: true, //tira o input de pesquisa
-      ordering: false, //tira a opção de ordenar
-      info: false,
-      language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
-        columns: [
-        { data: 'cliente',
-          render: function (data, type, row) {
-              return `<b>${data}</b>`;
-            }
-        },
-        { data: 'tipo' },
-        { data: 'dt_expira' },
-        { data: 'acoes' },
-      ],
-      columnDefs: [
-        {
-          targets: 3,
-          width: "1%",
-          className: "text-center text-nowrap"
-        }
-      ]
-    });
-  </script>
-<?= $this->endSection() ?>

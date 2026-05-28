@@ -68,7 +68,7 @@
                   <div class="tab-content" id="custom-tabs-one-tabContent">
                     <!-- ====================================== TAB COM AS INFORMAÇÕES DO CLIENTE ==========================================-->
                     <div class="tab-pane fade show active" id="tab-informacoes" role="tabpanel" aria-labelledby="tab-informacoes-tab">
-                      <div id="conteudo-dados"></div>
+                      <div id="info-dados"></div>
                     </div>
                     <!-- ====================================== TAB COM AS INFORMAÇÕES DAS OBRIGAÇÕES ==========================================-->
                     <div class="tab-pane fade" id="tab-obrigacoes" role="tabpanel" aria-labelledby="tab-obrigacoes-tab">
@@ -124,7 +124,7 @@
                     </div>
                     <!-- ============================TAB DOS FUNCIONÁRIOS================================== -->
                     <div class="tab-pane fade" id="tab-funcionarios" role="tabpanel" aria-labelledby="tab-funcionarios-tab">
-                      <?= view('funcionarios/index', ['id_cliente' => $cliente['id']]) ?>
+                      <div id="conteudo-funcionarios"></div>
                     </div>
                     <!-- =======================================TAB DOS SOCIOS===================================== -->
                     <div class="tab-pane fade" id="tab-socios" role="tabpanel" aria-labelledby="tab-socios-tab">
@@ -132,60 +132,11 @@
                     </div>
                     <!-- ======================================TAB DOS CERTIFICADOS===================================== -->
                     <div class="tab-pane fade" id="tab-certificados" role="tabpanel" aria-labelledby="tab-certificados-tab">
-                      <?php if(hasPermission('criarCertificado')): ?>
-                        <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#addModalCertificado"><i class="fas fa-plus-square"></i> NOVO CERTIFICADO</button>
-                      <?php endif; ?>
-                      </br>
-                      <div class="card">
-                        <div class="card-header bg-primary">
-                          <h5 class="text-center">CERTIFICADOS</h5>
-                        </div>
-                        <div class="card-body">
-                          <table class="table table-striped table-bordered">
-                              <th>DESCRIÇÃO</th>
-                              <th>EXPIRA</th>
-                              <th>SENHA</th>
-                              <?php foreach($certificado_data as $k => $v ) : ?>
-                                <tr>                  
-                                  <td class="width:10%"><?= strtoupper(empty($v['descricao'])?'Nao tem':$v['descricao']); ?></td>
-                                  <td><?= (empty($v['dt_validade'])? 'Não tem':$v['dt_validade']) ?></td>
-                                  <td class="width:10%"><?= empty($v['senha'])?'não tem' :$v['senha'] ?></td>
-                                </tr>
-                                </a>
-                              <?php endforeach; ?>
-                            </table>
-                        </div>
-                      </div>
+                      <div id="conteudo-certificados"></div>
                     </div>
                     <!--============================TAB DAS CERTIDOES =================================-->
                     <div class="tab-pane fade" id="tab-certidoes" role="tabpanel" aria-labelledby="tab-certidoes-tab">
-                      <?php if(hasPermission('criarCertidao')): ?>
-                        <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#addModalCertidao"><i class="fas fa-plus-square"></i> NOVA CERTIDÃO</button>
-                      <?php endif; ?>
-                      </br>
-                      <div class="card">
-                        <div class="card-header bg-primary">
-                          <h5 class="text-center">CERTIDÕES</h5>
-                        </div>
-                        <div class="card-body">
-                          <table class="table table-striped table-bordered">
-                            <th>NOME</th>
-                            <th>EXPIRA</th>
-                            <?php foreach($certidao_data as $k => $v ) : ?>
-                              <?php $dt_expira = empty($v['dt_expira']) ? 'nãpo tem ': $v['dt_expira'];?>
-                              <tr>
-                                <?php foreach($tipo_certidao as $tipo) : ?>                 
-                                  <?php //if($tipo['id'] === $v['id_tipo_certidao']) : ?>
-                                    <td><?= empty($tipo['nome'])?'não tem': $tipo['nome']; ?></td>
-                                  <?php //endif; ?>
-                                <?php endforeach; ?>
-                                <td><?= empty($dt_expira) ? 'não tem ' : $dt_expira?></td>
-                              </tr>
-                              </a>
-                            <?php endforeach; ?>
-                          </table>
-                        </div>
-                      </div>
+                      <div id="conteudo-certidoes"></div>
                     </div>
                     <!-- ==========================TAB DOS FATURAMENTOS ===================================== -->
                     <div class="tab-pane fade" id="tab-faturamento" role="tabpanel" aria-labelledby="tab-faturamento-tab">
@@ -222,30 +173,7 @@
                     </div>
                     <!--============================TAB DOS LOGINS ============================== -->
                     <div class="tab-pane fade" id="tab-logins" role="tabpanel" aria-labelledby="tab-logins-tab">
-                      <?php if(hasPermission('criarLogin')): ?>
-                        <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#modalLogins"><i class="fas fa-plus-square"></i> NOVO LOGIN</button>
-                      <?php endif; ?>
-                      </br>
-                      <div class="card">
-                        <div class="card-header bg-primary">
-                          <h5 class="text-center">LOGINS</h5>
-                        </div>
-                        <div class="card-body">
-                          <table class="table table-striped table-bordered">
-                            <th>DESCRIÇÃO</th>
-                            <th>USUÁRIO</th>
-                            <th>SENHA</th>
-                            <?php foreach($login_data as $k => $v ) : ?>
-                              <tr>                  
-                                <td class="width:10%">login</td>
-                                <td>usuario</td>
-                                <td>senha</td>
-                              </tr>
-                              </a>
-                            <?php endforeach; ?>
-                          </table>
-                        </div>
-                      </div>
+          
                     </div>
                   </div>
                 </div>
@@ -279,7 +207,6 @@
 </div><!-- /.modal -->
 <!-- ==================================MODAL DE ADICIONAR FATURAMENTO============================================================= -->
 <?php if(hasPermission('criarFaturamento')): ?>
-<!-- create brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="addModalFaturamento">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -325,116 +252,112 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <?php endif; ?>
-<!-- ======================================MODAL LOGINS ==============================-->
-<?php if(hasPermission('criarLogin')): ?>
-<!-- create brand modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="modalLogins">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-primary">
-        <h4 class="modal-title text-center">CADASTRO DE LOGINS</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-      <form role="form" action="<?php echo base_url('logins/create/'.$cliente['id']) ?>" class="requires-validation" method="post" id="createForm" novalidate>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="descricao">DESCRIÇÃO</label>
-            <input type="text" class="form-control" id="descricao_login" name="descricao_login" placeholder="Descrição do Login"  required>
-            <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-          </div>
-          <div class="form-group">
-            <label for="usuario">USUÁRIO</label>
-            <input type="text" class="form-control" id="usuario_login" name="usuario_login" required>
-            <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-          </div>
-          <div class="form-group">
-            <label for="senha">SENHA</label>
-            <input type="text" class="form-control" id="senha_login" name="senha_login" placeholder="Senha do Login" required>
-            <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">SALVAR</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">FECHAR</button>
-        </div>
-      </form>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<?php endif; ?>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
-  <script type="text/javascript">
-    
+  <script>
     $(document).ready(function(){
-      // CARREGA A PRIMEIRA AUTOMATICAMENTE
-      $('#conteudo-dados').load(
-          '<?= site_url('clientes/abaClientes/'.$cliente['id']) ?>'
-      );
-      $('#conteudo-dados').addClass('loaded');
-      // QUANDO CLICAR NAS TABS
+      // ==========================================
+      // CONFIGURAÇÃO DAS TABS DINÂMICAS
+      // ==========================================
+      const tabs = {
+          '#tab-informacoes': {
+              div: '#info-dados',
+              url: '<?= site_url('clientes/abaClientes/'.$cliente['id']) ?>'
+          },
+          '#tab-obrigacoes': {
+              div: '#conteudo-obrigacoes',
+              url: '<?= site_url('obrigacoes/abaObrigacoes/'.$cliente['id']) ?>'
+          },
+          '#tab-funcionarios': {
+              div: '#conteudo-funcionarios',
+              url: '<?= site_url('funcionarios/abaFuncionarios/'.$cliente['id']) ?>'
+          },
+          '#tab-socios': {
+              div: '#conteudo-socios',
+              url: '<?= site_url('socios/abaSocios/'.$cliente['id']) ?>'
+          },
+          '#tab-certificados': {
+              div: '#conteudo-certificados',
+              url: '<?= site_url('certificados/abaCertificados/'.$cliente['id']) ?>'
+          },
+          '#tab-certidoes': {
+              div: '#conteudo-certidoes',
+              url: '<?= site_url('certidoes/abaCertidoes/'.$cliente['id']) ?>'
+          },
+          '#tab-faturamento': {
+              div: '#conteudo-faturamento',
+              url: '<?= site_url('faturamento/abaFaturamento/'.$cliente['id']) ?>'
+          },
+          '#tab-logins': {
+              div: '#conteudo-logins',
+              url: '<?= site_url('logins/abaLogins/'.$cliente['id']) ?>'
+          },
+          '#tab-financeiro': {
+              div: '#conteudo-financeiro',
+              url: '<?= site_url('receber/abaFinanceiro/'.$cliente['id']) ?>'
+          }
+      };
+      // ==========================================
+      // FUNÇÃO DE LOAD
+      // ==========================================
+      window.carregarTab = function(tabId, force = false) {
+        if(tabs[tabId]) {
+          let tab = tabs[tabId];
+          if(force || !$(tab.div).hasClass('loaded')) {
+            $(tab.div).html(
+              '<div class="text-center p-3">' +
+              '<i class="fas fa-spinner fa-spin"></i> Carregando...' +
+              '</div>'
+            );
+            $(tab.div).load(tab.url, function() {
+                $(tab.div).addClass('loaded');
+            });
+          }
+        }
+      }
+      //===========================================
+      // DAR LOAD NAS TABS
+      //===========================================
+      window.reloadTab = function(tabId)
+      {
+        if(tabs[tabId]) {
+          let tab = tabs[tabId];
+          $(tab.div).removeClass('loaded');
+          carregarTab(tabId, true);
+        }
+      }
+      // ==========================================
+      // CARREGA PRIMEIRA ABA
+      // ==========================================
+      carregarTab('#tab-informacoes');
+      // ==========================================
+      // EVENTO DAS TABS
+      // ==========================================
       $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
         let target = $(e.target).attr("href");
-        // SOCIOS
-        if(target == '#tab-socios' && !$('#conteudo-socios').hasClass('loaded')) {
-          $('#conteudo-socios').load(
-            '<?= site_url('socios/abaSocios/'.$cliente['id']) ?>',
-            function() {
-                $('#conteudo-socios').addClass('loaded');
-            }
-          );
+        // TAB VOLTAR
+        if(target == '#tab-voltar') {
+            window.location.href = '<?= site_url('clientes') ?>';
+            return;
         }
-        // OBRIGAÇÕES
-        if(target == '#tab-obrigacoes' && !$('#conteudo-obrigacoes').hasClass('loaded')) {
-          $('#conteudo-obrigacoes').load(
-            '<?= site_url('obrigacoes/abaObrigacoes/'.$cliente['id']) ?>',
-            function() {
-                $('#conteudo-obrigacoes').addClass('loaded');
-            }
-          );
-        }
+        carregarTab(target);
+        // SALVA TAB ATIVA
+        localStorage.setItem(
+            'clienteTab_<?= $cliente['id'] ?>',
+            target
+        );
       });
-    });
-    //=========================================================
-    function obrigacaoFunc(id,cliente)
-    {
-      if(id) {
-        $("#obrigacoesForm").on('submit', function() {
-
-          var form = $(this);
-
-          $(".text-danger").remove();
-          $.ajax({
-            url: form.attr('action'),
-            type: form.attr('method'),
-            data: { id:id,cliente:cliente }, 
-            dataType: 'json',
-            success:function(response) {
-              
-              // esconde o modal
-                $("#feitoModal").modal('hide');
-              if(response.success === true) {
-                $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert" id="sucesso">'+
-                  '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-                '</div>');
-                  $("#sucesso").fadeTo(2000, 500).slideUp(500, function(){
-                    $("#sucesso").slideUp(500);
-                  });
-                  window.location.reload();
-              } else {
-                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert" id="erro">'+
-                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                '</div>');
-                $("#erro").fadeTo(2000, 500).slideUp(500, function(){
-                  $("#erro").slideUp(500);
-                });
-              }
-            }
-          });
-          return false;
-        });
+      // ==========================================
+      // RESTAURA TAB APÓS REFRESH
+      // ==========================================
+      let ultimaTab = localStorage.getItem(
+          'clienteTab_<?= $cliente['id'] ?>'
+      );
+      if(ultimaTab && tabs[ultimaTab]) {
+        $('#custom-tabs-one-tab a[href="' + ultimaTab + '"]').tab('show');
+        carregarTab(ultimaTab);
       }
-    }
+    });
   </script>
 <?= $this->endSection() ?>

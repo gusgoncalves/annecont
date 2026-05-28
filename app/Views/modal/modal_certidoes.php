@@ -1,4 +1,4 @@
-<?php /** @var array $clientes */
+<?php /** @var int $id_cliente */
  /** @var array $tipos */ ?>
 <!-- ===============================MODAL PARA NOVAS CERTIDÕES ===================== -->
 <?php if (hasPermission('criarCertidao')): ?>
@@ -10,26 +10,10 @@
           <h4 class="modal-title text-center">NOVA CERTIDÃO</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <form role="form" action="<?php echo base_url('certidoes/create') ?>" class="requires-validation" method="post" id="createFormCertidao" novalidate>
+        <form role="form" action="<?= site_url('certidoes/create') ?>" class="requires-validation" method="post" id="createFormCertidao" novalidate>
           <div class="modal-body">
             <div class="form-group">
-              <label for="id_cliente">CLIENTE</label>
-              <?php if (isset($cliente_data)): ?>
-                <!-- Se já estiver na ficha do cliente, mostra um campo fixo -->
-                <input type="text" class="form-control" value="<?= $cliente_data['razao']; ?>" readonly>
-                <input type="hidden" name="id_cliente" value="<?= $cliente_data['id']; ?>">
-              <?php else: ?>
-                <!-- Se estiver na listagem geral, exibe o combo -->
-                <select class="form-control" id="id_cliente" name="id_cliente" required>
-                  <option value="">SELECIONE O CLIENTE</option>
-                      <?php foreach ($clientes as $c): ?>
-                          <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option>
-                      <?php endforeach; ?>
-                </select>
-                <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-              <?php endif; ?>
-            </div>
-            <div class="form-group">
+              <input type="hidden" name="id_cliente" value="<?= $id_cliente; ?>"> 
               <label for="id_tipo_certidao">CERTIDÃO</label>
               <select class="form-control" id="id_tipo_certidao" name="id_tipo_certidao" required>
                 <option value="">SELECIONE O TIPO</option>
@@ -73,9 +57,6 @@
           <div class="modal-body">
             <div id="messages"></div>
             <div class="form-group">
-              <?php if (isset($cliente_data)) : ?>
-                <input type="hidden" name="id_cliente" value="<?php echo $cliente_data['id']; ?>">
-              <?php endif; ?>
               <label for="edit_tipo_certidao">CERTIDÃO</label>
               <select class="form-control" id="edit_tipo_certidao" name="edit_tipo_certidao" required>
                  <option value="">SELECIONE O TIPO</option>
@@ -134,11 +115,6 @@
   var base_url = "<?= base_url(); ?>";
 
   //=================== SELECT 2 =====================================
-  $('#id_cliente').select2({
-    width: '100%',
-    dropdownParent: $('#addModalCertidao'),
-    theme: 'classic'
-  });
   $('#id_tipo_certidao').select2({
     width: '100%',
     dropdownParent: $('#addModalCertidao'),
@@ -162,7 +138,9 @@
               if (response.success) {
                   $("#addModalCertidao").modal('hide');
                   $('#createFormCertidao')[0].reset();
-                  manageTable.ajax.reload(null, false);
+                  $('#addModalCertidao').one('hidden.bs.modal', function () {
+                    reloadTab('#tab-certidoes');
+                  });
                   showToast(response.messages, 'success');
                   // Redirecionar corretamente
               } else {
@@ -213,7 +191,9 @@
               if (response.success) {
                   $("#editModalCertidao").modal('hide');
                   $("#updateFormCertidao")[0].reset();
-                  manageTable.ajax.reload(null, false);
+                  $('#editModalCertidao').one('hidden.bs.modal', function () {
+                    reloadTab('#tab-certidoes');
+                  });
                   showToast(response.messages, 'success');
               } else {
                   showToast(response.messages, 'error');
@@ -250,7 +230,9 @@
 					if (response.success) {
 						$('#removeModalCertidao').modal('hide');
 						$('#removeFormCertidao')[0].reset();
-						manageTable.ajax.reload(null, false);
+						$('#removeModalCertidao').one('hidden.bs.modal', function () {
+              reloadTab('#tab-certidoes');
+            });
 						showToast(response.messages, 'success');
 					} else {
 						showToast(response.messages, 'error');

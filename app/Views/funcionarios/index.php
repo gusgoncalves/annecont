@@ -1,5 +1,4 @@
 <?php /** @var int $id_cliente */ ?>
-  <section class="content-header"></section>
   <section class="content">
     <div class="row">
       <div class="col-md-12 col-xs-12">
@@ -9,24 +8,46 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body">
-            <?php if(hasPermission('criarFuncionario')): ?>
-              <a href="<?= site_url('funcionarios/create/'.$id_cliente) ?>" class="btn btn-lg btn-primary mb-2"><i class="fas fa-plus-square"></i> NOVO FUNCIONÁRIO</a>
+            <?php if(empty($funcionarios)): ?>
+              <div class="alert alert-warning mb-0">
+                Nenhum funcionário cadastrado.
+            </div>
+            <?php else : ?>
+              <?php if(hasPermission('criarFuncionario')): ?>
+                <a href="<?= site_url('funcionarios/create/'.$id_cliente) ?>" class="btn btn-lg btn-primary mb-2"><i class="fas fa-plus-square"></i> NOVO FUNCIONÁRIO</a>
+              <?php endif; ?>
+              <table id="manageTable" class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                  <th>FUNCIONÁRIO</th>
+                  <th>WHATSAPP</th>
+                  <th>ATIVO</th>
+                  <?php if(hasAnyPermission(['modificarFuncionario', 'apagarFuncionario'])): ?>
+                    <th class="col-2">AÇÕES</th>
+                  <?php endif; ?>
+                </tr>
+                </thead>
+                <tbody>
+                  <?php foreach($funcionarios as $value): ?>
+                    <tr>
+                      <td><?= $value['nome'] ?></td>
+                      <td><?= $value['whatsapp'] ?></td>
+                      <td><?= $value['ativo'] == 1 ? '<span class="badge badge-success">ATIVO</span>' : '<span class="badge badge-danger">INATIVO</span>' ?></td>
+                      <td class="text-nowrap">
+                        <a href="<?= site_url('funcionarios/transporte/'.$value['id'])?>" class="btn btn-dark" style="font-size:0.55em"><i class="fas fa-bus"></i></a>
+                        <a href="<?= site_url('funcionarios/alimentacao/'.$value['id'])?>" class="btn btn-warning" style="font-size:0.55em"><i class="fas fa-utensils"></i></a>
+                        <?php if(hasPermission('modificarFuncionario')): ?>
+                          <a href="<?= site_url('funcionarios/edit/'.$value['id'])?>" class="btn btn-primary" style="font-size:0.55em"><i class="fas fa-edit"></i></a>
+                        <?php endif; ?>
+                        <?php if(hasPermission('apagarFuncionario')): ?>
+                          <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeFunc('<?= $value['id']?>')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>
+                        <?php endif; ?>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
             <?php endif; ?>
-            <table id="manageTable" class="table table-bordered table-striped table-hover">
-              <thead>
-              <tr>
-                <th>FUNCIONÁRIO</th>
-                <th>WHATSAPP</th>
-                <th>ATIVO</th>
-                <?php if(hasAnyPermission(['modificarFuncionario', 'apagarFuncionario'])): ?>
-                  <th class="col-2">AÇÕES</th>
-                <?php endif; ?>
-              </tr>
-              </thead>
-              <tbody>
-                <!-- AQUI DENTRO VAI O CONTEÚDO DA DATATABLE -->
-              </tbody>
-            </table>
           </div><!-- /.card-body -->
         </div><!-- /.card -->
       </div><!-- col-md-12 -->
@@ -57,45 +78,38 @@
   <?php endif; ?>
 
   <script type="text/javascript">
-    var manageTable;
-    var base_url = "<?= site_url(); ?>";
-    let id_cliente = <?= (int)$id_cliente ?>;
-    // ===============================DATA TABLE COM RESPONSIVE E FUNÇÕES ======================
-    manageTable = $('#manageTable').DataTable({
-      ajax: base_url + 'funcionarios/busca/'+id_cliente,//MONTA A DATA TABLE
-      responsive: true,
-      autoWidth: false,
-      deferRender: true,
-      processing: true,
-      paging: false,//tira a paginação
-      searching: false, //tira o input de pesquisa
-      ordering: false, //tira a opção de ordenar
-      info: false,
-      language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
-      columns: [
-        { data: 'nome', 
-          render: function (data, type, row) {
-              if(parseInt(row.ativo) === 2) {
-                return `${data} <span class="badge bg-danger ms-1">INATIVO</span>`;
+    function removeFunc(id) 
+    {
+      $('#removeModal').modal('show');
+      // remove submits antigos
+      $('#removeForm').off('submit');
+      // novo submit
+      $('#removeForm').on('submit', function(e) {
+          e.preventDefault();
+          $.ajax({
+              url: $(this).attr('action'),
+              type: 'POST',
+              data: {
+                  id: id
+              },
+              dataType: 'json',
+              success: function(response) {
+                  if (response.success) {
+                      $('#removeForm')[0].reset();
+                      $('#removeModal').modal('hide');
+                      $('#removeModal').one('hidden.bs.modal', function () {
+                          reloadTab('#tab-funcionarios');
+                      });
+                      showToast(response.messages, 'success');
+                  } else {
+                      showToast(response.messages, 'error');
+                  }
+              },
+              error: function() {
+                  showToast('Erro ao remover o Banco.', 'error');
               }
-              return data;
-            } 
-        },
-        { data: 'ativo' },
-        { data: 'whatsapp' },
-        { data: 'acoes' },
-      ],
-      columnDefs: [
-        {
-          targets: 3,
-          width: "1%",
-          className: "text-center text-nowrap"
-        }
-      ],createdRow: function (row, data, dataIndex) {
-        // if (parseInt(data.ativo) === 2) {
-        //   $(row).addClass('table-secondary');
-        // }
-      }
-    });
+          });
+      });
+    } 
   </script>
 

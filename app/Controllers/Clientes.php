@@ -219,9 +219,7 @@ class Clientes extends BaseController
         $clientesModel = new ClientesModel();
         $cidadeModel = new \App\Models\CidadesModel();
         $obrigacoesModel = new \App\Models\ObrigacoesModel();
-        $funcionariosModel = new \App\Models\FuncionariosModel();
         $sociosModel = new \App\Models\SociosModel();
-        $certificadosModel = new \App\Models\CertificadosModel();
         $certidoesModel = new \App\Models\CertidoesModel();
         $faturamentoModel = new \App\Models\FaturamentoModel();
         $loginsModel = new \App\Models\LoginsModel();
@@ -232,9 +230,7 @@ class Clientes extends BaseController
         $cidade = $cidadeModel->find($cliente['id_cidade']);
         $obrigacoes_data = $obrigacoesModel->getObrigacoesPorCliente($id);
         $obrigacoes_feito = $obrigacoesModel->obrigacoesFeita($id);
-        $funcionarios = $funcionariosModel->getFuncionariosPorCliente($id);
         $socios = $sociosModel->where('id_cliente',$id);
-        $certificados = $certificadosModel->where('id_cliente',$id);
         $certidoes = $certidoesModel->where('id_cliente',$id);
         $faturamentos = $faturamentoModel->where('id_cliente',$id);
         $total_faturamento = $faturamentoModel->selectSum('valor')->where('id_cliente',$id)->findAll();
@@ -250,9 +246,7 @@ class Clientes extends BaseController
             'cidade' => $cidade,
             'obrigacoes_data' => $obrigacoes_data,
             'obrigacoes_feito' => $obrigacoes_feito,
-            'funcionario_data' => $funcionarios,
             'socio_data' => $socios,
-            'certificado_data' => $certificados,
             'certidao_data' => $certidoes,
             'faturamento_data' => $faturamentos,
             'total_faturamento' => $total_faturamento,

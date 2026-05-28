@@ -1,4 +1,4 @@
-<?php /** @var array $clientes */ ?>
+<?php /** @var int $id_cliente */ ?>
 <style>
     .hidden {
       display: none;
@@ -15,23 +15,7 @@
                 </div>
                 <form role="form" action="<?= site_url('certificados/create') ?>" class="requires-validation" method="post" id="createFormCertificado" novalidate>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="cliente">CLIENTE</label>
-                            <?php if (isset($cliente_data)): ?>                                
-                                <!-- Se já estiver na ficha do cliente, mostra um campo fixo -->
-                                <input type="text" class="form-control" value="<?=$cliente_data['razao']; ?>" readonly>
-                                <input type="hidden" name="id_cliente" value="<?= $cliente_data['id']; ?>">
-                            <?php else: ?>
-                                <!-- Se estiver na listagem geral, exibe o combo -->
-                                <select class="form-control" style="width:100%" id="id_cliente" name="id_cliente" required>
-                                    <option value="">SELECIONE O CLIENTE</option>
-                                    <?php foreach ($clientes as $c): ?>
-                                        <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-                            <?php endif; ?>
-                        </div>
+                        <input type="hidden" name="id_cliente" value="<?= $id_cliente; ?>">  
                         <div class="form-group">
                             <label for="certificado_descricao">DESCRIÇÃO</label>
                             <select class="form-control" style="width:100%" id="certificado_descricao" name="certificado_descricao" onchange="toggleInputs('insert')" required>
@@ -72,10 +56,7 @@
                 <form role="form" action="<?=site_url('certificados/edit') ?>" method="post" id="updateFormCertificado">
                     <div class="modal-body">
                         <div id="messages"></div>
-                        <div class="form-group">
-                            <?php if (isset($cliente_data)) : ?>
-                                <input type="hidden" name="id_cliente" value="<?php echo $cliente_data['id']; ?>">
-                            <?php endif; ?>
+                        <div class="form-group">                          
                             <label for="edit_certificado_descricao">DESCRIÇÃO</label>
                             <select class="form-control" style="width:100%" id="edit_certificado_descricao" name="edit_certificado_descricao" onchange="toggleInputs('edit')" required>
                                 <option value="CERTIFICADO">CERTIFICADO</option>
@@ -128,12 +109,6 @@
 <!-- ========================================================================================================================================= -->
 <script type="text/javascript">
     var base_url = "<?= base_url(); ?>";
-    //=================== SELECT 2 =====================================
-    $('#id_cliente').select2({
-        width: '100%',
-        dropdownParent: $('#addModalCertificado'),
-        theme: 'classic'
-    });
     //===========================MOSTRA CAMPOS DO FORM DE CADASTRO =================================
     function toggleInputs(valor) 
     {
@@ -194,7 +169,9 @@
                 if (response.success) {
                     $("#addModalCertificado").modal('hide');
                     $('#createFormCertificado')[0].reset();
-                    manageTable.ajax.reload(null, false);
+                    $('#addModalCertificado').one('hidden.bs.modal', function () {
+                          reloadTab('#tab-certificados');
+                      });
                     showToast(response.messages, 'success');
                     // Redirecionar corretamente
                 } else {
@@ -206,9 +183,6 @@
     $('#addModalCertificado').on('hidden.bs.modal', function () {
         // limpa formulário
         $('#createFormCertificado')[0].reset();
-        // limpa select2
-        $('#id_cliente').val('').trigger('change');
-        // remove validação bootstrap
         $('#createFormCertificado').removeClass('was-validated');
         // reseta visual dos campos
         toggleInputs('insert');
@@ -248,7 +222,9 @@
                             if (response.success) {
                                 $("#editModalCertificado").modal('hide');
                                 $("#updateFormCertificado")[0].reset();
-                                manageTable.ajax.reload(null, false);
+                                $('#editModalCertificado').one('hidden.bs.modal', function () {
+                                    reloadTab('#tab-certificados');
+                                });
                                 showToast(response.messages, 'success');
                             } else {
                                 showToast(response.messages, 'error');
@@ -291,9 +267,9 @@
                         $('#removeModalCertificado').modal('hide');
                         // limpa form
                         $('#removeFormCertificado')[0].reset();
-                        // atualiza tabela
-                        manageTable.ajax.reload(null, false);
-                        // toast
+                        $('#removeModalCertificado').one('hidden.bs.modal', function () {
+                            reloadTab('#tab-certificados');
+                        });
                         showToast(response.messages, 'success');
                     } else {
                         showToast(response.messages, 'error');

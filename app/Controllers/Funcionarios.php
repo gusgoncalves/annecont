@@ -14,44 +14,17 @@ class Funcionarios extends BaseController
         return view('funcionarios/index',['active_menu' => 'funcionarios']);
     }
     // ============================== BUSCAR DADOS DE FUNCIONÁRIOS PARA A DATATABLE ==============================
-    public function buscaDados($id_cliente = null)
+    public function abaFuncionarios($id_cliente = null)
     {
-        $funcModel = new FuncionariosModel();
-    	$result = array('data' => array());
+        $funcionariosModel = new FuncionariosModel();
 		
-        $funcModel
-            ->select('funcionarios.*,clientes.razao')
-            ->join('clientes','clientes.id = funcionarios.id_cliente','left');
-        if($id_cliente) {
-            $funcModel->where('funcionarios.id_cliente',$id_cliente);
-        }
-        $data = $funcModel
-                ->orderBy('ativo', 'ASC')
-                ->orderBy('nome', 'DESC')
-                ->findAll();        
-
-		foreach ($data as $value) {
-            $buttons = '';
-            if(hasPermission('verFuncionario')) {//se tiver permissão para alterar clientes
-    			$buttons .= ' <a href="'.base_url('funcionarios/transporte/'.$value['id']).'" class="btn btn-dark" style="font-size:0.55em"><i class="fas fa-bus"></i></a>';
-    			$buttons .= ' <a href="'.base_url('funcionarios/alimentacao/'.$value['id']).'" class="btn btn-warning" style="font-size:0.55em"><i class="fas fa-utensils"></i></a>';
-            }
-    
-            if(hasPermission('modificarFuncionario')) {//se tiver permissão para alterar clientes
-    			$buttons .= ' <a href="'.base_url('funcionarios/edit/'.$value['id']).'" class="btn btn-primary" style="font-size:0.55em"><i class="fas fa-edit"></i></a>';
-            }
-
-            if(hasPermission('apagarFuncionario')) { 
-    			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
-            }
-			$result['data'][] = array(
-				'nome' => $value['nome'],
-                'whatsapp' => $value['whatsapp'],
-                'ativo' => $value['ativo'] == 1 ? '<span class="badge badge-success">ATIVO</span>' : '<span class="badge badge-danger">INATIVO</span>',
-				'acoes' => $buttons
-			);
-		} // /foreach
-		echo json_encode($result);
+        $funcionarios = $funcionariosModel->where('id_cliente', $id_cliente)->orderBy('nome', 'DESC')->findAll();        
+        $data = [
+            'id_cliente' => $id_cliente,
+            'funcionarios' => $funcionarios,
+            'active_menu' => 'area_cliente'
+        ];
+        return view('funcionarios/index', $data);
     }
     // ============================== FIM BUSCAR DADOS DE FUNCIONÁRIOS PARA A DATATABLE ==============================
     public function create($id_cliente = null)
