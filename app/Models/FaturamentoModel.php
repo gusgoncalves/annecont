@@ -8,6 +8,6 @@ class FaturamentoModel extends Model
 {
     protected $table            = 'faturamentos';
     protected $returnType       = 'array';
-    protected $allowedFields    = ['id_cliente', 'mes', 'ano', 'valor'];
+    protected $allowedFields    = ['id_cliente', 'id_mes','mes', 'ano', 'valor'];
 
 }

@@ -38,7 +38,7 @@ class Obrigacoes extends BaseController
 			);
 		} // /foreach
 		echo json_encode($result);
-    }    
+    }
     // ============================== SALVAR OBRIGAÇÃO ==============================
     public function create()
     {

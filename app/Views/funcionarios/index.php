@@ -8,14 +8,14 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body">
+            <?php if(hasPermission('criarFuncionario')): ?>
+                <a href="<?= site_url('funcionarios/create/'.$id_cliente) ?>" class="btn btn-lg btn-primary mb-2"><i class="fas fa-plus-square"></i> NOVO FUNCIONÁRIO</a>
+              <?php endif; ?>
             <?php if(empty($funcionarios)): ?>
               <div class="alert alert-warning mb-0">
                 Nenhum funcionário cadastrado.
             </div>
             <?php else : ?>
-              <?php if(hasPermission('criarFuncionario')): ?>
-                <a href="<?= site_url('funcionarios/create/'.$id_cliente) ?>" class="btn btn-lg btn-primary mb-2"><i class="fas fa-plus-square"></i> NOVO FUNCIONÁRIO</a>
-              <?php endif; ?>
               <table id="manageTable" class="table table-bordered table-striped table-hover">
                 <thead>
                 <tr>

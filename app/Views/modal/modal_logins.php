@@ -1,4 +1,4 @@
-<?php /** @var array $clientes */ ?>
+<?php /** @var int $id_cliente */ ?>
 <?php if(hasPermission('criarLogin')): ?>
   <div class="modal fade" tabindex="-1" role="dialog" id="addModalLogin">
     <div class="modal-dialog" role="document">
@@ -9,23 +9,7 @@
         </div>
         <form role="form" action="<?= site_url('logins/create') ?>" class="requires-validation" method="post" id="createFormLogin" novalidate>
           <div class="modal-body">
-             <div class="form-group">
-              <label for="id_cliente">CLIENTE</label>
-              <?php if (isset($cliente_data)): ?>
-                <!-- Se já estiver na ficha do cliente, mostra um campo fixo -->
-                <input type="text" class="form-control" value="<?= $cliente_data['razao']; ?>" readonly>
-                <input type="hidden" name="id_cliente" value="<?= $cliente_data['id']; ?>">
-              <?php else: ?>
-                <!-- Se estiver na listagem geral, exibe o combo -->
-                <select class="form-control" id="id_cliente" name="id_cliente" required>
-                  <option value="">SELECIONE O CLIENTE</option>
-                      <?php foreach ($clientes as $c): ?>
-                          <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option>
-                      <?php endforeach; ?>
-                </select>
-                <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-              <?php endif; ?>
-            </div>
+            <input type="hidden" name="id_cliente" value="<?= $id_cliente; ?>">
             <div class="form-group">
               <label for="descricao">DESCRIÇÃO</label>
               <input type="text" class="form-control" id="descricao_login" name="descricao_login" placeholder="Descrição do Login"  required>
@@ -63,9 +47,7 @@
           <div class="modal-body">
             <div id="messages"></div>
             <div class="form-group">
-              <?php if (isset($cliente_data)) : ?>
-                <input type="hidden" name="id_cliente" value="<?= $cliente_data['id']; ?>">
-              <?php endif; ?>
+              <input type="hidden" name="id_cliente" value="<?= $id_cliente; ?>">
               <label for="descricao">DESCRIÇÃO</label>
               <input type="text" class="form-control" id="edit_descricao_login" name="edit_descricao_login" placeholder="Descrição do Login" autocomplete="off">
             </div>
@@ -114,12 +96,6 @@
 <!-- =========================================================================================== -->
 <script type="text/javascript">
     var base_url = "<?= base_url(); ?>";
-    //=================== SELECT 2 =====================================
-    $('#id_cliente').select2({
-        width: '100%',
-        dropdownParent: $('#addModalLogin'),
-        theme: 'classic'
-    });
 
      //=========ENVIA DADOS DE CRIAR FORM==================
   $('#createFormLogin').unbind('submit').on('submit', function(e) {
@@ -134,7 +110,9 @@
               if (response.success) {
                   $("#addModalLogin").modal('hide');
                   $('#createFormLogin')[0].reset();
-                  manageTable.ajax.reload(null, false);
+                  $('#addModalLogin').one('hidden.bs.modal', function () {
+                    reloadTab('#tab-logins');
+                  });
                   showToast(response.messages, 'success');
                   // Redirecionar corretamente
               } else {
@@ -184,7 +162,9 @@
               if (response.success) {
                   $("#editModalLogin").modal('hide');
                   $("#updateFormLogin")[0].reset();
-                  manageTable.ajax.reload(null, false);
+                  $('#editModalLogin').one('hidden.bs.modal', function () {
+                    reloadTab('#tab-logins');
+                  });
                   showToast(response.messages, 'success');
               } else {
                   showToast(response.messages, 'error');
@@ -222,7 +202,9 @@
 					if (response.success) {
 						$('#removeModalLogin').modal('hide');
 						$('#removeFormLogin')[0].reset();
-						manageTable.ajax.reload(null, false);
+						$('#removeModalLogin').one('hidden.bs.modal', function () {
+              reloadTab('#tab-logins');
+            });
 						showToast(response.messages, 'success');
 					} else {
 						showToast(response.messages, 'error');

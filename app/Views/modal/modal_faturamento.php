@@ -1,4 +1,4 @@
-<?php /** @var array $clientes */
+<?php /** @var int $id_cliente */
     /** @var array $meses */
 ?>
 <?php if (hasPermission('criarFaturamento')): ?>
@@ -9,26 +9,10 @@
                     <h4 class="modal-title text-center">NOVO FATURAMENTO</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <form role="form" action="<?php echo base_url('faturamento/create') ?>" class="requires-validation" method="post" id="createFormFaturamento" novalidate>
+                <form role="form" action="<?= site_url('faturamento/create') ?>" class="requires-validation" method="post" id="createFormFaturamento" novalidate>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="id_cliente">CLIENTE</label>
-                            <?php if (isset($cliente_data)): ?>
-                                <!-- Se já estiver na ficha do cliente, mostra um campo fixo -->
-                                <input type="text" class="form-control" value="<?php echo $cliente_data['razao']; ?>" readonly>
-                                <input type="hidden" name="id_cliente" value="<?php echo $cliente_data['id']; ?>">
-                            <?php else: ?>
-                                <!-- Se estiver na listagem geral, exibe o combo -->
-                                <select class="form-control" id="id_cliente" name="id_cliente" required>
-                                    <option value="">SELECIONE O CLIENTE</option>
-                                    <?php foreach ($clientes as $c): ?>
-                                        <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="form-group">
+                            <input type="hidden" name="id_cliente" value="<?php echo $id_cliente; ?>">
                             <label for="faturamento_mes">MÊS</label>
                             <select class="form-control" id="mes" name="mes" required>
                                 <option value="">SELECIONE O MÊS</option>
@@ -76,18 +60,14 @@
                 </div>
                 <form role="form" action="<?= site_url('faturamento/edit') ?>" method="post" id="updateFormFaturamento">
                     <div class="modal-body">
-                        <div id="messages"></div>
                         <div class="form-group">
-                            <?php if (isset($cliente_data)) : ?>
-                                <input type="hidden" name="id_cliente" value="<?php echo $cliente_data['id']; ?>">
-                            <?php endif; ?>
                             <label for="edit_faturamento_mes">MÊS</label>
                             <select class="form-control" id="edit_faturamento_mes" name="edit_faturamento_mes">
                                 <option value="">SELECIONE O MÊS</option>
                                     <?php foreach ($meses as $m): ?>
                                         <option value="<?= $m['id'] ?>"><?= $m['nome'] ?></option>
                                     <?php endforeach; ?>
-                                </select>
+                            </select>
                             <div class="invalid-feedback">Preenchimento Obrigatório!</div>
                         </div>
                         <div class="row">
@@ -143,12 +123,6 @@
 <?php endif; ?>
 <script type="text/javascript">
     var base_url = "<?= base_url(); ?>";
-    //=================== SELECT 2 =====================================
-    $('#id_cliente').select2({
-        width: '100%',
-        dropdownParent: $('#addModalFaturamento'),
-        theme: 'classic'
-    });
     //=========ENVIA DADOS DE CRIAR FORM==================
     $('#createFormFaturamento').unbind('submit').on('submit', function(e) 
     {
@@ -163,7 +137,9 @@
                 if (response.success) {
                     $("#addModalFaturamento").modal('hide');
                     $('#createFormFaturamento')[0].reset();
-                    manageTable.ajax.reload(null, false);
+                    $('#addModalFaturamento').one('hidden.bs.modal', function () {
+                        reloadTab('#tab-faturamento');
+                    });
                     showToast(response.messages, 'success');
                     // Redirecionar corretamente
                 } else {
@@ -194,7 +170,7 @@
             let data = response.data;
             let descricao = data.ano || '';
             // preenche campos
-            $("#edit_faturamento_mes").val(data.id_mes);
+            $("#edit_faturamento_mes").val(data.id_mes).trigger('change');
             $("#edit_faturamento_ano").val(data.ano);
             $("#edit_faturamento_valor").val(data.valor);      
             // abre modal
@@ -214,7 +190,9 @@
                 if (response.success) {
                     $("#editModalFaturamento").modal('hide');
                     $("#updateFormFaturamento")[0].reset();
-                    manageTable.ajax.reload(null, false);
+                    $('#editModalFaturamento').one('hidden.bs.modal', function () {
+                        reloadTab('#tab-faturamento');
+                    });
                     showToast(response.messages, 'success');
                 } else {
                     showToast(response.messages, 'error');
@@ -252,7 +230,9 @@
                     if (response.success) {
                         $('#removeModalFaturamento').modal('hide');
                         $('#removeFormFaturamento')[0].reset();
-                        manageTable.ajax.reload(null, false);
+                        $('#removeModalFaturamento').one('hidden.bs.modal', function () {
+                            reloadTab('#tab-faturamento');
+                    });
                         showToast(response.messages, 'success');
                     } else {
                         showToast(response.messages, 'error');

@@ -19,47 +19,27 @@ class Logins extends BaseController
         return view('logins/index',['active_menu' => 'logins','clientes' => $cliente,'logins' => $login]);
     }
     // ============================== BUSCAR DADOS DE LOGINS PARA A DATATABLE ==============================
-    public function buscaDados()
+    public function abaLogins($id_cliente = null)
     {
-        $loginsModel = new LoginsModel();
-    	$result = array('data' => array());
-		
-        $data = $loginsModel->select('login_cliente.*,clientes.razao')
-            ->join('clientes','clientes.id = login_cliente.id_cliente','left')
-            ->orderBy('clientes.razao', 'asc')
-            ->findAll();
+        $LoginsModel = new LoginsModel();
+        
+        $logins = $LoginsModel->where('id_cliente', $id_cliente)->orderBy('descricao', 'DESC')->findAll();        
+        $data = [
+            'id_cliente' => $id_cliente,
+            'logins' => $logins,
+            'active_menu' => 'area_cliente'
+        ];
+        return view('logins/index', $data);
+    }
 
-		foreach ($data as $value) {
-            $buttons = '';
-
-            if(hasPermission('modificarLogin')) {//se tiver permissão para alterar clientes
-    			$buttons .= '<button type="button" class="btn btn-primary" style="font-size:0.55em" onclick="editLogin('.$value['id'].')"><i class="fas fa-edit"></i></button>';
-            }
-            if(hasPermission('apagarLogin')) { 
-    			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeLogin('.$value['id'].')" data-toggle="modal" data-target="#removeModalLogin"><i class="fas fa-trash"></i></button>';
-            }
-			$result['data'][] = array(
-                'cliente' => $value['razao'],
-                'descricao' =>$value['descricao'],
-                'usuario' => $value['usuario'],
-                'senha' => $value['senha'],
-				'acoes' => $buttons
-			);
-		} // /foreach
-		echo json_encode($result);
-    }    
     // ============================== SALVAR ==============================
     public function create()
     {
        $rules = [
-            'id_cliente' => 'required',
             'descricao_login' => 'required',
             'usuario_login' => 'required',
         ];
         $messages = [
-            'id_cliente' => [
-                'required' => 'O campo cliente é obrigatório'
-            ],
             'descricao_login' => [
                 'required' => 'O campo descrição é obrigatório'
             ],
@@ -77,8 +57,9 @@ class Logins extends BaseController
                 'messages' => implode('<br>', $this->validator->getErrors())
             ]);
         }
+        $id_cliente = $this->request->getPost('id_cliente');
         $data = [
-            'id_cliente' => $this->request->getPost('id_cliente'),
+            'id_cliente' => $id_cliente,
             'descricao' => $this->request->getPost('descricao_login'),
             'usuario' => $this->request->getPost('usuario_login'),
             'senha' => $this->request->getPost('senha_login'),

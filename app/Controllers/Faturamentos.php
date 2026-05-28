@@ -5,68 +5,43 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\FaturamentoModel;
-use App\Models\ClientesModel;
 use App\Models\MesesModel;
 
 class Faturamentos extends BaseController
 {
-   public function index()
-    {
-        $clienteModel = new ClientesModel();
-        $cliente = $clienteModel->findAll();
-        
-        $mesesModel = new MesesModel();
-        $meses = $mesesModel->findAll();
-        
-        $faturamentoModel = new FaturamentoModel();
-        $faturamento = $faturamentoModel->findAll();        
-        return view('faturamento/index',['active_menu' => 'faturamento','clientes' => $cliente,'meses' => $meses,'faturamentos' => $faturamento]);
-    }
     // ============================== BUSCAR DADOS DE FATURAMENTOS PARA A DATATABLE ==============================
-    public function buscaDados()
+    public function abaFaturamento($id_cliente = null)
     {
-        $faturamentoModel = new FaturamentoModel();
-    	$result = array('data' => array());
-		
-        $data = $faturamentoModel
-            ->select('faturamentos.*,clientes.razao')
-            ->join('clientes','clientes.id = faturamentos.id_cliente','left')
-            ->orderBy('mes', 'asc')
-            ->orderBy('ano', 'asc')
+        $FaturamentoModel = new FaturamentoModel();
+        $MesesModel = new MesesModel();
+        
+        $faturamento = $FaturamentoModel
+            ->select('faturamentos.*, meses.nome')
+            ->join('meses', 'faturamentos.id_mes = meses.id ', 'left')
+            ->where('faturamentos.id_cliente', $id_cliente)
+            ->orderBy('faturamentos.mes', 'ASC')
+            ->orderBy('faturamentos.ano', 'ASC')
             ->findAll();
-
-		foreach ($data as $value) {
-            $buttons = '';    
-            if(hasPermission('modificarFaturamento')) {//se tiver permissão para alterar clientes
-    			$buttons .= '<button type="button" class="btn btn-primary" style="font-size:0.55em" onclick="editFaturamento('.$value['id'].')"><i class="fas fa-edit"></i></button>';
-            }
-            if(hasPermission('apagarFaturamento')) { 
-    			$buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeFaturamento('.$value['id'].')" data-toggle="modal"><i class="fas fa-trash"></i></button>';
-            }
-			$result['data'][] = array(
-                'cliente' => $value['razao'],
-                'mes' =>$value['mes'],
-                'ano' => $value['ano'],
-                'valor' => number_format($value['valor'], 2, ',', '.'),               
-				'acoes' => $buttons
-			);
-		} // /foreach
-		echo json_encode($result);
-    }    
+        $meses = $MesesModel->findAll();
+        
+        $data = [
+            'id_cliente' => $id_cliente,
+            'faturamento' => $faturamento,
+            'meses' => $meses,
+            'active_menu' => 'area_cliente'
+        ];
+        return view('faturamento/index', $data);
+    }       
     // ============================== SALVAR FATURAMENTO ==============================
     public function create()
     {
         $mesesModel = new MesesModel();
         $rules = [
-            'id_cliente' => 'required',
             'mes' => 'required',
             'faturamento_ano' => 'required',
             'faturamento_valor' => 'required',
         ];
         $messages = [
-            'id_cliente' => [
-                'required' => 'O campo cliente é obrigatório'
-            ],
             'mes' => [
                 'required' => 'O campo mes é obrigatório'
             ],
@@ -88,8 +63,9 @@ class Faturamentos extends BaseController
             ]);
         }
         $mes = $mesesModel->where('id', $this->request->getPost('mes'))->first();
+        $id_cliente = $this->request->getPost('id_cliente');
         $data = [
-            'id_cliente' => $this->request->getPost('id_cliente'),
+            'id_cliente' => $id_cliente,
             'id_mes' => $this->request->getPost('mes'),
             'mes' => $mes['nome'],
             'ano' => $this->request->getPost('faturamento_ano'),

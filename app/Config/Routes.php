@@ -73,9 +73,19 @@ $routes->group('obrigacoes', ['filter' => 'auth:verObrigacao'], function($routes
     $routes->post('edit/(:num)', 'Obrigacoes::update/$1');
     $routes->post('delete', 'Obrigacoes::delete');
 });
+$routes->group('obrigacoes_cliente', ['filter' => 'auth:verObrigacao'], function($routes) {
+    $routes->get('/', 'ObrigacoesCliente::index');
+    $routes->get('busca', 'ObrigacoesCliente::buscaDados');
+    $routes->get('abaObrigacoesCliente/(:num)', 'ObrigacoesCliente::abaObrigacoesCliente/$1');
+    $routes->get('inserir/(:num)', 'ObrigacoesCliente::inserirObrigacaoCliente/$1');
+    $routes->get('getById/(:num)', 'ObrigacoesCliente::getById/$1');
+    $routes->post('edit/(:num)', 'ObrigacoesCliente::update/$1');
+    $routes->post('remover', 'ObrigacoesCliente::delete');
+    $routes->post('create', 'ObrigacoesCliente::create');
+});
 $routes->group('logins', ['filter' => 'auth:verLogin'], function($routes) {
     $routes->get('/', 'Logins::index');
-    $routes->get('busca', 'Logins::buscaDados');
+    $routes->get('abaLogins/(:num)', 'Logins::abaLogins/$1');
     $routes->post('create', 'Logins::create');
     $routes->get('getById/(:num)', 'Logins::getById/$1');
     $routes->post('edit/(:num)', 'Logins::update/$1');
@@ -83,7 +93,7 @@ $routes->group('logins', ['filter' => 'auth:verLogin'], function($routes) {
 });
 $routes->group('faturamento', ['filter' => 'auth:verFaturamento'], function($routes) {
     $routes->get('/', 'Faturamentos::index');
-    $routes->get('busca', 'Faturamentos::buscaDados');
+    $routes->get('abaFaturamento/(:num)', 'Faturamentos::abaFaturamento/$1');
     $routes->post('create', 'Faturamentos::create');
     $routes->get('getById/(:num)', 'Faturamentos::getById/$1');
     $routes->post('edit/(:num)', 'Faturamentos::update/$1');

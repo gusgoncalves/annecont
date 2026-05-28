@@ -55,7 +55,6 @@
         </div>
         <form role="form" action="<?= base_url('certidoes/edit') ?>" method="post" id="updateFormCertidao">
           <div class="modal-body">
-            <div id="messages"></div>
             <div class="form-group">
               <label for="edit_tipo_certidao">CERTIDÃO</label>
               <select class="form-control" id="edit_tipo_certidao" name="edit_tipo_certidao" required>

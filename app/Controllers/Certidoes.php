@@ -5,19 +5,11 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\CertidoesModel;
-use App\Models\ClientesModel;
 use App\Models\TipoCertidaoModel;
 
 class Certidoes extends BaseController
 {
-    public function index()
-    {
-        $clienteModel = new ClientesModel();
-        $cliente = $clienteModel->findAll();
-        $tipoCertidaoModel = new TipoCertidaoModel();
-        $tipo = $tipoCertidaoModel->findAll();        
-        return view('certidoes/index',['active_menu' => 'certidoes','clientes' => $cliente,'tipos' => $tipo]);
-    }
+   
     // ============================== BUSCAR DADOS DE CERTIDOES PARA A DATATABLE ==============================
     public function abaCertidoes($id_cliente = null)
     {

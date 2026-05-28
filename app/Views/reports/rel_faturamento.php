@@ -68,23 +68,6 @@
   <script type="text/javascript">
       var base_url = "<?= base_url(); ?>";
 
-      //=======================ATIVAR O MENU ===========================
-  $(function() {
-    var url = window.location.href;
-
-    // Ativar o link diretamente acessado no menu
-    $('ul.nav-sidebar a, ul.nav-treeview a').filter(function() {
-        return this.href === url || url.startsWith(this.href);
-      }).addClass('active')
-      .closest('.nav-treeview') // Ativa o submenu se necessário
-      .css({
-        'display': 'block'
-      })
-      .addClass('menu-open')
-      .prev('a') // Ativa o menu principal
-      .addClass('active');
-  });
-
 $(document).ready(function() {
     $('#area-impressao').DataTable({
         dom: 'Bfrtip',
