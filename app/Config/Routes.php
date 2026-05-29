@@ -80,7 +80,8 @@ $routes->group('obrigacoes_cliente', ['filter' => 'auth:verObrigacao'], function
     $routes->get('inserir/(:num)', 'ObrigacoesCliente::inserirObrigacaoCliente/$1');
     $routes->get('getById/(:num)', 'ObrigacoesCliente::getById/$1');
     $routes->post('edit/(:num)', 'ObrigacoesCliente::update/$1');
-    $routes->post('remover', 'ObrigacoesCliente::delete');
+    $routes->get('remover/(:num)', 'ObrigacoesCliente::removerObrigacoesCliente/$1');
+    $routes->post('delete/(:num)', 'ObrigacoesCliente::delete/$1');
     $routes->post('create', 'ObrigacoesCliente::create');
 });
 $routes->group('logins', ['filter' => 'auth:verLogin'], function($routes) {

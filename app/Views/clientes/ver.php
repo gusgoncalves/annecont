@@ -108,26 +108,6 @@
     </div><!-- /.content-fluid -->
   </section> <!-- /.content -->
 </div><!-- /.content-wrapper -->
-<!-- ===============================MODAL OBRIGAÇÕES FEITAS =================================-->
-<div class="modal fade" tabindex="-1" role="dialog" id="feitoModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-danger">
-        <h4 class="modal-title">EXECUTAR TAREFA</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-      <form role="form" action="<?php echo base_url('clientes/obrigacoesFeito') ?>" method="post" id="obrigacoesForm">
-        <div class="modal-body">
-          <p><b>Tem certeza que deseja realizar esta tarefa?</b></p>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">SIM</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">NÃO</button>
-        </div>
-      </form>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>

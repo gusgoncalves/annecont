@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\ObrigacoesClienteModel;
-use App\Models\ObrigacoesRealizadasModel;
 use App\Models\ObrigacoesModel;
 
 class ObrigacoesCliente extends BaseController
@@ -18,13 +17,23 @@ class ObrigacoesCliente extends BaseController
     public function abaObrigacoesCliente($id_cliente = null)
     {
         $ObrigacoesClienteModel = new ObrigacoesClienteModel();
-        $ObrigacoesRealizadas = new ObrigacoesRealizadasModel();
+        $obrigacoesModel = new ObrigacoesModel();
 
-        $obrigacaoFeito = $ObrigacoesClienteModel
-            ->selectSum('feito','realizado')
-            ->where('id_cliente',$id_cliente)
-            ->where('feito !=', 2)
+        $subquery = $ObrigacoesClienteModel
+            ->select('id_obrigacao')
+            ->where('id_cliente', $id_cliente)
             ->findAll();
+        $ids = array_column($subquery, 'id_obrigacao');
+        $combo_obrigacoes = $obrigacoesModel
+            ->select('id, descricao')
+            ->orderBy('descricao', 'ASC');
+
+        if(!empty($ids)) {
+            $combo_obrigacoes->whereNotIn('id', $ids);
+        }
+        $combo_obrigacoes = $combo_obrigacoes->findAll();
+
+        $obrigacoes = $obrigacoesModel->findAll();
 
         $obrigacoescli = $ObrigacoesClienteModel
             ->select('obrigacoes_cliente.*,obrigacoes.descricao')
@@ -36,48 +45,80 @@ class ObrigacoesCliente extends BaseController
             'id_cliente' => $id_cliente,
             'obrigacoescli' => $obrigacoescli,
             'active_menu' => 'area_cliente',
-            'obrigacoes_feito' => $obrigacaoFeito
+            'combo_obrigacoes' => $combo_obrigacoes,
+            'obrigacoes' => $obrigacoes,
         ];
         return view('obrigacoes/obrigacoes_cliente/index', $data);
     }
-    //================INSERIR OBRIGAÇÕES NO CLIENTE ========================
-    public function inserirObrigacaoCliente($id_cliente =  null)
-    {
-        $ObrigacoesModel = new ObrigacoesModel();
-        $obrigacao = $ObrigacoesModel->findAll();
-
-        $data = [
-            'id_cliente' => $id_cliente,
-            'obrigacao' => $obrigacao,
-            'active_menu' => 'area_cliente'
-        ];
-        //return view('obrigacoes/obrigacoes_cliente/inserir_obrigacao_cliente',$data);
-
-	}
-
-    public function create($id)
+    //==============INSERE OS DADOS NA FICHA DO CLIENTE ==================
+    public function create()
     {
         $ObrigacoesClienteModel = new ObrigacoesClienteModel();
+        $id_cliente = $this->request->getPost('id_cliente');
+        $obrigacoes = $this->request->getPost('id_obrigacao');
+        if(empty($obrigacoes)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'messages' => 'Selecione ao menos uma obrigação.'
+            ]);
+        }
+        $dados = [];
+        foreach($obrigacoes as $id_obrigacao) {
+            $dados[] = [
+                'id_cliente'   => $id_cliente,
+                'id_obrigacao' => $id_obrigacao
+            ];
+        }
+        $insert = $ObrigacoesClienteModel->insertBatch($dados);
+        return $this->response->setJSON([
+            'success' => $insert ? true : false,
+            'messages' => $insert
+                ? 'Obrigações inseridas com sucesso.'
+                : 'Erro ao inserir obrigações.'
+        ]);
+    }
+    //====================INSERE OBRIGAÇÕES NO CLIENTE =============
+    public function removerObrigacoesCliente($id_cliente = null)
+    {
+        $ObrigacoesClienteModel = new ObrigacoesClienteModel();
+        $obrigacoesModel = new ObrigacoesModel();
 
-        $obrigacoes = json_encode($this->request->getPost('id_obrigacao'));
-        $obrigacao = json_decode($obrigacoes);
-        $total  = count($obrigacao);
-        for ($i = 0; $i<$total;$i++){
-            $data = array(
-                'id_cliente' => $id,
-                'id_obrigacao' => $obrigacao[$i],
-            );
-            echo "estarei inserindo o valor " .$i;
-            //$insert = $ObrigacoesClienteModel->insert($data);
+        $subquery = $ObrigacoesClienteModel
+            ->select('id_obrigacao')
+            ->where('id_cliente', $id_cliente)
+            ->findAll();
+        $ids = array_column($subquery, 'id_obrigacao');
+        $obrigacoesCliente = $obrigacoesModel
+            ->select('id, descricao')
+            ->orderBy('descricao', 'ASC');
+
+        if(!empty($ids)) {
+            $obrigacoesCliente->whereIn('id', $ids);
         }
-        exit;
-        if($insert = true ) {
-            $this->session->set_flashdata('success', 'Obrigação inserida no cliente');
-            redirect('clientes/ver/'.$id, 'refresh');
+        $obrigacoesCliente = $obrigacoesCliente->findAll();
+        
+        $data = [
+            'id_cliente' => $id_cliente,
+            'active_menu' => 'area_cliente',
+            'obrigacoes_cliente' => $obrigacoesCliente,
+        ];
+        return view('obrigacoes/obrigacoes_cliente/remover_obrigacao_cliente', $data);        
+    }
+    //==========================APAGA OBRIGAÇÕES NO CLIENTE ===========================
+    public function delete($id_cliente = null)
+    {
+        $ObrigacoesClienteModel = new ObrigacoesClienteModel();
+        $obrigacoes = $this->request->getPost('cod_obrigacao');
+        // VALIDAÇÃO
+        if(empty($obrigacoes)) {
+            return redirect()->back()
+                ->with('error', 'Selecione ao menos uma obrigação.');
         }
-        else {
-            $this->session->set_flashdata('errors', 'Um erro ocorreu!!');
-            redirect('obrigacoes/inserir_obrigacao_cliente', 'refresh');
-        }	
-	}
+        // REMOVE TODOS DE UMA VEZ
+        $ObrigacoesClienteModel
+            ->whereIn('id_obrigacao', $obrigacoes)
+            ->delete();
+        return redirect()->to(site_url('clientes/ver/'.$id_cliente))
+            ->with('success', 'Obrigações removidas com sucesso.');
+    }
 }

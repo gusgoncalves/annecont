@@ -218,41 +218,18 @@ class Clientes extends BaseController
     {
         $clientesModel = new ClientesModel();
         $cidadeModel = new \App\Models\CidadesModel();
-        $obrigacoesModel = new \App\Models\ObrigacoesModel();
-        $sociosModel = new \App\Models\SociosModel();
-        $certidoesModel = new \App\Models\CertidoesModel();
-        $faturamentoModel = new \App\Models\FaturamentoModel();
-        $loginsModel = new \App\Models\LoginsModel();
-        $mesesModel = new \App\Models\MesesModel();
-        $tipoCertidao = new \App\Models\TipoCertidaoModel();
+        
 
         $cliente = $clientesModel->find($id);
         $cidade = $cidadeModel->find($cliente['id_cidade']);
-        $obrigacoes_data = $obrigacoesModel->getObrigacoesPorCliente($id);
-        $obrigacoes_feito = $obrigacoesModel->obrigacoesFeita($id);
-        $socios = $sociosModel->where('id_cliente',$id);
-        $certidoes = $certidoesModel->where('id_cliente',$id);
-        $faturamentos = $faturamentoModel->where('id_cliente',$id);
-        $total_faturamento = $faturamentoModel->selectSum('valor')->where('id_cliente',$id)->findAll();
-        $logins = $loginsModel->where('id_cliente',$id);
-        $tipo = $tipoCertidao->findAll();
-        $meses = $mesesModel->orderBy('nome','asc')->findAll();
+
         if (!$cliente) {
             return redirect()->to('/clientes')->with('errors', 'Cliente não encontrado');
         }
         return view('clientes/ver', [
             'active_menu' => 'area_cliente',
             'cliente' => $cliente,
-            'cidade' => $cidade,
-            'obrigacoes_data' => $obrigacoes_data,
-            'obrigacoes_feito' => $obrigacoes_feito,
-            'socio_data' => $socios,
-            'certidao_data' => $certidoes,
-            'faturamento_data' => $faturamentos,
-            'total_faturamento' => $total_faturamento,
-            'login_data' => $logins,
-            'combo_meses' => $meses,
-            'tipo_certidao' => $tipo,
+            'cidade' => $cidade
         ]);
     } 
     public function abaClientes($id_cliente = null)

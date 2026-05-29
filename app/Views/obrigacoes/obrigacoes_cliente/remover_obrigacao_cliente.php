@@ -1,111 +1,161 @@
-<style>
-  .table td input[type="checkbox"] {
-    margin: 0;
-    position: relative;
-    top: 2px; /* ou ajuste conforme necessário */
-    width: 24px;
-    height: 24px;
-    accent-color:rgb(255, 0, 0);
-  }
-</style>
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div id="messages"></div>
-    </section>
-    <!-- Main conttent -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-12 col-xs-12">
-            <div class="card">
-              <div class="card-header bg-primary">
-                <h3 class="text-center">REMOVER OBRIGAÇÕES DO CLIENTE </h3>
-              </div> 
-              <form role="form" action="" method="post" enctype="multipart/form-data">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <?php echo validation_errors(); ?>
-                      <?php if(empty($cliente_data['id'])): ?>
-                        <div class="form-group">
-                            <label for="id_cliente">CLIENTE</label>
-                            <select class="form-control" id="id_cliente" style="width:100%" name="id_cliente">
-                                <?php echo $combo_cliente?>
-                            </select>
-                        </div>
-                      <?php else: ?>
-                        <div class="form-group">
-                            <input type="hidden" class="form-control" id="id_cliente" name="id_cliente" value="<?= $cliente_data['id'] ;?>">
-                        </div>
-                        <div class="form-group">
-                            <label for="cliente_nome">CLIENTE</label>
-                            <input type="text" class="form-control" id="cliente_nome" name="cliente_nome" value="<?=$cliente_data['fantasia'];?>" readonly>
-                        </div>
+<?php 
+  /** @var array $obrigacoes_cliente */
+  /** @var int $id_cliente */
+?>
+<?= $this->extend('layout') ?>
+<?= $this->section('title') ?>
+  Remover Obrigações Cliente
+<?= $this->endSection() ?>
+<?= $this->section('content') ?>
+  <section class="content-header"></section>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12 col-xs-12">
+          <div class="card">
+            <div class="card-header bg-primary">
+              <h3><i class="fas fa-trash-alt"></i> REMOVER OBRIGAÇÕES DO CLIENTE</h3>
+            </div>
+            <form role="form" action="<?= site_url('obrigacoes_cliente/delete/').$id_cliente ?>" method="post">
+              <div class="card-body">
+                <?php if(count($obrigacoes_cliente) > 0): ?>
+                  <!-- TOPO AÇÕES -->
+                  <div class="row mb-3">
+                    <div class="col-md-6 mb-2">
+                      <button type="button" class="btn btn-outline-primary btn-block" id="marcarTodos"><i class="fas fa-check-square"></i> MARCAR TODOS</button>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                      <button type="button" class="btn btn-outline-secondary btn-block" id="desmarcarTodos"><i class="far fa-square"></i> DESMARCAR TODOS</button>
+                    </div>
+                    </div>
+                    <!-- TABELA -->
+                    <div class="table-responsive">
+                      <table class="table table-hover table-striped align-middle">
+                        <thead class="bg-light">
+                            <tr>
+                              <th width="6%" class="text-center"><i class="fas fa-check"></i></th>
+                              <th>OBRIGAÇÃO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          <?php foreach($obrigacoes_cliente as $v): ?>
+                            <tr class="linha-obrigacao">
+                              <!-- CHECKBOX -->
+                              <td class="text-center align-middle">
+                                <div class="custom-control custom-checkbox">
+                                  <input type="checkbox"class="custom-control-input obrigacao-check" value="<?= $v['id'];?>" name="cod_obrigacao[]" id="cod_obrigacao_<?= $v['id'];?>">
+                                  <label class="custom-control-label" for="cod_obrigacao_<?= $v['id'];?>"></label>
+                                </div>
+                              </td>
+                              <!-- DESCRIÇÃO -->
+                              <td class="align-middle">
+                                  <label class="label-obrigacao" for="cod_obrigacao_<?= $v['id'];?>"><?= $v['descricao'];?></label>
+                              </td>
+                            </tr>
+                          <?php endforeach; ?>
+                        </tbody>
+                      </table>
+                    </div>
+                <?php else: ?>
+                  <!-- SEM OBRIGAÇÕES -->
+                  <div class="alert alert-warning text-center shadow-sm"><i class="fas fa-exclamation-triangle"></i> Nenhuma obrigação encontrada para este cliente.</div>
+              <?php endif; ?>
+              </div>
+              <!-- FOOTER -->
+              <div class="card-footer">
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <a href="<?= site_url('clientes/ver/'.$id_cliente) ?>" class="btn btn-danger btn-lg btn-block"><i class="fas fa-arrow-left"></i> VOLTAR</a>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                      <?php if(count($obrigacoes_cliente) > 0): ?>
+                          <button type="submit" class="btn btn-success btn-lg btn-block"><i class="fas fa-trash"></i> REMOVER SELECIONADAS</button>
                       <?php endif; ?>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <label for="id_obrigacao">MARQUE A OBRIGAÇÃO QUE DESEJA REMOVER</label>
-                        <div class="form-check checkbox-xl">
-                          <table class="table table-responsive table-striped table-hover">
-                            <?php foreach($obrigacoes_data_cliente as $k => $v) :?>
-                              <tr>
-                                <td width="4%">
-                                  <input class="form-check-input checkbox-xl" type="checkbox" value="<?=$v['id'];?>" name="cod_obrigacao[]" id="cod_obrigacao_<?=$v['id'];?>">
-                                </td>
-                                <td width="2%">-</td>
-                                <td>
-                                  <label class="form-check-label" for="cod_obrigacao_<?=$v['id'];?>"><?=$v['descricao'];?></label>
-                                </td>
-                              </tr>
-                            <?php endforeach;?>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-                <div class="box-footer">
-                  <?php if (count($obrigacoes_data_cliente) > 0) : ?>
-                    <button type="submit" class="btn btn-success">REMOVER</button>
-                  <?php endif; ?>
-                  <a href="<?php echo base_url('clientes/ver/'.$cliente_data['id']) ?>" class="btn btn-danger">VOLTAR</a>
-                </div>  
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-    </section>
-  </div>
-  <!-- /.content-wrapper -->
+    </div>
+  </section>
+    <style>
 
-<script type="text/javascript">
-  $(document).ready(function() {
-    //$(".select_group").select2();
-    $("#mainClienteNav").addClass('active');
-    $("#obrigacoesMainNav").addClass('active');
-    $('#id_obrigacao').select2();
-  });
-  
- //=======================ATIVAR O MENU ===========================
- $(function() {
-    var url = window.location.href;
+    .card {
+        border-radius: 8px;
+        border: 0;
+    }
 
-    // Ativar o link diretamente acessado no menu
-    $('ul.nav-sidebar a, ul.nav-treeview a').filter(function() {
-        return this.href === url || url.startsWith(this.href);
-      }).addClass('active')
-      .closest('.nav-treeview') // Ativa o submenu se necessário
-      .css({
-        'display': 'block'
-      })
-      .addClass('menu-open')
-      .prev('a') // Ativa o menu principal
-      .addClass('active');
-  });
-</script>
+    .card-header {
+        border-top-left-radius: 8px !important;
+        border-top-right-radius: 8px !important;
+    }
+
+    .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .table tbody tr {
+        transition: all .2s ease;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f4f6f9;
+    }
+
+    .label-obrigacao {
+        margin-bottom: 0;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 600;
+        width: 100%;
+    }
+
+    .custom-checkbox .custom-control-label::before {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        top: -2px;
+        border: 2px solid #adb5bd;
+    }
+
+    .custom-checkbox .custom-control-label::after {
+        width: 22px;
+        height: 22px;
+        top: -2px;
+    }
+
+    .custom-control-input:checked~.custom-control-label::before {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .linha-obrigacao td {
+        vertical-align: middle !important;
+    }
+
+    .alert {
+        border-radius: 8px;
+    }
+
+    .btn {
+        font-weight: 600;
+    }
+
+</style>
+<?= $this->endSection() ?>
+<?= $this->section('scripts') ?>
+  <script>
+    // MARCAR TODOS
+    $('#marcarTodos').click(function() {
+        $('.obrigacao-check').prop('checked', true);
+    });
+    // DESMARCAR TODOS
+    $('#desmarcarTodos').click(function() {
+        $('.obrigacao-check').prop('checked', false);
+    });
+  </script>
+<?= $this->endSection() ?>

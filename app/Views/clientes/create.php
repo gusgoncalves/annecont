@@ -13,7 +13,7 @@
               <h3>NOVO CLIENTE</h3>
             </div>
             <!-- /.card-header -->
-            <form role="form" action="/clientes/store/" class="requires-validation" method="post" enctype="multipart/form-data" novalidate>
+            <form role="form" action="<?= site_url('clientes/store/') ?>" class="requires-validation" method="post" enctype="multipart/form-data" novalidate>
               <div class="card-body">
                 <?php //echo validation_errors(); ?>
                 <div class="row">
