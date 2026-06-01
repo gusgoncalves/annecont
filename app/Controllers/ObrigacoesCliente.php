@@ -41,12 +41,19 @@ class ObrigacoesCliente extends BaseController
             ->where('id_cliente', $id_cliente)
             ->orderBy('obrigacoes.descricao','ASC')
             ->findAll();
+        $pendentes = 0;
+        foreach($obrigacoescli as $o) {
+            if($o['feito'] == 0) {
+                $pendentes ++;
+            }
+        }
         $data = [
             'id_cliente' => $id_cliente,
             'obrigacoescli' => $obrigacoescli,
             'active_menu' => 'area_cliente',
             'combo_obrigacoes' => $combo_obrigacoes,
             'obrigacoes' => $obrigacoes,
+            'pendentes' => ($pendentes == 1),
         ];
         return view('obrigacoes/obrigacoes_cliente/index', $data);
     }
@@ -103,6 +110,48 @@ class ObrigacoesCliente extends BaseController
             'obrigacoes_cliente' => $obrigacoesCliente,
         ];
         return view('obrigacoes/obrigacoes_cliente/remover_obrigacao_cliente', $data);        
+    }
+    //======================FEITO =====================================
+    public function feito()
+    {
+        $obrigacoesClienteModel = new ObrigacoesClienteModel();
+
+        $id_obrigacao = $this->request->getPost('id');
+        $id_cliente   = $this->request->getPost('cliente');
+        
+        $update = $obrigacoesClienteModel
+            ->where ('id_cliente', $id_cliente)
+            ->where('id_obrigacao', $id_obrigacao)
+            ->set([
+                'feito' => 1,
+                'dt_ultimo' => date('Y-m-d'),
+                'id_usuario_fechou' => session()->get('id')
+            ])
+            ->update();
+
+        if ($update) {
+            return $this->response->setJSON([
+                'success' => true, 
+                'messages' => 'Registro do finalizado com sucesso'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false, 
+                'messages' => 'Um erro ocorreu!!'
+            ]);
+        }
+
+        // Verifica se ainda existem tarefas pendentes do cliente
+        $pendentes = $obrigacoesClienteModel
+            ->where('id_cliente', $id_cliente)
+            ->where('feito', 0)
+            ->countAllResults();
+
+        return $this->response->setJSON([
+            'success'          => true,
+            'messages'         => 'Tarefa concluída com sucesso.',
+        ]);
+        return redirect()->back();
     }
     //==========================APAGA OBRIGAÇÕES NO CLIENTE ===========================
     public function delete($id_cliente = null)

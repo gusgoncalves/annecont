@@ -30,12 +30,27 @@
       <tbody>
         <?php foreach($obrigacoescli as $k ) : ?>
           <tr>
-            <td style="text-align:center"><?= $k['descricao'];?></td>
-            <td style="text-align:center"><button type="button" class="btn btn-success" onclick="obrigacaoFunc(<?=$k['id_obrigacao'];?>,<?=$k['id_cliente'];?>)" data-toggle="modal" title="Realizar essa Obrigação" data-target="#feitoModal"><i class="fa fa-check"></i></button></td>
+            <?php if ($k['feito']==1) : ?>
+              <td width="50%" style="text-align:center;text-decoration: line-through;"><?= $k['descricao']; ?></td>
+              <td width="40%" style="text-align:center;text-decoration: line-through;">Feito em <?= !empty($k['dt_ultimo']) ? date('d/m/Y', strtotime($k['dt_ultimo'])) : '-'; ?></td>
+            <?php else : ?>
+              <td style="text-align:center"><?= $k['descricao']; ?></td>
+              <td style="text-align:center"><button type="button" class="btn btn-success" data-toggle="modal" title="Realizar essa Obrigação" data-target="#feitoModal" data-id="<?= $k['id_obrigacao']; ?>" data-cliente="<?= $k['id_cliente'] ?>"><i class="fa fa-check"></i></button></td>
+            <?php endif; ?>
           </tr>
         <?php endforeach ; ?>
       </tbody>
     </table>
+    <?php if ($pendentes): ?>
+    <div class="text-center mt-3">
+        <a href="<?= site_url('contas_receber/criar/'.$id_cliente) ?>"
+           class="btn btn-success">
+            <i class="fa fa-dollar-sign"></i>
+            Enviar para Cobrança
+        </a>
+    </div>
+<?php endif; ?>
+  </div>
   <?php if (hasPermission('criarObrigacao')): ?>
     <!-- =============================== MODAL NOVA OBRIGAÇÃO =============================== -->
     <div class="modal fade" tabindex="-1" role="dialog" id="addModalObrigacaoCliente">
@@ -79,8 +94,10 @@
             <h4 class="modal-title">EXECUTAR TAREFA</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
-          <form role="form" action="<?php echo base_url('clientes/obrigacoesFeito') ?>" method="post" id="obrigacoesForm">
+          <form role="form" action="<?= site_url('obrigacoes_cliente/feito') ?>" method="post" id="obrigacoesForm">
             <div class="modal-body">
+                <input type="hidden" name="id" id="id_obr">
+                <input type="hidden" name="cliente" id="id_cli">
               <p><b>Tem certeza que deseja realizar esta tarefa?</b></p>
             </div>
             <div class="modal-footer">
@@ -133,4 +150,9 @@
         $('#id_obrigacao').val(null).trigger('change');
         $('#createFormObrigacaoCliente').removeClass('was-validated');
     });
+    $('#feitoModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      $('#id_obr').val(button.data('id'));
+      $('#id_cli').val(button.data('cliente'));
+  });
 </script>

@@ -78,7 +78,7 @@ $routes->group('obrigacoes_cliente', ['filter' => 'auth:verObrigacao'], function
     $routes->get('busca', 'ObrigacoesCliente::buscaDados');
     $routes->get('abaObrigacoesCliente/(:num)', 'ObrigacoesCliente::abaObrigacoesCliente/$1');
     $routes->get('inserir/(:num)', 'ObrigacoesCliente::inserirObrigacaoCliente/$1');
-    $routes->get('getById/(:num)', 'ObrigacoesCliente::getById/$1');
+    $routes->post('feito', 'ObrigacoesCliente::feito');
     $routes->post('edit/(:num)', 'ObrigacoesCliente::update/$1');
     $routes->get('remover/(:num)', 'ObrigacoesCliente::removerObrigacoesCliente/$1');
     $routes->post('delete/(:num)', 'ObrigacoesCliente::delete/$1');

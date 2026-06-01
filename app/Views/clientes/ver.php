@@ -161,11 +161,7 @@
         if(tabs[tabId]) {
           let tab = tabs[tabId];
           if(force || !$(tab.div).hasClass('loaded')) {
-            $(tab.div).html(
-              '<div class="text-center p-3">' +
-              '<i class="fas fa-spinner fa-spin"></i> Carregando...' +
-              '</div>'
-            );
+            $(tab.div).html('<div class="text-center p-3">'+'<i class="fas fa-spinner fa-spin"></i> Carregando...' +'</div>');
             $(tab.div).load(tab.url, function() {
                 $(tab.div).addClass('loaded');
             });
