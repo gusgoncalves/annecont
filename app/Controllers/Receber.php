@@ -396,4 +396,19 @@ class Receber extends BaseController
         }
         return $this->response->setJSON($result);
     }
+    public function abaReceber($id_cliente = null)
+    {
+        $receberModel = new ReceberModel();
+        $bancosModel = new BancosModel();
+        $bancos = $bancosModel->findAll();  
+		
+        $receber = $receberModel->where('id_cliente', $id_cliente)->orderBy('dt_recebimento', 'ASC')->findAll();        
+        $data = [
+            'id_cliente' => $id_cliente,
+            'receber' => $receber,
+            'bancos' => $bancos,
+            'active_menu' => 'area_cliente'
+        ];
+        return view('financeiro/aba_receber', $data);
+    }
 }

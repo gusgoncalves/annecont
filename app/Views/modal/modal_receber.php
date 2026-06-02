@@ -12,20 +12,17 @@
         <form role="form" action="<?= site_url('receber/create') ?>" method="post" class="requires-validation" id="createForm" novalidate>
           <div class="modal-body">
             <div class="form-group">
-              <label for="id_cliente">CLIENTE</label>
-                <?php if (isset($cliente_data)): ?>
-                  <!-- Se já estiver na ficha do cliente, mostra um campo fixo -->
-                  <input type="text" class="form-control" value="<?= $cliente_data['razao']; ?>" readonly>
-                  <input type="hidden" name="id_cliente" value="<?= $cliente_data['id']; ?>">
-                <?php else: ?>
-                  <!-- Se estiver na listagem geral, exibe o combo -->
-                  <select class="form-control" id="id_cliente" name="id_cliente" required>
-                    <?php foreach ($clientes as $c) : ?>
-                        <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option>
-                      <?php endforeach ?>
-                  </select>
-                  <div class="invalid-feedback">Preenchimento Obrigatório!</div>
-                <?php endif; ?>
+              <?php if (isset($id_cliente)) : ?>
+                <input type="hidden" name="id_cliente" value="<?= $id_cliente; ?>">
+            <?php else : ?>
+                <!-- Se estiver na listagem geral, exibe o combo -->
+                <select class="form-control" id="id_cliente" name="id_cliente" required>
+                  <?php foreach ($clientes as $c) : ?>
+                      <option value="<?= $c['id'] ?>"><?= $c['razao'] ?></option>
+                    <?php endforeach ?>
+                </select>
+                <div class="invalid-feedback">Preenchimento Obrigatório!</div>
+              <?php endif; ?>
             </div>
             <div class="form-group">
               <label for="nome">IDENTIFICAÇÃO DA CONTA</label>
@@ -244,9 +241,12 @@
         if (response.success) {
           $("#addModal").modal('hide');
           $('#createForm')[0].reset();
-          manageTable.ajax.reload(null, false);
-          showToast(response.messages, 'success');
-          // Redirecionar corretamente
+           $('#addModal').one('hidden.bs.modal', function () {
+                // reloadTab('#tab-receber');
+                // manageTable.ajax.reload(null, false);
+                window.location.reload();
+            });
+            showToast(response.messages, 'success');
         } else {
           showToast(response.messages, 'error');
         }
@@ -290,8 +290,12 @@
                 if (response.success) {
                   $("#editModal").modal('hide');
                   $("#updateForm")[0].reset();
-                  manageTable.ajax.reload(null, false);
-                  showToast(response.messages, 'success');
+                  $('#editModal').one('hidden.bs.modal', function () {
+                    //reloadTab('#tab-receber');
+                    //manageTable.ajax.reload(null, false);
+                      window.location.reload();
+                  });
+                    showToast(response.messages, 'success');
                 } else {
                   showToast(response.messages, 'error');
                 }
@@ -363,8 +367,10 @@
           if (response.success) {
             $("#quitarModal").modal('hide');
             $("#quitarForm")[0].reset();
-            manageTable.ajax.reload(null, false);
-            showToast(response.messages, 'success');
+            $('#quitarModal').one('hidden.bs.modal', function () {
+               window.location.reload();
+            });
+              showToast(response.messages, 'success');
           } else {
             showToast(response.messages, 'error');
           }
@@ -407,7 +413,8 @@
             if (response.success) {
               $("#estornarModal").modal('hide');
               $("#estornarForm")[0].reset();
-              manageTable.ajax.reload(null, false);
+                //manageTable.ajax.reload(null, false);
+                window.location.reload();
               showToast(response.messages, 'success');
             } else {
               showToast(response.messages, 'error');

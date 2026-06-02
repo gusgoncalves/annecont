@@ -34,18 +34,22 @@ class ObrigacoesCliente extends BaseController
         $combo_obrigacoes = $combo_obrigacoes->findAll();
 
         $obrigacoes = $obrigacoesModel->findAll();
-
         $obrigacoescli = $ObrigacoesClienteModel
-            ->select('obrigacoes_cliente.*,obrigacoes.descricao')
+            ->select('obrigacoes_cliente.*,obrigacoes.descricao, obrigacoes.valor')
             ->join('obrigacoes','obrigacoes_cliente.id_obrigacao = obrigacoes.id')
             ->where('id_cliente', $id_cliente)
             ->orderBy('obrigacoes.descricao','ASC')
             ->findAll();
-        $pendentes = 0;
+        
+        $concluidas = 0;
         foreach($obrigacoescli as $o) {
             if($o['feito'] == 0) {
-                $pendentes ++;
+                $concluidas ++;
             }
+        }
+        $valorTotal = 0;
+        foreach($obrigacoescli as $val) {
+            $valorTotal += $val['valor'];
         }
         $data = [
             'id_cliente' => $id_cliente,
@@ -53,7 +57,8 @@ class ObrigacoesCliente extends BaseController
             'active_menu' => 'area_cliente',
             'combo_obrigacoes' => $combo_obrigacoes,
             'obrigacoes' => $obrigacoes,
-            'pendentes' => ($pendentes == 1),
+            'concluidas' => ($concluidas == 0),
+            'valorTotal' => $valorTotal
         ];
         return view('obrigacoes/obrigacoes_cliente/index', $data);
     }
@@ -130,28 +135,46 @@ class ObrigacoesCliente extends BaseController
             ->update();
 
         if ($update) {
-            return $this->response->setJSON([
-                'success' => true, 
-                'messages' => 'Registro do finalizado com sucesso'
-            ]);
+            return redirect()->back()->with(
+                'success',
+                'Registro finalizado com sucesso'
+            );
         } else {
-            return $this->response->setJSON([
-                'success' => false, 
-                'messages' => 'Um erro ocorreu!!'
-            ]);
+            return redirect()->back()->with(
+                'error',
+                'Um erro ocorreu'
+            );
         }
+    }
+    //======================DESFEITO =====================================
+    public function desfeito()
+    {
+        $obrigacoesClienteModel = new ObrigacoesClienteModel();
 
-        // Verifica se ainda existem tarefas pendentes do cliente
-        $pendentes = $obrigacoesClienteModel
-            ->where('id_cliente', $id_cliente)
-            ->where('feito', 0)
-            ->countAllResults();
+        $id_obrigacao = $this->request->getPost('id_obriga');
+        $id_cliente   = $this->request->getPost('id_clien');
 
-        return $this->response->setJSON([
-            'success'          => true,
-            'messages'         => 'Tarefa concluída com sucesso.',
-        ]);
-        return redirect()->back();
+        $update = $obrigacoesClienteModel
+            ->where ('id_cliente', $id_cliente)
+            ->where('id_obrigacao', $id_obrigacao)
+            ->set([
+                'feito' => 0,
+                'dt_ultimo' => null,
+                'id_usuario_fechou' => null
+            ])
+            ->update();
+
+        if ($update) {
+            return redirect()->back()->with(
+                'success',
+                'Registro desfeito com sucesso'
+            );
+        } else {
+            return redirect()->back()->with(
+                'error',
+                'Um erro ocorreu'
+            );
+        }
     }
     //==========================APAGA OBRIGAÇÕES NO CLIENTE ===========================
     public function delete($id_cliente = null)

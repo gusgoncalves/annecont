@@ -203,6 +203,11 @@ $currentMethod     = service('uri')->getSegment(2);
                   <a href="<?= site_url('cidades') ?>" class="nav-link <?= navActive($currentController, 'cidades') ?>"><i class="fa fa-map-signs"></i><p>&nbsp;&nbsp; Cidades</p></a>
                 </li>
               <?php endif; ?>
+              <?php if (hasPermission('verObrigacao')) : ?>
+                <li class="nav-item">
+                  <a href="<?= site_url('obrigacoes') ?>" class="nav-link <?= navActive($currentController, 'obrigacoes') ?>"><i class="fas fa-sitemap"></i><p>&nbsp;&nbsp; Obrigações</p></a>
+                </li>
+              <?php endif; ?>
               <?php if (hasPermission('verTipoConta')) : ?>
                 <li class="nav-item">
                   <a href="<?= site_url('tipo_conta') ?>" class="nav-link <?= navActive($currentController, 'tipo_conta') ?>"><i class="fas fa-shopping-bag"></i><p>&nbsp;&nbsp; Tipo de Pagamentos</p></a>

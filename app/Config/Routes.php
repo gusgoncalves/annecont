@@ -79,6 +79,7 @@ $routes->group('obrigacoes_cliente', ['filter' => 'auth:verObrigacao'], function
     $routes->get('abaObrigacoesCliente/(:num)', 'ObrigacoesCliente::abaObrigacoesCliente/$1');
     $routes->get('inserir/(:num)', 'ObrigacoesCliente::inserirObrigacaoCliente/$1');
     $routes->post('feito', 'ObrigacoesCliente::feito');
+    $routes->post('desfeito', 'ObrigacoesCliente::desfeito');
     $routes->post('edit/(:num)', 'ObrigacoesCliente::update/$1');
     $routes->get('remover/(:num)', 'ObrigacoesCliente::removerObrigacoesCliente/$1');
     $routes->post('delete/(:num)', 'ObrigacoesCliente::delete/$1');
@@ -124,6 +125,7 @@ $routes->group('receber', ['filter' => 'auth:verReceber'], function($routes) {
     $routes->get('/', 'Receber::index');
     $routes->get('busca', 'Receber::buscaDados');
     $routes->post('create', 'Receber::create');
+    $routes->get('abaReceber/(:num)', 'Receber::abaReceber/$1');
     $routes->get('getById/(:num)', 'Receber::getById/$1');
     $routes->post('edit/(:num)', 'Receber::update/$1');
     $routes->post('quitar', 'Receber::quitarReceber');
