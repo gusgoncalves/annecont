@@ -134,7 +134,7 @@
               </div><!-- /.card-body -->
               <div class="card-footer">
                 <button type="submit" class="btn btn-success">SALVAR</button>
-                <a href="<?= base_url('clientes/') ?>" class="btn btn-danger">FECHAR</a>
+                <a href="<?= site_url('clientes/') ?>" class="btn btn-danger">FECHAR</a>
               </div>
             </form>
           </div><!--div -card -->
@@ -146,33 +146,31 @@
 
 <?= $this->section('scripts') ?>
   <script type="text/javascript">
-    var base_url = "<?= base_url() ?>" //BASE PARA PEGAR A PÁGINA PRINCIPAL
+    var base_url = "<?= site_url() ?>" //BASE PARA PEGAR A PÁGINA PRINCIPAL
     
     //==================EDITOR DE TEXTO==================================
     $("#cliente_descricao").summernote()
     //==========================MASCARA AUTOMÁTICA =======================
     $('[data-mask]').inputmask() //PUXA AS FUNÇÕES DE MÁSCARA
-    
-    $("#sucesso").fadeTo(2000, 500).slideUp(500, function(){
-      $("#sucesso").slideUp(500);
-    });
-    $("#erro").fadeTo(2000, 500).slideUp(500, function(){
-      $("#erro").slideUp(500);
-    });
+  
     //================FUNÇÃO DE ADD CIDADE APÓS ADD O ESTADO ===============
     $(function(){
       $('#cliente_uf').change(function(){
         let id_estado = $(this).val();
-        $('#cliente_cidade').prop('disabled', true).html('<option>Carregando...</option>');
-        $.post(base_url + 'clientes/getCidades', {
-          id_estado: id_estado
-        }, function(data){
-          let options = '<option value="">Selecione a cidade</option>';
-          data.forEach(function(cidade){
-            options += `<option value="${cidade.id}">${cidade.nome_cidade}</option>`;
-          });
-          $('#cliente_cidade').html(options).prop('disabled', false);
-        });
+        $('#cliente_cidade')
+        .prop('disabled', true)
+        .html('<option>Carregando...</option>');
+        $.post(
+          base_url + 'clientes/getCidades',{ id_estado: id_estado },
+          function(data){
+            let options = '<option value="">Selecione a cidade</option>';
+            data.forEach(function(cidade){
+              options += `<option value="${cidade.id}">${cidade.nome_cidade}</option>`;
+            });
+            $('#cliente_cidade').html(options).prop('disabled', false);
+          },
+          'json'
+        );
       });
     });
     //===================MASCARA PARA CPF OU CNPJ =================================
@@ -207,12 +205,12 @@
       return v;
     }
     setTimeout(function() {
-            const alertBox = document.getElementById('alert-success');
-            if (alertBox) {
-                alertBox.style.transition = "opacity 0.5s";
-                alertBox.style.opacity = "0";
-                setTimeout(() => alertBox.remove(), 500);
-            }
-        }, 3000);
+        const alertBox = document.getElementById('alert-success');
+        if (alertBox) {
+            alertBox.style.transition = "opacity 0.5s";
+            alertBox.style.opacity = "0";
+            setTimeout(() => alertBox.remove(), 500);
+        }
+    }, 3000);
   </script>
 <?= $this->endSection() ?>

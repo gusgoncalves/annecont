@@ -176,6 +176,40 @@ class ObrigacoesCliente extends BaseController
             );
         }
     }
+    //======================COBRANÇA =====================================
+    public function cobranca()
+    {
+        $realizadas = new \App\Models\ObrigacoesRealizadasModel();
+        $clienteModel = new \App\Models\ClientesModel();
+
+        $valorTotal = $this->request->getPost('valor_cobranca');
+        $id_cliente   = $this->request->getPost('id_cliente_cobranca');
+        $dadosCliente = $clienteModel->find($id_cliente);
+
+        // echo $valorTotal." Valor total.<br>";
+        // echo $id_cliente." ID Cliente <br>";
+        // exit;
+        $dados = [
+            'id_cliente' => $id_cliente,
+            'valor_obrigacoes' => $valorTotal,
+            'valor_cliente' => $dadosCliente['valor'] ? $dadosCliente['valor']:0,
+            'descricao' => 'Cobrança referente às obrigações concluídas do cliente '.$dadosCliente['razao'],
+            'data_cobranca' => date('Y-m-d'),
+            'id_usuario_enviou' => session()->get('id')
+         ];
+        $insere = $realizadas->insert($dados);
+        if ($insere) {
+            return $this->response->setJSON([
+                'success' => true,
+                'messages' => 'Cobrança criada com sucesso'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'messages' => 'Erro ao salvar cobrança'
+            ]);
+        }
+    }
     //==========================APAGA OBRIGAÇÕES NO CLIENTE ===========================
     public function delete($id_cliente = null)
     {

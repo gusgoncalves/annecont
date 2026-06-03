@@ -23,7 +23,7 @@
                 <th>NOME</th>
                 <th>SIGLA</th>
                 <?php if(hasAnyPermission(['modificarUF', 'apagarUF'])): ?>
-                <th class="col-2">AÇÕES</th>
+                <th class="text-center text-nowrap" width="1%">AÇÕES</th>
                 <?php endif; ?>
               </tr>
               </thead>

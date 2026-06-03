@@ -22,6 +22,7 @@ class Clientes extends BaseController
         $dados = $clientesModel->recebeDadosClienteComContadores();
         foreach($dados as $value) {
            $buttons = '';
+           $icone = '';
            if(hasPermission('verCliente')) {
                $buttons .= '<a href="' . base_url('clientes/ver/' . $value['id']) . '" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></a> ';
            }
@@ -31,39 +32,26 @@ class Clientes extends BaseController
            if(hasPermission('apagarCliente')) {
                $buttons .= '<button type="button" class="btn btn-sm btn-danger" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
            }
-           if ($value['qtd_funcionarios']!=0){ 
-                $icone = ' <button type="button" style="font-size:0.55em" class="btn btn-success sm" title="Possui funcionários"><i class="fas fa-user"></i></button>';
-            }else {
-                $icone = ' <button type="button" style="font-size:0.55em" class="btn btn-secondary" title="Não póssui funcionários"><i class="fas fa-user"></i></button>';
+           if ($value['qtd_funcionarios']>0){ 
+                $icone = ' <span class="badge badge-light border border-success text-success" title="Funcionários"><i class="fas fa-user"></i> '.$value['qtd_funcionarios'].'</span>';
             }
-            if ($value['qtd_certificados']!=0) {
-                $icone .= ' <button type="button" style="font-size:0.55em" class="btn btn-success" title="Possui certificados"><i class="fas fa-certificate"></i></button>';
-            }else {               
-                $icone .= ' <button type="button" style="font-size:0.55em" class="btn btn-secondary" title="Não possui certificados"><i class="fas fa-certificate"></i></button>';
+            if ($value['qtd_certificados']>0) {
+                $icone .= ' <span class="badge badge-light border border-success text-success" title="Certificados"><i class="fas fa-certificate"></i> '.$value['qtd_certificados'].'</span>';
             }
-            if ($value['qtd_certidoes']!=0) {
-                $icone .= ' <button type="button" style="font-size:0.55em" class="btn btn-success" title="Possui certidoes"><i class="fas fa-scroll"></i></button>';
-            }else {               
-                $icone .= ' <button type="button" style="font-size:0.55em" class="btn btn-secondary" title="Não possui certidoes"><i class="fas fa-scroll"></i></button>';
+            if ($value['qtd_certidoes']>0) {
+                $icone .= ' <span class="badge badge-light border border-success text-success" title="Certidões"><i class="fas fa-scroll"></i> '.$value['qtd_certidoes'].'</span>';
             }
-            if ($value['qtd_obrigacoes']!=0) {
-                $icone .= ' <button type="button" style="font-size:0.55em" class="btn btn-success" title="Possui obrigacoes"><i class="fas fa-sitemap"></i></button>';
-            }else {               
-                $icone .= ' <button type="button" style="font-size:0.55em" class="btn btn-secondary" title="Não possui obrigacoes"><i class="fas fa-sitemap"></i></button>';
+            if ($value['qtd_obrigacoes']>0) {
+                $icone .= ' <span class="badge badge-light border border-success text-success" title="Obrigações"><i class="fas fa-sitemap"></i> '.$value['qtd_obrigacoes'].'</span>';
             }
-            if ($value['qtd_logins']!=0) {
-                $icone .= ' <button type="button" style="font-size:0.55em" class="btn btn-success" title="Possui logins"><i class="fas fa-unlock-alt"></i></button>';
-            }else {               
-                $icone .= ' <button type="button" style="font-size:0.55em" class="btn btn-secondary" title="Não possui logins"><i class="fas fa-unlock-alt"></i></button>';
+            if ($value['qtd_logins']>0) {
+                $icone .= ' <span class="badge badge-light border border-success text-success" title="Logins"><i class="fas fa-unlock-alt"></i> '.$value['qtd_logins'].'</span>';
             }
-            if ($value['qtd_faturamentos']!=0) {
-                $icone .= ' <button type="button" style="font-size:0.55em" class="btn btn-success" title="Possui faturamentos"><i class="fas fa-hand-holding-usd"></i></button>';
-            }else {               
-                $icone .= ' <button type="button" style="font-size:0.55em" class="btn btn-secondary" title="Não possui faturamentos"><i class="fas fa-hand-holding-usd"></i></button>';
+            if ($value['qtd_faturamentos']>0) {
+                $icone .= ' <span class="badge badge-light border border-success text-success" title="Faturamentos"><i class="fas fa-hand-holding-usd"></i> '.$value['qtd_faturamentos'].'</span>';
             }
            $result['data'][] = array(
-                'icone'=> $icone,
-                'razao' => $value['razao'],
+                'razao' => $value['razao'] . $icone,
                 'cnpj' => $value['cnpj'],
                 'whatsapp' => $value['whatsapp'],
                 'ativo' => $value['ativo'],
@@ -136,9 +124,9 @@ class Clientes extends BaseController
         return view('clientes/edit', [
             'active_menu' => 'area_cliente',
             'cliente' => $cliente,
-            'portes' => $portesModel->selectPortes(),
+            'portes' => $portesModel->findAll(),
             'estados' => $estadosModel->selectEstados(),
-            'cidades' => $cidadesModel->getCidadesPorEstado($cliente['id_uf']),
+            'cidades' => $cidadesModel->where('id', $cliente['id_cidade'])->findAll(),
         ]);
     }
     // ==================================================================
@@ -207,8 +195,8 @@ class Clientes extends BaseController
     public function getCidades()
     {
         $idUf = $this->request->getPost('id_estado');
-        $model = new \App\Models\CidadesModel();
-        $cidades = $model->getCidadesPorEstado($idUf);
+        $cidadesModel = new \App\Models\CidadesModel();
+        $cidades = $cidadesModel->where('id_uf', $idUf)->findAll();
         return $this->response->setJSON($cidades);
     }
     // ==================================================================
@@ -232,9 +220,20 @@ class Clientes extends BaseController
             'cidade' => $cidade
         ]);
     } 
+    
     public function abaClientes($id_cliente = null)
-    {   $clientesModel = new ClientesModel();
-        $clientes = $clientesModel->find($id_cliente);
-        return view('clientes/dados',['cliente'=>$clientes,'active_menu' => 'area_cliente']);
+    {   
+        $portesModel = new \App\Models\PortesModel();
+        $cidadesModel = new \App\Models\CidadesModel();
+        $estadosModel = new \App\Models\EstadosModel();
+        $clientesModel = new ClientesModel();
+
+        $data = [
+            'active_menu' => 'area_cliente',
+            'portes' => $portesModel->findAll(),
+            'cidades' => $cidadesModel->where('id', $id_cliente)->findAll(),
+            'cliente' => $clientesModel->find($id_cliente)
+        ];
+        return view('clientes/dados', $data);
     }                                                                                 
 }

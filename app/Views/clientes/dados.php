@@ -1,5 +1,9 @@
 <?php /** @var array $cliente */ ?>
-
+<?php /** @var array $cidades */ ?>
+ <?php if(hasPermission('modificarCliente')): ?>
+    <a href="<?php echo base_url('clientes/edit/'.$cliente['id']) ?>" class="btn btn-success btn-block"><i class="fas fa-plus-square"></i> EDITAR DADOS</a>
+  <?php endif; ?>
+ </br>
 <div class="card shadow-sm">
 
     <div class="card-body p-0">
@@ -31,6 +35,11 @@
                 <td><?= $cliente['cep'] ?></td>
             </tr>
 
+             <tr>
+                <th>CIDADE</th>
+                <td><?= $cidades[0]['nome_cidade'] ?></td>
+            </tr>
+
             <tr>
                 <th>WHATSAPP</th>
                 <td><?= $cliente['whatsapp'] ?></td>
@@ -58,13 +67,14 @@
                         : '-' ?>
                 </td>
             </tr>
-
-            <tr>
-                <th>VALOR MENSAL</th>
-                <td>
-                    R$ <?= number_format($cliente['valor'], 2, ',', '.') ?>
-                </td>
-            </tr>
+            <?php if(hasPermission('verReceber')): ?>
+                <tr>
+                    <th>VALOR MENSAL</th>
+                    <td>
+                        R$ <?= number_format($cliente['valor'], 2, ',', '.') ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
 
             <tr>
                 <th>OBSERVAÇÕES</th>

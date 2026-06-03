@@ -80,6 +80,7 @@ $routes->group('obrigacoes_cliente', ['filter' => 'auth:verObrigacao'], function
     $routes->get('inserir/(:num)', 'ObrigacoesCliente::inserirObrigacaoCliente/$1');
     $routes->post('feito', 'ObrigacoesCliente::feito');
     $routes->post('desfeito', 'ObrigacoesCliente::desfeito');
+    $routes->post('cobranca', 'ObrigacoesCliente::cobranca');
     $routes->post('edit/(:num)', 'ObrigacoesCliente::update/$1');
     $routes->get('remover/(:num)', 'ObrigacoesCliente::removerObrigacoesCliente/$1');
     $routes->post('delete/(:num)', 'ObrigacoesCliente::delete/$1');
@@ -133,6 +134,19 @@ $routes->group('receber', ['filter' => 'auth:verReceber'], function($routes) {
     $routes->post('delete', 'Receber::delete');
     $routes->get('historico', 'Receber::historicoReceber');
     $routes->post('busca_historico', 'Receber::buscaDadosHistorico');
+});
+$routes->group('cobranca', ['filter' => 'auth:verReceber'], function($routes) {
+    $routes->get('/', 'Cobranca::index');
+    $routes->get('busca', 'Cobranca::buscaDados');
+    $routes->post('create', 'Cobranca::create');
+    $routes->get('abaCobranca/(:num)', 'Cobranca::abaCobranca/$1');
+    $routes->get('getById/(:num)', 'Cobranca::getById/$1');
+    $routes->post('edit/(:num)', 'Cobranca::update/$1');
+    $routes->post('quitar', 'Cobranca::quitarCobranca');
+    $routes->post('estornar', 'Cobranca::estornarCobranca/$1');
+    $routes->post('delete', 'Cobranca::delete');
+    $routes->get('historico', 'Cobranca::historicoCobranca');
+    $routes->post('busca_historico', 'Cobranca::buscaDadosHistorico');
 });
 $routes->group('tipo_certidao', ['filter' => 'auth:verCertidao'], function($routes) {
     $routes->get('/', 'TiposCertidao::index');

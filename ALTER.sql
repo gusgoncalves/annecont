@@ -49,4 +49,14 @@ SET mc.id_receber = r.id
 WHERE mc.tipo = 'C';
 
 alter table movimentacao_conta drop column id_conta
-	
+
+ALTER TABLE anneco90_db.obrigacoes_realizadas ADD valor_obrigacoes DECIMAL NULL;
+ALTER TABLE anneco90_db.obrigacoes_realizadas ADD valor_cliente DECIMAL NULL;
+ALTER TABLE anneco90_db.obrigacoes_realizadas ADD descricao varchar(100) NULL;
+ALTER TABLE anneco90_db.obrigacoes_realizadas ADD id_usuario_enviou varchar(100) NULL;
+ALTER TABLE anneco90_db.obrigacoes_realizadas CHANGE `data` data_cobranca date NOT NULL;
+
+ALTER TABLE anneco90_db.obrigacoes_realizadas ADD status INT DEFAULT 0 NOT NULL;
+ALTER TABLE anneco90_db.obrigacoes_realizadas ADD dt_pagamento DATE NULL;
+ALTER TABLE anneco90_db.obrigacoes_realizadas ADD id_conta_receber INT NULL;
+ALTER TABLE anneco90_db.obrigacoes_realizadas ADD CONSTRAINT obrigacoes_realizadas_receber_FK FOREIGN KEY (id_conta_receber) REFERENCES anneco90_db.receber(id) ON DELETE SET NULL ON UPDATE SET NULL;

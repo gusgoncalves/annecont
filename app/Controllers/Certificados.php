@@ -11,8 +11,8 @@ class Certificados extends BaseController
     public function index()
     {
         $CertificadoModel = new CertificadosModel();
-        $certificados = $CertificadoModel->wherefindAll();
-        return view('certificados/index',['active_menu' => 'certificados']);
+        $certificados = $CertificadoModel->findAll();
+        return view('certificados/index',['active_menu' => 'certificados','certificados' => $certificados]);
     }
     // ============================== BUSCAR DADOS PARA A DATATABLE ==============================
     public function abaCertificados($id_cliente = null)

@@ -28,7 +28,7 @@
                 <tr>
                   <th>GRUPO</th>
                   <?php if(hasAnyPermission(['modificarGrupo','apagarGrupo'])): ?>
-                    <th class="col-2">AÇÕES</th>
+                    <th class="text-center text-nowrap" width="1%">AÇÕES</th>
                   <?php endif; ?>
                 </tr>
                 </thead>
@@ -37,7 +37,7 @@
                     <?php foreach ($grupos as $v): ?>
                       <tr>
                         <td><?= $v['group_name']; ?></td>
-                        <td class="col-4">
+                        <td class="text-center text-nowrap" width="1%">
                           <?php if(hasPermission('modificarGrupo')): ?>
                           <a href="<?= site_url('grupos/edit/'.$v['id']) ?>" class="btn btn-primary" style="font-size:0.55em"><i class="fas fa-edit"></i></a>  
                           <?php endif; ?>

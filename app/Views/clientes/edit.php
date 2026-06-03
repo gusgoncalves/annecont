@@ -153,11 +153,7 @@
               </div><!-- /.card-body -->
               <div class="card-footer">
                 <button type="submit" class="btn btn-success">SALVAR</button>
-                <?php if(!isset($cliente['ativo']) == 2) : ?> 
-                  <a href="<?php echo base_url('clientes/inativos') ?>" class="btn btn-danger">FECHAR</a>
-                <?php else : ?>
-                  <a href="<?php echo base_url('clientes/') ?>" class="btn btn-danger">FECHAR</a>
-                <?php endif; ?>
+                  <a href="<?php echo base_url('clientes/ver/'.$cliente['id']) ?>" class="btn btn-danger">FECHAR</a>
               </div>
             </form>
           </div><!-- /.card -->
@@ -176,17 +172,24 @@
     //==========================MASCARA AUTOMÁTICA =======================
     $('[data-mask]').inputmask()
     
+    //================FUNÇÃO DE ADD CIDADE APÓS ADD O ESTADO ===============
     $(function(){
       $('#cliente_uf').change(function(){
-        $('#cliente_cidade').attr('disabled','disabled');
-        $('#cliente_cidade').html('<option>Carregando...</option>');
-        var id_estado = $('#cliente_uf').val();
-        $.post(base_url+'clientes/getCidades', {
-          id_estado : id_estado
-        }, function(data){
-          $('#cliente_cidade').html(data);
-          $('#cliente_cidade').removeAttr('disabled')
-        });
+        let id_estado = $(this).val();
+        $('#cliente_cidade')
+        .prop('disabled', true)
+        .html('<option>Carregando...</option>');
+        $.post(
+          base_url + 'clientes/getCidades',{ id_estado: id_estado },
+          function(data){
+            let options = '<option value="">Selecione a cidade</option>';
+            data.forEach(function(cidade){
+              options += `<option value="${cidade.id}">${cidade.nome_cidade}</option>`;
+            });
+            $('#cliente_cidade').html(options).prop('disabled', false);
+          },
+          'json'
+        );
       });
     });
     //===================MASCARA PARA CPF OU CNPJ =================================

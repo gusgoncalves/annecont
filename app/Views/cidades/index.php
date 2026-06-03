@@ -23,7 +23,7 @@
                 <th>NOME</th>
                 <th>SIGLA</th>
                 <?php if(hasAnyPermission(['modificarCidade', 'apagarCidade'])): ?>
-                <th class="col-2">AÇÕES</th>
+                <th class="text-center text-nowrap">AÇÕES</th>
                 <?php endif; ?>
               </tr>
               </thead>

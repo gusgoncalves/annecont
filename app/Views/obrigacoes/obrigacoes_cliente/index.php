@@ -42,9 +42,9 @@
         <?php endforeach ; ?>
       </tbody>
     </table>
-    <?php if ($concluidas): ?>
+    <?php if ($concluidas && hasPermission('verReceber')): ?>
       <div class="text-center mt-3">
-          <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModalCobranca"><i class="fa fa-dollar-sign"></i> Enviar para Cobrança</button>
+          <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalCobranca"><i class="fa fa-dollar-sign"></i> Enviar para Cobrança</button>
       </div>
     <?php endif; ?>
   </div>

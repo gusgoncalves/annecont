@@ -3,19 +3,19 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header bg-primary">
-					<h4 class="modal-title text-center">NOVO TIPO DE CERTIDÃO</h4>
+					<h4 class="modal-title text-center">TIPO DE CERTIDÃO</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<form role="form" action="<?= site_url('tipo_certidao/create') ?>" class="requires-validation" method="post" id="createForm" novalidate>
 					<div class="modal-body">
 						<div class="form-group">
 							<label for="tipo_certidao_nome">NOME</label>
-							<input type="text" class="form-control" id="tipo_certidao_nome" name="tipo_certidao_nome" placeholder="Digite o nome do tipo" autocomplete="off" required>
+							<input type="text" class="form-control" id="tipo_certidao_nome" name="tipo_certidao_nome" placeholder="Nome do tipo" autocomplete="off" required>
 							<div class="invalid-feedback">Preenchimento Obrigatório!</div>
 						</div>
 						<div class="form-group">
 							<label for="tipo_certidao_descricao">DESCRIÇÃO</label>
-							<input type="text" class="form-control" id="tipo_certidao_descricao" name="tipo_certidao_descricao" placeholder="Digite alguma informação" autocomplete="off">
+							<input type="text" class="form-control" id="tipo_certidao_descricao" name="tipo_certidao_descricao" placeholder="Descrição do tipo" autocomplete="off">
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -33,7 +33,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header bg-primary">
-					<h4 class="modal-title text-center">ALTERAR TIPO DE CERTIDÃO</h4>
+					<h4 class="modal-title text-center">ALTERAR TIPO</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<form role="form" action="<?= site_url('tipo_certidao/edit') ?>" method="post" id="updateForm">

@@ -22,7 +22,6 @@
             <table id="manageTable" class="table table-bordered table-striped table-hover">
               <thead>
               <tr>
-                <th class="text-center">DEPENDENCIAS</th>
                 <th>RAZÃO SOCIAL</th>
                 <th>CNPJ / CPF</th>
                 <th>WHATSAPP</th>
@@ -81,7 +80,6 @@
         info: false,
         language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
         columns: [
-          { data: 'icone' },
           { data : 'razao',
             render: function (data, type, row) {
               if(row.ativo == 2) {
@@ -96,7 +94,7 @@
         ],
         columnDefs: [
         {
-          targets: [0,4],
+          targets: [0,3],
           width: "5%",
           className: "text-center text-nowrap"
         }
