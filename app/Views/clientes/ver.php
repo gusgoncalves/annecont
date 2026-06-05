@@ -13,7 +13,7 @@
         <div class="col-md-12 col-xs-12">
           <div class="card">
             <div class="card-header bg-primary">
-              <h3 class="text-center">ÁREA DO CLIENTE</h3>
+              <h3 class="text-center"><?= $cliente['razao'] ?></h3>
             </div>
             <div class="card-body">
               <div class="card card-pills">

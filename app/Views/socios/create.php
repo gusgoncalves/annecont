@@ -1,6 +1,5 @@
 <?php /** @var array $cliente */ ?>
 <?= $this->extend('layout') ?>
-
 <?= $this->section('title') ?>
   Cadastro Sócios
 <?= $this->endSection() ?>
@@ -11,14 +10,14 @@
       <div class="col-md-12 col-xs-12">
         <div class="card">
             <div class="card-header bg-primary">
-              <h3>Cadastro de Sócios- <b><?= strtoupper($cliente[0]['razao']) ?></b></h3>
+              <h3>Cadastro de Sócios- <b><?= strtoupper($cliente['razao']) ?></b></h3>
             </div>
             <form role="form" action="<?= site_url('socios/store')?>" class="requires-validation" method="post" enctype="multipart/form-data" novalidate>
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-12">              
                     <div class="form-group">
-                      <input type="hidden" name="id_cliente" value="<?= $cliente[0]['id'] ?>">
+                      <input type="hidden" name="id_cliente" value="<?= $cliente['id'] ?>">
                       <label for="socio_nome">NOME COMPLETO</label>
                       <input type="text" class="form-control" id="socio_nome" name="socio_nome" placeholder="Nome completo do Sócio" value="<?= old('socio_nome') ?>" maxlength="50" autocomplete="off" required>
                       <div class="invalid-feedback">Preenchimento Obrigatório!</div>
@@ -74,18 +73,30 @@
                       <input type="text" class="form-control" id="socio_endereco" name="socio_endereco" placeholder="Endereço do Sócio" value="<?= old('socio_endereco') ?>" autocomplete="off">
                     </div>
                   </div><!-- col -->
-                  <div class="col-sm-4">
+                  <div class="col-sm-2">
                     <div class="form-group">
                       <label for="socio_recibo">RECIBO DO IMPOSTO</label>
                       <input type="text" class="form-control" id="socio_recibo" name="socio_recibo" placeholder="Recibo do Imposto de Renda" value="<?= old('socio_recibo') ?>" autocomplete="off">
                     </div>
-                  </div><!-- col -->
+                  </div>
                   <div class="col-sm-4">               
                     <div class="form-group">
                       <label for="socio_email">EMAIL</label>
                       <input type="email" class="form-control" id="socio_email" name="socio_email" placeholder="Email do Sócio" value="<?= old('socio_email') ?>" autocomplete="OFF"/>
                     </div>
                   </div><!-- col -->
+                  <div class="col-sm-2">
+                    <div class="form-group">
+                      <label>DECLARA IMPOSTO DE RENDA?</label>
+                      <div class="custom-control custom-switch">
+                        <input type="hidden" name="declara_ir" value="0">
+                        <input type="checkbox" class="custom-control-input" id="declara_ir" name="declara_ir" value="1" <?= old('declara_ir') ? 'checked' : '' ?>>
+                        <label class="custom-control-label" for="declara_ir">
+                          Sim
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div><!-- row -->
                 <div class="row">
                   <div class="col-md-12">
@@ -100,7 +111,7 @@
               </div><!-- /.card-body -->
               <div class="card-footer">
                 <button type="submit" class="btn btn-success">SALVAR</button>
-                <a href="<?php echo base_url('clientes/ver/'.$cliente[0]['id']) ?>" class="btn btn-danger">FECHAR</a>
+                <a href="<?php echo base_url('clientes/ver/'.$cliente['id']) ?>" class="btn btn-danger">FECHAR</a>
               </div><!-- div -->
             </form>
           </div><!-- card -->

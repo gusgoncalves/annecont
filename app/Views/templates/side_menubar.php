@@ -164,7 +164,7 @@ $currentMethod     = service('uri')->getSegment(2);
               <?php endif; ?>
               <?php if (hasPermission('verReceber')) : ?>
                 <li class="nav-item">
-                  <a href="<?= site_url('cobranca') ?>" class="nav-link <?= navActive($currentRoute, 'cobranca') ?>"><i class="fas fa-money-bill"></i><p>&nbsp;&nbsp; Cobrança</p></a>
+                  <a href="<?= site_url('cobranca') ?>" class="nav-link <?= navActive($currentRoute, 'cobranca') ?>"><i class="fas fa-file-invoice-dollar"></i><p>&nbsp;&nbsp; Cobrança</p></a>
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verPagar')) : ?>

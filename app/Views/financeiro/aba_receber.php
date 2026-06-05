@@ -6,7 +6,7 @@
     <div class="row">
       <div class="col-md-12 col-xs-12">
         <div class="card">
-          <div class="card-header bg-primary">
+          <div class="card-header bg-dark">
             <h5 class="text-center">CONTAS A RECEBER</h5>
           </div>
           <div class="card-body">

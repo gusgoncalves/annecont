@@ -202,12 +202,11 @@ class Clientes extends BaseController
     // ==================================================================
     // FUNÇÃO PARA EXIBIR OS DETALHES DO CLIENTE
     // ==================================================================
-    public function ver($id)
+    public function ver($id = null)
     {
         $clientesModel = new ClientesModel();
         $cidadeModel = new \App\Models\CidadesModel();
         
-
         $cliente = $clientesModel->find($id);
         $cidade = $cidadeModel->find($cliente['id_cidade']);
 
@@ -220,19 +219,20 @@ class Clientes extends BaseController
             'cidade' => $cidade
         ]);
     } 
-    
+    //===========ABA DADOS DOS CLIENTES ==========================
     public function abaClientes($id_cliente = null)
     {   
         $portesModel = new \App\Models\PortesModel();
         $cidadesModel = new \App\Models\CidadesModel();
-        $estadosModel = new \App\Models\EstadosModel();
         $clientesModel = new ClientesModel();
+        $cliente = $clientesModel->find($id_cliente);
+        $cidades = $cidadesModel->where('id', $cliente['id_cidade'])->findAll();
 
         $data = [
             'active_menu' => 'area_cliente',
             'portes' => $portesModel->findAll(),
-            'cidades' => $cidadesModel->where('id', $id_cliente)->findAll(),
-            'cliente' => $clientesModel->find($id_cliente)
+            'cidades' => $cidades,
+            'cliente' => $cliente
         ];
         return view('clientes/dados', $data);
     }                                                                                 

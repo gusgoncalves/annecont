@@ -41,12 +41,14 @@ class ObrigacoesCliente extends BaseController
             ->orderBy('obrigacoes.descricao','ASC')
             ->findAll();
         
-        $concluidas = 0;
+            $qtdObrigacoes = count($obrigacoescli);
+        $incompleta = 0;
         foreach($obrigacoescli as $o) {
             if($o['feito'] == 0) {
-                $concluidas ++;
+                $incompleta ++;
             }
         }
+
         $valorTotal = 0;
         foreach($obrigacoescli as $val) {
             $valorTotal += $val['valor'];
@@ -57,7 +59,8 @@ class ObrigacoesCliente extends BaseController
             'active_menu' => 'area_cliente',
             'combo_obrigacoes' => $combo_obrigacoes,
             'obrigacoes' => $obrigacoes,
-            'concluidas' => ($concluidas == 0),
+            'qtdObrigacoes' => $qtdObrigacoes,
+            'incompleta' => $incompleta,
             'valorTotal' => $valorTotal
         ];
         return view('obrigacoes/obrigacoes_cliente/index', $data);

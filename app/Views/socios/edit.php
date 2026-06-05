@@ -1,4 +1,7 @@
-<?php /** @var array $socios */?>
+<?php 
+  /** @var array $socios */
+  /** @var int $id_cliente */
+?>
 <?= $this->extend('layout') ?>
 <?= $this->section('title') ?>
   Edição de Sócio
@@ -12,12 +15,13 @@
             <div class="card-header bg-primary">
               <h3>ALTERAÇÃO DE SÓCIO</h3>
             </div>
-            <form role="form" action="<?= site_url('socios/update/' . $socios['id']) ?>" class="requires-validation" method="post" enctype="multipart/form-data" novalidate>
+            <form role="form" action="<?= site_url('socios/update/'.$socios['id']) ?>" class="requires-validation" method="post" enctype="multipart/form-data" novalidate>
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group">
                       <label for="socio_nome">NOME COMPLETO</label>
+                      <input type="hidden" name="id_cliente" value="<?= $id_cliente ?>">
                       <input type="text" class="form-control" id="socio_nome" name="socio_nome" placeholder="Nome completo do Sócio" maxlength="50" value="<?= old('socio_nome'),$socios['nome'] ?>" autocomplete="off" required/>
                     </div>
                   </div><!-- col -->
@@ -69,7 +73,7 @@
                       <input type="text" class="form-control" id="socio_endereco" name="socio_endereco" placeholder="Endereço do Sócio" value="<?= old('socio_endereco'),$socios['endereco'] ?>" autocomplete="off"/>
                     </div>
                   </div><!-- col -->
-                  <div class="col-sm-4">
+                  <div class="col-sm-2">
                     <div class="form-group">
                       <label for="socio_recibo">RECIBO DO IMPOSTO</label>
                       <input type="text" class="form-control" id="socio_recibo" name="socio_recibo" placeholder="Recibo do Imposto de Renda" value="<?= old('socio_recibo'),$socios['recibo'] ?>" autocomplete="off"/>
@@ -81,6 +85,18 @@
                       <input type="email" class="form-control" id="socio_email" name="socio_email" placeholder="Email do Sócio" value="<?= old('socio_email'),$socios['email'] ?>" autocomplete="off"/>
                     </div>
                   </div><!-- col -->
+                  <div class="col-sm-2">
+                    <div class="form-group">
+                      <label>DECLARA IMPOSTO DE RENDA?</label>
+                      <div class="custom-control custom-switch">
+                        <input type="hidden" name="declara_ir" value="0">
+                        <input type="checkbox" class="custom-control-input" id="declara_ir" name="declara_ir" value="1" <?= old('declara_ir', $socios['declara_ir']) ? 'checked' : '' ?>      >
+                        <label class="custom-control-label" for="declara_ir">
+                          Sim
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div><!-- row -->
                 <div class="row">
                   <div class="col-md-12">
@@ -95,7 +111,7 @@
               </div><!-- /.card-body -->
               <div class="card-footer">
                 <button type="submit" class="btn btn-success">SALVAR</button>
-                <a href="<?php echo base_url('socios') ?>" class="btn btn-danger">FECHAR</a>
+                <a href="<?=site_url('clientes/ver/' . $id_cliente) ?>" class="btn btn-danger">FECHAR</a>
               </div><!-- div footer -->
             </form>
           </div><!-- /.card -->
