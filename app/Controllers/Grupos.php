@@ -11,7 +11,7 @@ class Grupos extends BaseController
     public function index()
     {
         $gruposModel = new GruposModel();
-        return view('grupos/index',['active_menu' => 'grupos','grupos'=>$gruposModel->findAll()]);
+        return view('grupos/index',['active_menu' => 'grupos','grupos'=>$gruposModel->where('id !=',1)->findAll()]);
     }
     
     public function create()

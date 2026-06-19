@@ -22,6 +22,7 @@ class ReceberModel extends Model
         'id_usuario_quitou',
         'id_usuario_estorno',
         'vl_acrescimo',
-        'vl_desconto'
+        'vl_desconto',
+        'referencia'
     ];
 }

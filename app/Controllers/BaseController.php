@@ -16,8 +16,6 @@ abstract class BaseController extends Controller
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         parent::initController($request, $response, $logger);
-        
-        $this->gerarMensalidades();
         //sessão
         $this->session = session();
         //permissões
@@ -36,7 +34,6 @@ abstract class BaseController extends Controller
     protected function logado()
         {
         if($this->session->get('logou')===true){
-            $this->gerarMensalidades();
             return redirect()->to('/dashboard');
         }
     }
@@ -64,9 +61,11 @@ abstract class BaseController extends Controller
         }
         $clientes = $clientesModel
             ->where('ativo', 1)
+            ->where('valor >', 0)
             ->findAll();
+        log_message('debug', 'Total clientes encontrados: ' . count($clientes));
         foreach ($clientes as $cliente) {
-            if (empty($cliente['valor'])) {
+            if (empty($cliente['valor']) || $cliente['valor'] <= 0) {
                 continue;
             }
             if (empty($cliente['dia_vencimento'])) {

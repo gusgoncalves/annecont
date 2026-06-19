@@ -48,12 +48,27 @@ class Receber extends BaseController
             if (hasPermission('apagarReceber')) {
                 $buttons .= ' <button type="button" class="btn btn-danger" style="font-size:0.55em" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
             }
+            $classe = '';
+            if($value['quitado'] == 0){
+
+                if(strtotime($value['dt_recebimento']) < strtotime(date('Y-m-d'))){
+                    $classe = 'table-danger';
+                }
+                elseif($value['dt_recebimento'] == date('Y-m-d')){
+                    $classe = 'table-warning';
+                }
+                elseif(strtotime($value['dt_recebimento']) <= strtotime('+3 days')){
+                    $classe = 'table-info';
+                }
+            }
+
             $result['data'][] = array(
                 'descricao' => $value['nome'],
                 'vencimento' => date('d/m/Y', strtotime($value['dt_recebimento'])),
                 'cliente' => $clienteData['razao'] ?? 'Cliente Inexistente',
                 'valor' => number_format($value['valor'], 2, ',', '.'),
                 'situacao' => $value['quitado'] == 0 ? '<span class="badge badge-warning">Aberto</span>' : '<span class="badge badge-success">Pago</span>',
+                'classe_linha' => $classe,
                 'dt_estorno' => $value['dt_estorno'],
                 'acoes' => $buttons
             );
@@ -195,6 +210,29 @@ class Receber extends BaseController
     //=============================QUITAR UMA CONTA A RECEBER ================================
     public function quitarReceber()
     {
+        $rules = [
+            'dt_baixa' => 'required|valid_date[Y-m-d]',
+            'id_banco' => 'required',
+        ];
+        $messages = [
+            'dt_baixa' => [
+                'required' => 'A data da baixa deve ser preenchida',
+                'valid_date' => 'Digite uma data válida',
+            ],
+            'id_banco' => [
+                'required' => 'Informe para qual banco o valor vai ser creditado',
+            ]
+        ];
+        //  echo '<pre>';
+        //  print_r($this->request->getPost());
+        //  echo '</pre>';
+        //  exit;
+        if (!$this->validate($rules, $messages)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'messages' => implode('<br>', $this->validator->getErrors())
+            ]);
+        }
         $receberModel = new ReceberModel();
         $movimentoModel = new MovimentoModel();
         $id = $this->request->getPost('quitar_id');

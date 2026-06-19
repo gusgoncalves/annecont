@@ -27,7 +27,20 @@
               </thead>
               <tbody>
                 <?php foreach ($receber as $value): ?>
-                  <tr>
+                  <?php 
+                    $atrasado = ($value['quitado'] == 0 && strtotime($value['dt_recebimento']) < strtotime(date('Y-m-d')));
+                    $hoje = strtotime(date('Y-m-d'));
+                    $vencimento = strtotime($value['dt_recebimento']);
+
+                    $venceHoje = $vencimento == $hoje;
+
+                    $venceEm3Dias = $vencimento > $hoje && $vencimento <= strtotime('+3 days');
+                  ?>
+                  <?php if ($value['quitado']==0) :?>
+                    <tr class="<?= $atrasado ? 'table-danger' : '' ?> <?= $venceHoje ? 'table-warning' : '' ?> <?= $venceEm3Dias ? 'table-info' : '' ?>">
+                  <?php else: ?>
+                    <tr>
+                  <?php endif;?>
                     <td><?= $value['nome'] ?></td>
                     <td><?= date('d/m/Y', strtotime($value['dt_recebimento'])) ?></td>
                     <td><?= number_format($value['valor'], 2, ',', '.') ?></td>

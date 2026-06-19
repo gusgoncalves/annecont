@@ -16,12 +16,15 @@ $routes->group('clientes', ['filter' => 'auth:verCliente'], function($routes) {
     $routes->get('clientes/abaFuncionarios/(:num)', 'Clientes::abaFuncionarios/$1');
     $routes->get('/', 'Clientes::index');
     $routes->get('abaClientes/(:num)', 'Clientes::abaClientes/$1');
+    $routes->post('addInfo', 'Clientes::addInfo');
+    $routes->get('abaInfo/(:num)', 'Clientes::abaInfo/$1');
     $routes->get('busca', 'Clientes::buscaDados');
     $routes->get('create', 'Clientes::create');
     $routes->post('store', 'Clientes::store');
     $routes->get('edit/(:num)', 'Clientes::edit/$1');
     $routes->post('update/(:num)', 'Clientes::update/$1');
     $routes->post('delete/(:num)', 'Clientes::delete/$1');
+    $routes->post('deleteInfo', 'Clientes::deleteInfo');
     $routes->post('delete', 'Clientes::delete');
     $routes->get('ver/(:num)', 'Clientes::ver/$1');
     $routes->post('getCidades', 'Clientes::getCidades');

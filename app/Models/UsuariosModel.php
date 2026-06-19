@@ -23,6 +23,7 @@ class UsuariosModel extends Model
             ->select('u.*, g.group_name')
             ->join('user_group ug', 'ug.user_id = u.id', 'left')
             ->join('groups g', 'g.id = ug.group_id', 'left')
+            ->where('u.id !=',1)
             ->get()
             ->getResultArray();
     }

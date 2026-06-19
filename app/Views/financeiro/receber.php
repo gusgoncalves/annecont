@@ -59,6 +59,9 @@ Contas a Receber
       ordering: false, //tira a opção de ordenar
       info: false,
       language: {url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',},
+      rowCallback: function(row, data) {
+        $(row).addClass(data.classe_linha);
+      },
       columns: [
         { data: 'cliente',
           render: function (data, type, row) {

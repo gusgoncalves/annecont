@@ -130,8 +130,8 @@
                 <div class="form-group">
                   <label for="id_banco">BANCO A RECEBER</label>
                   <select class="form-control" id="id_banco" name="id_banco">
+                    <option value="">ESCOLHA UM BANCO </option>
                     <?php foreach ($bancos as $b) : ?>
-                      <option value="">ESCOLHA UM BANCO </option>
                         <option value="<?= $b['id'] ?>"><?= $b['descricao'] ?></option>
                       <?php endforeach ?>
                       <div class="invalid-feedback">Preenchimento Obrigatório!</div>

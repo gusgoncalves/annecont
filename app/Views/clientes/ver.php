@@ -64,6 +64,11 @@
                         <a class="nav-link" style="border: 1px solid #dee2e6; border-radius:0.25em" id="tab-receber-tab" data-toggle="pill" href="#tab-receber" role="tab" aria-controls="tab-receber" aria-selected="false">Receber</a>
                       </li>
                     <?php endif; ?>
+                    <?php if (hasPermission("verCliente")) : ?>
+                      <li class="nav-item">
+                        <a class="nav-link" style="border: 1px solid #dee2e6; border-radius:0.25em" id="tab-info-tab" data-toggle="pill" href="#tab-info" role="tab" aria-controls="tab-info" aria-selected="false">Informações</a>
+                      </li>
+                    <?php endif; ?>
                     <li class="nav-item">
                         <a class="nav-link bg-danger" onclick="history.go(-1);" style="border: 1px solid #dee2e6; border-radius:0.25em" id="tab-voltar-tab" data-toggle="pill" href="#tab-voltar" role="tab" aria-controls="tab-voltar" aria-selected="false">Voltar</a>
                       </li>
@@ -106,6 +111,10 @@
                     <!--============================TAB DOS RECEBER ============================== -->
                     <div class="tab-pane fade" id="tab-receber" role="tabpanel" aria-labelledby="tab-receber-tab">
                       <div id="conteudo-receber"></div>
+                    </div>
+                    <!--============================TAB DOS INFORMAÇÕES ============================== -->
+                    <div class="tab-pane fade" id="tab-info" role="tabpanel" aria-labelledby="tab-info-tab">
+                      <div id="conteudo-info"></div>
                     </div>
                   </div>
                 </div>
@@ -161,6 +170,10 @@
           '#tab-receber': {
               div: '#conteudo-receber',
               url: '<?= site_url('receber/abaReceber/'.$cliente['id']) ?>'
+          },
+          '#tab-info': {
+              div: '#conteudo-info',
+              url: '<?= site_url('clientes/abaInfo/'.$cliente['id']) ?>'
           }
       };
       // ==========================================

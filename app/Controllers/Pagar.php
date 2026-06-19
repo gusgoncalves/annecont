@@ -213,6 +213,29 @@ class Pagar extends BaseController
     //=============================QUITAR UMA CONTA A PAGAR ================================
     public function quitarPagar()
     {
+        $rules = [
+            'dt_baixa' => 'required|valid_date[Y-m-d]',
+            'id_banco' => 'required',
+        ];
+        $messages = [
+            'dt_baixa' => [
+                'required' => 'A data da baixa deve ser preenchida',
+                'valid_date' => 'Digite uma data válida',
+            ],
+            'id_banco' => [
+                'required' => 'Informe para qual banco o valor vai ser creditado',
+            ]
+        ];
+        //  echo '<pre>';
+        //  print_r($this->request->getPost());
+        //  echo '</pre>';
+        //  exit;
+        if (!$this->validate($rules, $messages)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'messages' => implode('<br>', $this->validator->getErrors())
+            ]);
+        }
         $pagarModel = new PagarModel();
         $movimentoModel = new MovimentoModel();
         $id = $this->request->getPost('quitar_id');
@@ -383,10 +406,7 @@ class Pagar extends BaseController
             $builder->where('DATE(dt_vencimento) <=', $dataFinal);
         } else {
             // padrão: últimos 30 dias
-            $builder->where(
-                'DATE(dt_vencimento) >=',
-                date('Y-m-d', strtotime('-30 days'))
-            );
+            $builder->where('DATE(dt_vencimento) >=', date('Y-m-d', strtotime('-30 days')));
         }
         $data = $builder
             ->orderBy('dt_vencimento', 'DESC')
@@ -408,7 +428,7 @@ class Pagar extends BaseController
                 'dt_quitado' => date('d/m/Y',strtotime($value['dt_quitado'])),
                 //'valor' => number_format($value['valor_pagar'],2,',','.'),
                 'valor' => number_format($valor_total,2,',','.'),
-                'banco' => $bancoData['descricao'],
+                'banco' => !empty($bancoData['descricao']) ? $bancoData['descricao'] : '<span class="badge badge-danger">Não Informado</span>',
                 'situacao' => '<span class="badge badge-success">Pago</span>',
                 'tipo' => $tipoData['nome'] ?? '-',
                 'acoes' => $buttons

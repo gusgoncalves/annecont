@@ -224,7 +224,7 @@ class Clientes extends BaseController
     //===========ABA DADOS DOS CLIENTES ==========================
     public function abaClientes($id_cliente = null)
     {   
-        $portesModel = new \App\Models\PortesModel();
+        $portesModel = new \App\Models\InfoModel();
         $cidadesModel = new \App\Models\CidadesModel();
         $clientesModel = new ClientesModel();
         $cliente = $clientesModel->find($id_cliente);
@@ -237,5 +237,57 @@ class Clientes extends BaseController
             'cliente' => $cliente
         ];
         return view('clientes/dados', $data);
-    }                                                                                 
+    }
+    //-=====================ABA INFORMAÇÃO =================================
+    public function abaInfo($id_cliente = null)
+    {   
+        $infoModel = new \App\Models\InfoModel();
+        $clientesModel = new ClientesModel();
+        $cliente = $clientesModel->find($id_cliente);
+        $info = $infoModel
+            ->select('informacoes_cliente.*, users.firstname as usuario')
+            ->join('users','users.id = informacoes_cliente.id_usuario')
+            ->where('id_cliente',$id_cliente)
+            ->orderBy('dt_inclusao','DESC')
+            ->findAll();
+        $data = [
+            'active_menu' => 'area_cliente',
+            'info' => $info,
+            'cliente' => $cliente
+        ];
+        return view('clientes/info', $data);
+    }
+    //=======================================================
+    public function addInfo()
+    {
+        $response = ['success' => false, 'messages' => ''];
+        $infoModel = new \App\Models\InfoModel();
+        $dados = [
+            'id_cliente'  => $this->request->getPost('id_cliente'),
+            'descricao'   => $this->request->getPost('descricao_info'),
+            'id_usuario'  => session()->get('id'),
+            'dt_inclusao' => date('Y-m-d H:i:s')
+        ];
+        if ($infoModel->insert($dados)) {
+            $response['success'] = true;
+            $response['messages'] = 'Informação cadastrada com sucesso.';
+        } else {
+            $response['messages'] = 'Erro ao cadastrar informação.';
+        }
+        return $this->response->setJSON($response);
+    }
+    //=======================================================
+    public function deleteInfo()
+    {
+        $response = ['success' => false, 'messages' => ''];
+        $id = $this->request->getPost('id');
+        $infoModel = new \App\Models\InfoModel();
+        if ($infoModel->delete($id)) {
+            $response['success'] = true;
+            $response['messages'] = 'Informação removida com sucesso.';
+        } else {
+            $response['messages'] = 'Erro ao remover informação.';
+        }
+        return $this->response->setJSON($response);
+    }                                                                                           
 }

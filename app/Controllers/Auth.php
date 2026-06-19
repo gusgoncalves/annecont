@@ -53,6 +53,8 @@ class Auth extends BaseController
             'email' => $login['email'],
             'logou' => true
         ]);
+
+        $this->gerarMensalidades();
         return redirect()->to('/dashboard');
     }
 
