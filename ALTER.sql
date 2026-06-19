@@ -74,7 +74,7 @@ VALUES ('ultima_geracao_mensalidade', '');
 ALTER TABLE receber
 ADD COLUMN referencia VARCHAR(7);
 
-CREATE TABLE anneco90_db.informacoes_cliente (
+CREATE TABLE informacoes_cliente (
     id INT AUTO_INCREMENT NOT NULL,
     descricao TEXT NULL,
     dt_inclusao DATETIME NULL,
@@ -84,4 +84,4 @@ CREATE TABLE anneco90_db.informacoes_cliente (
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
-COLLATE=utf8mb4_0900_ai_ci;
+COLLATE=utf8mb4_general_ci
