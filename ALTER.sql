@@ -60,3 +60,16 @@ ALTER TABLE anneco90_db.obrigacoes_realizadas ADD status INT DEFAULT 0 NOT NULL;
 ALTER TABLE anneco90_db.obrigacoes_realizadas ADD dt_pagamento DATE NULL;
 ALTER TABLE anneco90_db.obrigacoes_realizadas ADD id_conta_receber INT NULL;
 ALTER TABLE anneco90_db.obrigacoes_realizadas ADD CONSTRAINT obrigacoes_realizadas_receber_FK FOREIGN KEY (id_conta_receber) REFERENCES anneco90_db.receber(id) ON DELETE SET NULL ON UPDATE SET NULL;
+
+--dia 19/06/2026
+CREATE TABLE configuracoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    chave VARCHAR(100) NOT NULL,
+    valor TEXT NULL
+);
+
+INSERT INTO configuracoes (chave, valor)
+VALUES ('ultima_geracao_mensalidade', '');
+
+ALTER TABLE receber
+ADD COLUMN referencia VARCHAR(7);

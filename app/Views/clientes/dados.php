@@ -58,7 +58,7 @@
                 <div class="card bg-light text-white">
                     <div class="card-body text-center">
                         <h6><strong>DIA VENCIMENTO: </strong></h6>
-                        <h3><?= date('d', strtotime($cliente['dia_vencimento'])) ?></h3>
+                        <h3><?= ($cliente['dia_vencimento']) ?></h3>
                     </div>
                 </div>
             </div>
@@ -72,7 +72,7 @@
             </div>
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header bg-light">
                         <h6 class="text-muted"><strong>OBSERVAÇÕES</strong></h6>
                     </div>
                     <div class="card-body">

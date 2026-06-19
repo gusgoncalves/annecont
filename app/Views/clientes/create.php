@@ -98,7 +98,7 @@
                   </div>                
                 </div>                
                 <div class="row">
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <div class="form-group">
                       <label for="cliente_cep">CEP</label>
                       <input type="text" inputmode="numeric" class="form-control" id="cliente_cep" name="cliente_cep" placeholder="CEP" autocomplete="off" data-inputmask='"mask": "99999-999"' data-mask>
@@ -107,21 +107,33 @@
                   <div class="col-md-2">
                     <div class="form-group">
                       <label for="cliente_valor">VALOR COBRADO</label>
-                      <input type="number" class="form-control" id="cliente_valor" name="cliente_valor" placeholder="Valor para pagamento" step="0.01" min="0" max="10000" required>
+                      <input type="number" class="form-control" id="cliente_valor" name="cliente_valor" placeholder="Valor" step="0.01" min="0" max="10000" required>
                       <div class="invalid-feedback">Preencha esse campo!</div>
                     </div>
                   </div>
                   <div class="col-md-2">
                     <div class="form-group">
-                      <label for="cliente_vencimento">DIA DO VENCIMENTO</label>
-                      <input type="number" class="form-control" id="cliente_vencimento" name="cliente_vencimento" placeholder="Data Vencimento" step="1" min="0" max="31" required>
+                      <label for="cliente_vencimento">DIA VENCIMENTO</label>
+                      <input type="number" class="form-control" id="cliente_vencimento" name="cliente_vencimento" placeholder="Dia do pagamento" step="1" min="0" max="31" required>
                       <div class="invalid-feedback">Preencha esse campo!</div>
                     </div>
                   </div>
-                  <div class="col-md-5">
+                  <div class="col-md-4">
                     <div class="form-group">
                       <label for="cliente_email">EMAIL</label>
                       <input type="email" class="form-control" id="cliente_email" name="cliente_email" placeholder="Email do Cliente" autocomplete="OFF"/>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label>DECLARA IR?</label>
+                      <div class="custom-control custom-switch">
+                        <input type="hidden" name="declara_ir" value="0">
+                        <input type="checkbox" class="custom-control-input" id="declara_ir" name="declara_ir" value="1" <?= old('declara_ir') ? 'checked' : '' ?>>
+                        <label class="custom-control-label" for="declara_ir">
+                          Sim
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -396,6 +396,7 @@ class Receber extends BaseController
         }
         return $this->response->setJSON($result);
     }
+    //===========ABA RECEBER ========================
     public function abaReceber($id_cliente = null)
     {
         $receberModel = new ReceberModel();

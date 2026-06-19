@@ -96,6 +96,7 @@ class Clientes extends BaseController
             'dt_cadastro' => date('Y-m-d H:i:s'),
             'ativo' => 1,
             'id_porte' => $this->request->getPost('cliente_porte'),
+            'declara_ir' => $this->request->getPost('declara_ir') ? 1 : 0,
         );
         $ClientesModel = new ClientesModel();
         $create = $ClientesModel->insert($data);
@@ -150,6 +151,7 @@ class Clientes extends BaseController
             'observacoes' => $this->request->getPost('cliente_descricao'),
             'id_porte' => $this->request->getPost('cliente_porte'),
             'ativo' => $this->request->getPost('ativo'),
+            'declara_ir' => $this->request->getPost('declara_ir') ? 1 : 0,
         );
         // echo '<pre>';
         // print_r($data);
@@ -158,7 +160,7 @@ class Clientes extends BaseController
         $clientesModel = new ClientesModel();
         $update = $clientesModel->update($id, $data);
         if ($update == true) {
-            return redirect()->to('/clientes')->with('success', 'Cliente atualizado com sucesso');
+            return redirect()->to('/clientes/ver/'.$id)->with('success', 'Cliente atualizado com sucesso');
         } else {
             return redirect()->to('/clientes/edit/' . $id)->with('errors', 'Um erro ocorreu!!');
         }

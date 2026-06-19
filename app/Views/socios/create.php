@@ -10,7 +10,7 @@
       <div class="col-md-12 col-xs-12">
         <div class="card">
             <div class="card-header bg-primary">
-              <h3>Cadastro de Sócios- <b><?= strtoupper($cliente['razao']) ?></b></h3>
+              <h3>Cadastro de Sócios <b>Cliente:</b> <b><?= strtoupper($cliente['razao']) ?></b></h3>
             </div>
             <form role="form" action="<?= site_url('socios/store')?>" class="requires-validation" method="post" enctype="multipart/form-data" novalidate>
               <div class="card-body">
@@ -131,16 +131,9 @@
     //==========================MASCARA AUTOMÁTICA =======================
     $('[data-mask]').inputmask(); //PUXA AS FUNÇÕES DE MÁSCARA
     //==========================MASCARA SELECT 2 =======================
-   $('#id_cliente').select2({
-    width: '100%',
-    theme: 'classic'
-  });
-    
-    $("#sucesso").fadeTo(2000, 500).slideUp(500, function(){
-      $("#sucesso").slideUp(500);
-    });
-    $("#erro").fadeTo(2000, 500).slideUp(500, function(){
-      $("#erro").slideUp(500);
+    $('#id_cliente').select2({
+      width: '100%',
+      theme: 'classic'
     });
   </script>
 <?= $this->endSection() ?>

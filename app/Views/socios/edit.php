@@ -90,7 +90,7 @@
                       <label>DECLARA IMPOSTO DE RENDA?</label>
                       <div class="custom-control custom-switch">
                         <input type="hidden" name="declara_ir" value="0">
-                        <input type="checkbox" class="custom-control-input" id="declara_ir" name="declara_ir" value="1" <?= old('declara_ir', $socios['declara_ir']) ? 'checked' : '' ?>      >
+                        <input type="checkbox" class="custom-control-input" id="declara_ir" name="declara_ir" value="1" <?= old('declara_ir', $socios['declara_ir']) ? 'checked' : '' ?>>
                         <label class="custom-control-label" for="declara_ir">
                           Sim
                         </label>

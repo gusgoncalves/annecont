@@ -28,7 +28,7 @@
               <h3>ALTERAÇÃO DE CLIENTE</h3>
             </div>
             <!-- /.card-header -->
-            <form role="form" action="/clientes/update/<?= $cliente['id'] ?>" method="post" class="was-validated" enctype="multipart/form-data">
+            <form role="form" action="<?= site_url('/clientes/update/' . $cliente['id']) ?>" method="post" class="was-validated" enctype="multipart/form-data">
               <div class="card-body">
                 <div class="row">
                   <div class="col-sm-6">
@@ -112,7 +112,7 @@
                   </div>               
                 </div>                
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-2">
                     <div class="form-group">
                       <label for="cliente_cep">CEP</label>
                       <input type="text" class="form-control" id="cliente_cep" name="cliente_cep" placeholder="CEP do cliente" autocomplete="off" value="<?= old('cliente_cep', $cliente['cep']) ?>" data-inputmask='"mask": "99999-999"' data-mask>
@@ -134,6 +134,18 @@
                     <div class="form-group">
                       <label for="cliente_email">EMAIL</label>
                       <input type="email" class="form-control" id="cliente_email" name="cliente_email" placeholder="Email do Cliente" autocomplete="OFF" value="<?= old('cliente_email', $cliente['email']) ?>">
+                    </div>
+                  </div>
+                  <div class="col-sm-2">
+                    <div class="form-group">
+                      <label>DECLARA IR?</label>
+                      <div class="custom-control custom-switch">
+                        <input type="hidden" name="declara_ir" value="0">
+                        <input type="checkbox" class="custom-control-input" id="declara_ir" name="declara_ir" value="1" <?= old('declara_ir', $cliente['declara_ir']) ? 'checked' : '' ?>>
+                        <label class="custom-control-label" for="declara_ir">
+                          Sim
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
