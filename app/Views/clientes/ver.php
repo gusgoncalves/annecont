@@ -21,7 +21,7 @@
                   <ul class="nav nav-pills" id="custom-tabs-one-tab" role="tablist">
                     <?php if (hasPermission("verCliente")) : ?>
                       <li class="nav-item">
-                        <a class="nav-link active" style="border: 1px solid #dee2e6; border-radius:0.25em" id="tab-informacoes-tab" data-toggle="pill" href="#tab-informacoes" role="tab" aria-controls="tab-informacoes" aria-selected="true">Informações</a>
+                        <a class="nav-link active" style="border: 1px solid #dee2e6; border-radius:0.25em" id="tab-cadastro-tab" data-toggle="pill" href="#tab-cadastro" role="tab" aria-controls="tab-cadastro" aria-selected="true">Cadastro</a>
                       </li>
                     <?php endif; ?>
                     <?php if (hasPermission("verObrigacao")) : ?>
@@ -77,7 +77,7 @@
                 <div class="card-body">
                   <div class="tab-content" id="custom-tabs-one-tabContent">
                     <!-- ====================================== TAB COM AS INFORMAÇÕES DO CLIENTE ==========================================-->
-                    <div class="tab-pane fade show active" id="tab-informacoes" role="tabpanel" aria-labelledby="tab-informacoes-tab">
+                    <div class="tab-pane fade show active" id="tab-cadastro" role="tabpanel" aria-labelledby="tab-cadastro-tab">
                       <div id="info-dados"></div>
                     </div>
                     <!-- ========================== TAB COM AS INFORMAÇÕES DAS OBRIGAÇÕES ==========================================-->
