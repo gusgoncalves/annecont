@@ -8,7 +8,7 @@
             <!-- /.box-header -->
             <div class="card-body">
               <?php if(hasAnyPermission(['criarCliente'])): ?>
-                <button class="btn btn-lg btn-primary mb-2" data-toggle="modal" data-target="#addModalInfo"><i class="fas fa-plus-square"></i> NOVA MENSAGEM</button>
+                <button class="btn btn-lg btn-primary mb-2" data-toggle="modal" data-target="#addModalInfo"><i class="fas fa-plus-square"></i> NOVO TEXTO</button>
               <?php endif; ?>
               <?php if(!empty($info)): ?>
                 <?php foreach($info as $value): ?>

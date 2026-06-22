@@ -417,14 +417,15 @@ class Receber extends BaseController
             if (hasPermission('modificarReceber')) {
                 $buttons .= ' <button type="button" style="font-size:0.55em" class="btn btn-warning" onclick="estornarFunc('.$value['id'].')" title="Estornar Quitado"><i class="fa fa-minus"></i></button>';
             }
-            // if (hasPermission('modificarreceber')) {
-            //     $buttons .= ' <button type="button" class="btn btn-primary" style="font-size:0.55em" onclick="editFunc('.$value['id'].')"><i class="fas fa-edit"></i></button>';
-            // }
             $valor_total = $value['valor'] + $value['vl_acrescimo'] - $value['vl_desconto'];
             $result['data'][] = [
                 'descricao' => $value['nome'],
                 'dt_quitado' => date('d/m/Y',strtotime($value['dt_quitado'])),
-                'valor' => number_format($valor_total,2,',','.'),
+                'dt_recebimento' => date('d/m/Y',strtotime($value['dt_recebimento'])),
+                'valor' => number_format($value['valor'],2,',','.'),
+                'vl_acrescimo' => $value['vl_acrescimo']>0 ? '<span class="badge badge-primary">' . number_format($value['vl_acrescimo'],2,',','.') . '</span>' : number_format($value['vl_acrescimo'],2,',','.'),
+                'vl_desconto' => $value['vl_desconto']>0 ? '<span class="badge badge-danger">' . number_format($value['vl_desconto'],2,',','.') . '</span>' : number_format($value['vl_desconto'],2,',','.'),
+                'total' => number_format($valor_total,2,',','.')?'<span class="badge badge-success">' . number_format($valor_total,2,',','.') . '</span>': '<span class="badge badge-secondary">0,00</span>',
                 'banco' => $bancoData['descricao']??'<span class="badge badge-primary">Não Informado</span>',
                 'situacao' => '<span class="badge badge-success">Pago</span>',
                 'cliente' => $clienteData['razao'] ?? '-',

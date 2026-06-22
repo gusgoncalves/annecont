@@ -163,9 +163,9 @@ $currentMethod     = service('uri')->getSegment(2);
                 </li>
               <?php endif; ?>
               <?php if (hasPermission('verReceber')) : ?>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                   <a href="<?= site_url('cobranca') ?>" class="nav-link <?= navActive($currentRoute, 'cobranca') ?>"><i class="fas fa-file-invoice-dollar"></i><p>&nbsp;&nbsp; Cobrança</p></a>
-                </li>
+                </li> -->
               <?php endif; ?>
               <?php if (hasPermission('verPagar')) : ?>
                 <?php $openHistorico = in_array($currentRoute, ['pagar/historico','receber/historico']); ?>

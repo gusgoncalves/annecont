@@ -75,6 +75,7 @@ $routes->group('obrigacoes', ['filter' => 'auth:verObrigacao'], function($routes
     $routes->get('getById/(:num)', 'Obrigacoes::getById/$1');
     $routes->post('edit/(:num)', 'Obrigacoes::update/$1');
     $routes->post('delete', 'Obrigacoes::delete');
+    $routes->get('gerar-ir', 'Obrigacoes::gerarIR');
 });
 $routes->group('obrigacoes_cliente', ['filter' => 'auth:verObrigacao'], function($routes) {
     $routes->get('/', 'ObrigacoesCliente::index');

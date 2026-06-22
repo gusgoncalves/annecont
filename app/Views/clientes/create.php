@@ -75,7 +75,7 @@
                       <input type="text" class="form-control" id="cliente_endereco" name="cliente_endereco" placeholder="Endereço do cliente" autocomplete="off">
                     </div>
                   </div>                  
-                  <div class="col-sm-4">
+                  <div class="col-sm-3">
                     <div class="form-group">
                       <label for="cliente_uf">UF</label>
                       <select class="form-control" id="cliente_uf" name="cliente_uf">
@@ -88,43 +88,23 @@
                       </select>
                     </div>
                   </div>
-                  <div class="col-sm-4">
+                  <div class="col-sm-3">
                     <div class="form-group">
                       <label for="cliente_cidade">CIDADE</label>
                       <select class="form-control" id="cliente_cidade" name="cliente_cidade" disabled>
                       <option>Selecione UF Primeiro</option>
                       </select>
                     </div>
-                  </div>                
-                </div>                
-                <div class="row">
+                  </div>
                   <div class="col-md-2">
                     <div class="form-group">
                       <label for="cliente_cep">CEP</label>
                       <input type="text" inputmode="numeric" class="form-control" id="cliente_cep" name="cliente_cep" placeholder="CEP" autocomplete="off" data-inputmask='"mask": "99999-999"' data-mask>
                     </div>
-                  </div>
-                  <div class="col-md-2">
-                    <div class="form-group">
-                      <label for="cliente_valor">VALOR COBRADO</label>
-                      <input type="number" class="form-control" id="cliente_valor" name="cliente_valor" placeholder="Valor" step="0.01" min="0" max="10000" required>
-                      <div class="invalid-feedback">Preencha esse campo!</div>
-                    </div>
-                  </div>
-                  <div class="col-md-2">
-                    <div class="form-group">
-                      <label for="cliente_vencimento">DIA VENCIMENTO</label>
-                      <input type="number" class="form-control" id="cliente_vencimento" name="cliente_vencimento" placeholder="Dia do pagamento" step="1" min="0" max="31" required>
-                      <div class="invalid-feedback">Preencha esse campo!</div>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="cliente_email">EMAIL</label>
-                      <input type="email" class="form-control" id="cliente_email" name="cliente_email" placeholder="Email do Cliente" autocomplete="OFF"/>
-                    </div>
-                  </div>
-                  <div class="col-md-2">
+                  </div>                
+                </div>                
+                <div class="row">
+                  <div class="col-md-3">
                     <div class="form-group">
                       <label>DECLARA IR?</label>
                       <div class="custom-control custom-switch">
@@ -134,6 +114,38 @@
                           Sim
                         </label>
                       </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label>PAGA MENSAL?</label>
+                      <div class="custom-control custom-switch">
+                        <input type="hidden" name="mensal" value="0">
+                        <input type="checkbox" class="custom-control-input" id="mensal" name="mensal" value="1" <?= old('mensal') ? 'checked' : '' ?>>
+                        <label class="custom-control-label" for="mensal">
+                          Sim
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="cliente_valor">VALOR COBRADO</label>
+                      <input type="number" class="form-control" id="cliente_valor" name="cliente_valor" placeholder="Valor" step="0.01" min="0" max="10000" disabled>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="cliente_vencimento">DIA VENCIMENTO</label>
+                      <input type="number" class="form-control" id="cliente_vencimento" name="cliente_vencimento" placeholder="Dia do pagamento" step="1" min="0" max="31" disabled>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="cliente_email">EMAIL</label>
+                      <input type="email" class="form-control" id="cliente_email" name="cliente_email" placeholder="Email do Cliente" autocomplete="OFF"/>
                     </div>
                   </div>
                 </div>
@@ -164,7 +176,6 @@
     $("#cliente_descricao").summernote()
     //==========================MASCARA AUTOMÁTICA =======================
     $('[data-mask]').inputmask() //PUXA AS FUNÇÕES DE MÁSCARA
-  
     //================FUNÇÃO DE ADD CIDADE APÓS ADD O ESTADO ===============
     $(function(){
       $('#cliente_uf').change(function(){
@@ -224,5 +235,33 @@
             setTimeout(() => alertBox.remove(), 500);
         }
     }, 3000);
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+      const mensal = document.getElementById('mensal');
+      const valor = document.getElementById('cliente_valor');
+      const vencimento = document.getElementById('cliente_vencimento');
+
+      function controlarCampos() {
+          if (mensal.checked) {
+              valor.disabled = false;
+              vencimento.disabled = false;
+              valor.required = true;
+              vencimento.required = true;
+          } else {
+              valor.disabled = true;
+              vencimento.disabled = true;
+              valor.required = false;
+              vencimento.required = false;
+
+              valor.value = '';
+              vencimento.value = '';
+          }
+      }
+
+      mensal.addEventListener('change', controlarCampos);
+
+      controlarCampos();
+    });
   </script>
 <?= $this->endSection() ?>

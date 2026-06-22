@@ -5,6 +5,9 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\ObrigacoesModel;
+use App\Models\ClientesModel;
+use App\Models\SociosModel;
+use App\Models\ObrigacoesClienteModel;
 
 class Obrigacoes extends BaseController
 {
@@ -164,5 +167,68 @@ class Obrigacoes extends BaseController
                 'messages' => 'Um erro ocorreu!!'
             ]);
         }
+    }
+
+    //===================================================================================
+    public function gerarIR()
+    {
+        $obrigacoesModel = new ObrigacoesModel();
+        $clientesModel = new ClientesModel();
+        $sociosModel = new SociosModel();
+        $obrigacoesClientesModel = new ObrigacoesClienteModel();
+
+        $hoje = date('Y-m-d');
+        // Obrigações dentro do período
+        $obrigacoes = $obrigacoesModel
+            ->where('dt_fim >=', $hoje)
+            ->findAll();
+        if (empty($obrigacoes)) {
+            return redirect()->back()->with('warning', 'Nenhuma obrigação ativa encontrada.');
+        }
+        // Clientes com declara IR
+        $clientesDiretos = $clientesModel
+            ->select('id')
+            ->where('declara_ir', 1)
+            ->findAll();
+
+        // Clientes com sócios que declaram IR
+        $clientesSocios = $sociosModel
+            ->select('id_cliente')
+            ->where('declara_ir', 1)
+            ->findAll();
+        $idsClientes = [];
+        foreach ($clientesDiretos as $c) {
+            $idsClientes[] = $c['id'];
+        }
+        foreach ($clientesSocios as $s) {
+            $idsClientes[] = $s['id_cliente'];
+        }
+        $idsClientes = array_unique($idsClientes);
+        $inseridos = 0;
+        $existentes = 0;
+        foreach ($obrigacoes as $obrigacao) {
+            foreach ($idsClientes as $idCliente) {
+                $existe = $obrigacoesClientesModel
+                    ->where('id_cliente', $idCliente)
+                    ->where('id_obrigacao', $obrigacao['id'])
+                    ->first();
+                if ($existe) {
+                    $existentes++;
+                    continue;
+                }
+                $obrigacoesClientesModel->insert([
+                    'id_cliente' => $idCliente,
+                    'id_obrigacao' => $obrigacao['id'],
+                    'feito' => 0,
+                    'dt_ultimo' => null,
+                    'id_usuario_fechou' => null
+                ]);
+                $inseridos++;
+            }
+        }
+        return redirect()->back()->with(
+            'success',
+            "Processo concluído. {$inseridos} obrigações inseridas. {$existentes} já existiam."
+        );
     }
 }

@@ -1,4 +1,4 @@
-  <?= $this->extend('layout') ?>
+<?= $this->extend('layout') ?>
 
 <?= $this->section('title') ?>
   Obrigações
@@ -17,6 +17,7 @@
           <div class="card-body">
             <?php if(hasPermission('criarObrigacao')): ?>
               <button class="btn btn-lg btn-primary mb-2" data-toggle="modal" data-target="#addModal"><i class="fas fa-plus-square"></i> NOVA OBRIGAÇÃO</button>
+              <a href="<?= site_url('obrigacoes/gerar-ir') ?>"  class="btn btn-lg btn-success mb-2" onclick="return confirm('Deseja gerar as obrigações de IR para todos os clientes elegíveis?');"><i class="fas fa-magic"></i> GERAR OBRIGAÇÕES IR</a>
               <br />
             <?php endif; ?>
             <table id="manageTable" class="table table-bordered table-striped table-hover">

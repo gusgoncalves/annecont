@@ -84,7 +84,7 @@
                       <input type="text" class="form-control" id="cliente_endereco" name="cliente_endereco" placeholder="Endereço do cliente" autocomplete="off" value="<?= old('cliente_endereco', $cliente['endereco']) ?>"/>
                     </div>
                   </div>                  
-                  <div class="col-sm-4">
+                  <div class="col-sm-3">
                     <div class="form-group">
                       <label for="cliente_uf">UF</label>
                       <?php $estado = json_decode($cliente['id_uf']); ?>
@@ -97,7 +97,7 @@
                       </select>
                     </div>
                   </div>
-                  <div class="col-sm-4">
+                  <div class="col-sm-3">
                     <div class="form-group">
                       <label for="cliente_cidade">CIDADE</label>
                       <select class="form-control" id="cliente_cidade" name="cliente_cidade">
@@ -109,34 +109,16 @@
                         <?php endforeach ?>
                       </select>
                     </div>
-                  </div>               
-                </div>                
-                <div class="row">
+                  </div> 
                   <div class="col-md-2">
                     <div class="form-group">
                       <label for="cliente_cep">CEP</label>
                       <input type="text" class="form-control" id="cliente_cep" name="cliente_cep" placeholder="CEP do cliente" autocomplete="off" value="<?= old('cliente_cep', $cliente['cep']) ?>" data-inputmask='"mask": "99999-999"' data-mask>
                     </div>
-                  </div>
-                  <div class="col-md-2">
-                    <div class="form-group">
-                      <label for="cliente_valor">VALOR COBRADO</label>
-                      <input type="number" class="form-control" id="cliente_valor" name="cliente_valor" placeholder="Valor para pagamento" step="0.01" min="0" value="<?= old('cliente_valor', $cliente['valor']) ?>" required/>
-                    </div>
-                  </div>
-                  <div class="col-md-2">
-                    <div class="form-group">
-                      <label for="cliente_vencimento">DIA VENCIMENTO</label>
-                      <input type="number" class="form-control" id="cliente_vencimento" name="cliente_vencimento" min="1" max="31" placeholder="Dia do vencimento" value="<?= old('cliente_vencimento', $cliente['dia_vencimento']) ?>" required/>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="cliente_email">EMAIL</label>
-                      <input type="email" class="form-control" id="cliente_email" name="cliente_email" placeholder="Email do Cliente" autocomplete="OFF" value="<?= old('cliente_email', $cliente['email']) ?>">
-                    </div>
-                  </div>
-                  <div class="col-sm-2">
+                  </div>              
+                </div>                
+                <div class="row">
+                  <div class="col-sm-3">
                     <div class="form-group">
                       <label>DECLARA IR?</label>
                       <div class="custom-control custom-switch">
@@ -148,19 +130,53 @@
                       </div>
                     </div>
                   </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label>PAGA MENSAL?</label>
+                      <div class="custom-control custom-switch">
+                        <input type="hidden" name="mensal" value="0">
+                        <input type="checkbox" class="custom-control-input" id="mensal" name="mensal" value="1" <?= old('mensal', $cliente['mensal']) ? 'checked' : '' ?>>
+                        <label class="custom-control-label" for="mensal">
+                          Sim
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="cliente_valor">VALOR COBRADO</label>
+                      <input type="number" class="form-control" id="cliente_valor" name="cliente_valor" placeholder="Valor para pagamento" step="0.01" min="0" value="<?= old('cliente_valor', $cliente['valor']) ?>" <?= old('mensal', $cliente['mensal']) ? '' : 'disabled' ?>>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="cliente_vencimento">DIA VENCIMENTO</label>
+                      <input type="number" class="form-control" id="cliente_vencimento" name="cliente_vencimento" min="1" max="31" placeholder="Dia do vencimento" value="<?= old('cliente_vencimento', $cliente['dia_vencimento']) ?>" <?= old('mensal', $cliente['mensal']) ? '' : 'disabled' ?>>
+                    </div>
+                  </div>                  
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="cliente_email">EMAIL</label>
+                      <input type="email" class="form-control" id="cliente_email" name="cliente_email" placeholder="Email do Cliente" autocomplete="OFF" value="<?= old('cliente_email', $cliente['email']) ?>">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="ativo">Ativo</label>
+                      <select class="form-control" id="ativo" name="ativo"> 
+                        <option value="1" <?php if($cliente['ativo'] == 1) { echo 'selected="selected"'; } ?>>Sim</option>
+                        <option value="2" <?php if($cliente['ativo'] == 2) { echo 'selected="selected"'; } ?>>Não</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label for="cliente_descricao">INFORMAÇÕES</label>
                   <textarea type="text" class="form-control" id="cliente_descricao" name="cliente_descricao" placeholder="Descreva as informações importantes passa esse Cliente" autocomplete="off">
                     <?= old('cliente_descricao', $cliente['observacoes']) ?>
                   </textarea>
-                </div>
-                <div class="form-group">
-                  <label for="ativo">Ativo</label>
-                  <select class="form-control" id="ativo" name="ativo"> 
-                    <option value="1" <?php if($cliente['ativo'] == 1) { echo 'selected="selected"'; } ?>>Sim</option>
-                    <option value="2" <?php if($cliente['ativo'] == 2) { echo 'selected="selected"'; } ?>>Não</option>
-                  </select>
                 </div>
               </div><!-- /.card-body -->
               <div class="card-footer">
@@ -237,5 +253,32 @@
       v = v.replace( /(\d{3})(\d{1,2})$/ , "$1-$2"); //Coloca um hífen entre o terceiro e o quarto dígitos
       return v;
     }
+    document.addEventListener('DOMContentLoaded', function() {
+
+      const mensal = document.getElementById('mensal');
+      const valor = document.getElementById('cliente_valor');
+      const vencimento = document.getElementById('cliente_vencimento');
+
+      function controlarCampos() {
+          if (mensal.checked) {
+              valor.disabled = false;
+              vencimento.disabled = false;
+              valor.required = true;
+              vencimento.required = true;
+          } else {
+              valor.disabled = true;
+              vencimento.disabled = true;
+              valor.required = false;
+              vencimento.required = false;
+
+              valor.value = '';
+              vencimento.value = '';
+          }
+      }
+
+      mensal.addEventListener('change', controlarCampos);
+
+      controlarCampos();
+    });
   </script>
 <?= $this->endSection() ?>

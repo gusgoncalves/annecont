@@ -10,7 +10,7 @@ Histórico de contas
       <div class="col-md-12 col-xs-12">
         <div class="card">
           <div class="card-header bg-primary">
-            <h5 class="text-center">HISTÓRICO DE CONTAS</h5>
+            <h5 class="text-center">CONTAS PAGAS</h5>
           </div>
           <div class="card-body">
             <div class="row mb-3">
@@ -32,12 +32,15 @@ Histórico de contas
             <table id="manageTable" class="table table-bordered table-striped table-hover">
               <thead>
                 <tr>
+                  <th>DATA VENCIMENTO</th>
                   <th>DATA PAGAMENTO</th>
                   <th>DESCRICAO</th>
                   <th>TIPO</th>
                   <th>BANCO</th>
-                  <th>VALOR TOTAL</th>
-                  <th>SITUAÇÃO</th>
+                  <th>VALOR</th>
+                  <th>ACRÉSCIMO</th>
+                  <th>DESCONTO</th> 
+                  <th>TOTAL</th>
                   <?php if (hasAnyPermission(['modificarPagar', 'apagarPagar'])) : ?>
                     <th class="col-2">AÇOES</th>
                   <?php endif; ?>
@@ -90,17 +93,20 @@ Histórico de contas
         dataSrc: 'data'
       },
       columns: [
+        { data: 'dt_vencimento' },
         { data: 'dt_quitado' },
         { data: 'descricao' },
         { data: 'tipo' },
         { data: 'banco' },
-        { data: 'valor' },
-        { data: 'situacao' },
+        { data: 'valor_pagar' },
+        { data: 'vl_acrescimo' },
+        { data: 'vl_desconto' },
+        { data: 'total' },
         { data: 'acoes' }
       ],
       columnDefs: [
         {
-          targets: [5,6],
+          targets: [0,1,4,5,6,7,8,9],
           width: "1%",
           className: "text-center text-nowrap"
         }

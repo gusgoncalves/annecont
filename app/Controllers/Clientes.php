@@ -79,6 +79,7 @@ class Clientes extends BaseController
     // ==================================================================
     public function store()
     {
+        $mensal = $this->request->getPost('mensal') ? 1 : 0;
         $data = array(
             'fantasia' => $this->request->getPost('cliente_fantasia'),
             'razao' => $this->request->getPost('cliente_razao'),
@@ -90,8 +91,9 @@ class Clientes extends BaseController
             'id_cidade' => $this->request->getPost('cliente_cidade'),
             'id_uf' => $this->request->getPost('cliente_uf'),
             'email' => $this->request->getPost('cliente_email'),
-            'valor' => $this->request->getPost('cliente_valor'),
-            'dia_vencimento' => $this->request->getPost('cliente_vencimento'),
+            'mensal' => $mensal,
+            'valor' => $mensal ? $this->request->getPost('cliente_valor') : 0,
+            'dia_vencimento' => $mensal ? $this->request->getPost('cliente_vencimento') : 0,
             'observacoes' => $this->request->getPost('cliente_descricao'),
             'dt_cadastro' => date('Y-m-d H:i:s'),
             'ativo' => 1,
@@ -135,6 +137,7 @@ class Clientes extends BaseController
     // ==================================================================
     public function update($id)
     {
+        $mensal = $this->request->getPost('mensal') ? 1 : 0;
         $data = array(
             'fantasia' => $this->request->getPost('cliente_fantasia'),
             'razao' => $this->request->getPost('cliente_razao'),
@@ -146,8 +149,9 @@ class Clientes extends BaseController
             'id_cidade' => $this->request->getPost('cliente_cidade'),
             'id_uf' => $this->request->getPost('cliente_uf'),
             'email' => $this->request->getPost('cliente_email'),
-            'valor' => $this->request->getPost('cliente_valor'),
-            'dia_vencimento' => $this->request->getPost('cliente_vencimento'),
+            'valor' => $mensal ? $this->request->getPost('cliente_valor') : 0,
+            'dia_vencimento' => $mensal ? $this->request->getPost('cliente_vencimento') : 0,
+            'mensal' => $mensal,
             'observacoes' => $this->request->getPost('cliente_descricao'),
             'id_porte' => $this->request->getPost('cliente_porte'),
             'ativo' => $this->request->getPost('ativo'),

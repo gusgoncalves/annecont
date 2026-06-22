@@ -85,3 +85,11 @@ CREATE TABLE informacoes_cliente (
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_general_ci
+
+22/06/2026
+
+ALTER TABLE anneco90_db.clientes ADD mensal SMALLINT DEFAULT 0 NULL;
+
+select razao, valor, dia_vencimento, mensal from clientes where valor > 0 and dia_vencimento > 0 
+
+update clientes set mensal = 1 where valor > 0 and dia_vencimento > 0

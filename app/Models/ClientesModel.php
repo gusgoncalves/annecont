@@ -25,7 +25,8 @@ class ClientesModel extends Model
         'valor',
         'dia_vencimento',
         'ativo',
-        'declara_ir'
+        'declara_ir',
+        'mensal'
     ];    
     public function recebeDadosClienteComContadores()
 	{

@@ -10,7 +10,7 @@ Histórico de contas
       <div class="col-md-12 col-xs-12">
         <div class="card">
           <div class="card-header bg-primary">
-            <h5 class="text-center">HISTÓRICO DE RECEBER</h5>
+            <h5 class="text-center">HISTÓRICO RECEBIDO</h5>
           </div>
           <div class="card-body">
             <div class="row mb-3">
@@ -32,12 +32,15 @@ Histórico de contas
             <table id="manageTable" class="table table-bordered table-striped table-hover">
               <thead>
                 <tr>
-                  <th>DATA PAGAMENTO</th>
+                  <th>VENCIMENTO</th>
+                  <th>PAGAMENTO</th>
                   <th>CLIENTE</th>
                   <th>DESCRICAO</th>
                   <th>BANCO</th>
-                  <th>VALOR TOTAL</th>
-                  <th>SITUAÇÃO</th>
+                  <th>VALOR</th>
+                  <th>ACRESCIMO</th>
+                  <th>DESCONTO</th>
+                  <th>TOTAL</th>
                   <?php if (hasAnyPermission(['modificarReceber', 'apagarReceber'])) : ?>
                     <th class="col-2">AÇOES</th>
                   <?php endif; ?>
@@ -85,6 +88,7 @@ Histórico de contas
         dataSrc: 'data'
       },
       columns: [
+        { data: 'dt_recebimento' },
         { data: 'dt_quitado' },
          { data: 'cliente',
           render: function (data, type, row) {
@@ -94,12 +98,14 @@ Histórico de contas
         { data: 'descricao' },
         { data: 'banco' },
         { data: 'valor' },
-        { data: 'situacao' },
+        { data: 'vl_acrescimo' },
+        { data: 'vl_desconto' },
+        { data: 'total' },
         { data: 'acoes' }
       ],
       columnDefs: [
         {
-          targets: [5,6],
+          targets: [0,1,5,6,7,8,9], // Índices das colunas de valor
           width: "1%",
           className: "text-center text-nowrap"
         }

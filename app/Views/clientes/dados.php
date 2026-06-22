@@ -49,7 +49,7 @@
                 <div class="card bg-light text-white">
                     <div class="card-body text-center">
                         <h6><strong>MENSALIDADE: </strong></h6>
-                        <h3>R$ <?= number_format($cliente['valor'],2,',','.') ?></h3>  
+                        <h3><?= $cliente['mensal'] ? 'R$ ' . number_format($cliente['valor'], 2, ',', '.') : 'AVULSO' ?></h3>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                 <div class="card bg-light text-white">
                     <div class="card-body text-center">
                         <h6><strong>DIA VENCIMENTO: </strong></h6>
-                        <h3><?= ($cliente['dia_vencimento']) ?></h3>
+                        <h3><?= $cliente['mensal'] ? $cliente['dia_vencimento'] : 'AVULSO' ?></h3>
                     </div>
                 </div>
             </div>
@@ -66,7 +66,7 @@
                 <div class="card bg-light text-white">
                     <div class="card-body text-center">
                         <h6><strong>DECLARA IR: </strong></h6>
-                        <h3><?= $cliente['declara_ir'] ? '<span class="badge badge-success">SIM</span>' : '<span class="badge badge-danger">NÃO</span>' ?></h3>
+                        <h3><?= $cliente['declara_ir'] ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>' ?></h3>
                     </div>
                 </div>
             </div>

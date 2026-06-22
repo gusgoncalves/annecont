@@ -425,9 +425,13 @@ class Pagar extends BaseController
             $valor_total = $value['valor_pagar'] + $value['vl_acrescimo'] - $value['vl_desconto'];
             $result['data'][] = [
                 'descricao' => $value['nome'],
+                'dt_vencimento' => date('d/m/Y',strtotime($value['dt_vencimento'])),
                 'dt_quitado' => date('d/m/Y',strtotime($value['dt_quitado'])),
                 //'valor' => number_format($value['valor_pagar'],2,',','.'),
-                'valor' => number_format($valor_total,2,',','.'),
+                'valor_pagar' => number_format($value['valor_pagar'],2,',','.'),
+                'vl_acrescimo' => $value['vl_acrescimo']>0 ? '<span class="badge badge-primary">' . number_format($value['vl_acrescimo'],2,',','.') . '</span>' : number_format($value['vl_acrescimo'],2,',','.'),
+                'vl_desconto' => $value['vl_desconto']>0 ? '<span class="badge badge-danger">' . number_format($value['vl_desconto'],2,',','.') . '</span>' : number_format($value['vl_desconto'],2,',','.'),
+                'total' => number_format($valor_total,2,',','.')?'<span class="badge badge-success">' . number_format($valor_total,2,',','.') . '</span>': '<span class="badge badge-secondary">0,00</span>',
                 'banco' => !empty($bancoData['descricao']) ? $bancoData['descricao'] : '<span class="badge badge-danger">Não Informado</span>',
                 'situacao' => '<span class="badge badge-success">Pago</span>',
                 'tipo' => $tipoData['nome'] ?? '-',
