@@ -21,7 +21,7 @@ class Dashboard extends BaseController
 
         // Clientes ativos
         $totalClientes = $clientesModel
-            ->where('ativo', 1)
+            ->where('ativo', 2)
             ->countAllResults();
 
         // Mensalistas
@@ -102,5 +102,184 @@ class Dashboard extends BaseController
         ];
 
         return view('dashboard', $dados);
+    }
+     //======================
+    public function clientesInativos()
+    {
+        $clientesModel = new \App\Models\ClientesModel();
+
+        $dados = $clientesModel
+            ->select('razao, fantasia, cnpj, whatsapp, email')
+            ->where('ativo', 2)
+            ->orderBy('razao', 'ASC')
+            ->findAll();
+
+        $cabecalhos = [
+            'Razão Social',
+            'Fantasia',
+            'CNPJ',
+            'WhatsApp',
+            'E-mail'
+        ];
+
+        return view('dashboard/relatorio', [
+            'titulo' => 'Clientes Inativos',
+            'cabecalhos' => $cabecalhos,
+            'dados' => $dados,
+            'campos' => [
+                'razao',
+                'fantasia',
+                'cnpj',
+                'whatsapp',
+                'email'
+            ]
+        ]);
+    }
+    //=====================
+    public function clientesIR()
+    {
+        $clientesModel = new \App\Models\ClientesModel();
+
+        $dados = $clientesModel
+            ->select('razao, fantasia, cnpj, whatsapp, email')
+            ->where('declara_ir', 1)
+            ->orderBy('razao', 'ASC')
+            ->findAll();
+
+        $cabecalhos = [
+            'Razão Social',
+            'Fantasia',
+            'CNPJ',
+            'WhatsApp',
+            'E-mail'
+        ];
+
+        return view('dashboard/relatorio', [
+            'titulo' => 'Clientes que Declaram IR',
+            'cabecalhos' => $cabecalhos,
+            'dados' => $dados,
+            'campos' => [
+                'razao',
+                'fantasia',
+                'cnpj',
+                'whatsapp',
+                'email'
+            ]
+        ]);
+    }
+   
+    //======================
+    public function mensalistas()
+    {
+        $clientesModel = new \App\Models\ClientesModel();
+
+        $dados = $clientesModel
+            ->select('razao, fantasia, cnpj, whatsapp, email, valor')
+            ->where('mensal', 1)
+            ->where('ativo', 1)
+            ->orderBy('razao', 'ASC')
+            ->findAll();
+
+        return view('dashboard/relatorio', [
+            'titulo' => 'Clientes Mensalistas',
+            'cabecalhos' => [
+                'Razão Social',
+                'Fantasia',
+                'CNPJ',
+                'WhatsApp',
+                'E-mail',
+                'Mensalidade'
+            ],
+            'dados' => $dados,
+            'campos' => [
+                'razao',
+                'fantasia',
+                'cnpj',
+                'whatsapp',
+                'email',
+                'valor'
+            ]
+        ]);
+    }
+    //======================
+    public function certificadosVencendo()
+    {
+        $certificadosModel = new \App\Models\CertificadosModel();
+
+        $dados = $certificadosModel
+            ->select('
+                clientes.razao,
+                clientes.fantasia,
+                certificados.descricao,
+                certificados.dt_validade
+            ')
+            ->join('clientes', 'clientes.id = certificados.id_cliente')
+            ->where('certificados.ativo', 1)
+            ->where('certificados.dt_validade >=', date('Y-m-d'))
+            ->where(
+                'certificados.dt_validade <=',
+                date('Y-m-d', strtotime('+30 days'))
+            )
+            ->orderBy('certificados.dt_validade', 'ASC')
+            ->findAll();
+
+        return view('dashboard/relatorio', [
+            'titulo' => 'Certificados Vencendo em 30 Dias',
+            'cabecalhos' => [
+                'Razão Social',
+                'Fantasia',
+                'Descrição',
+                'Validade'
+            ],
+            'dados' => $dados,
+            'campos' => [
+                'razao',
+                'fantasia',
+                'descricao',
+                'dt_validade'
+            ]
+        ]);
+    }
+    public function aniversariantes()
+    {
+        $sociosModel = new \App\Models\SociosModel();
+
+        $dados = [];
+
+        for ($i = 0; $i <= 2; $i++) {
+
+            $data = date('m-d', strtotime("+{$i} days"));
+
+            $resultado = $sociosModel
+                ->select('nome,nascimento,whatsapp,email')
+                ->where("DATE_FORMAT(nascimento,'%m-%d') =", $data)
+                ->findAll();
+
+            foreach ($resultado as $row) {
+
+                $row['dias'] = $i;
+
+                $dados[] = $row;
+            }
+        }
+
+        return view('dashboard/relatorio', [
+            'titulo' => 'Aniversariantes dos Próximos Dias',
+            'cabecalhos' => [
+                'Nome',
+                'Nascimento',
+                'WhatsApp',
+                'E-mail',
+                'Dias'
+            ],
+            'dados' => $dados,
+            'campos' => [
+                'nome',
+                'nascimento',
+                'whatsapp',
+                'email',
+                'dias'
+            ]
+        ]);
     }
 }
